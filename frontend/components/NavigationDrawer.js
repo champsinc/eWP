@@ -12,17 +12,12 @@ import Profile from "./../views/profile/Profile";
 import WorkPackage from "./../views/work_package/WorkPackage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { theme } from "../styles/Main";
-import SafeAreaView from "react-native-safe-area-view";
 
 const Drawer = createDrawerNavigator();
 
 export default class NavigationDrawer extends React.Component {
   render() {
     return (
-      <SafeAreaView
-        forceInset={{ top: "always", bottom: "never" }}
-        style={{ flex: 1 }}
-      >
         <NavigationContainer>
           <Drawer.Navigator
             initialRouteName="Dashboard "
@@ -79,7 +74,6 @@ export default class NavigationDrawer extends React.Component {
             />
           </Drawer.Navigator>
         </NavigationContainer>
-      </SafeAreaView>
     );
   }
 }

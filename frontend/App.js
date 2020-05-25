@@ -3,10 +3,11 @@
 // contains the navigation drawer
 
 import * as React from "react";
-import { Provider as PaperProvider } from "react-native-paper";
+import {Provider as PaperProvider} from "react-native-paper";
 import NavigationDrawer from "./components/NavigationDrawer";
-import { setCustomText } from "react-native-global-props";
-import { Platform } from "react-native";
+import {setCustomText} from "react-native-global-props";
+import {Platform} from "react-native";
+import SafeAreaView from "react-native-safe-area-view";
 
 // to avoid text cutoff in some phones,
 // applying global font styles depending on os
@@ -24,9 +25,14 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <PaperProvider>
-        <NavigationDrawer />
-      </PaperProvider>
+        <SafeAreaView
+            forceInset={{top: "always", bottom: "never"}}
+            style={{flex: 1}}
+        >
+          <PaperProvider>
+            <NavigationDrawer/>
+          </PaperProvider>
+        </SafeAreaView>
     );
   }
 }

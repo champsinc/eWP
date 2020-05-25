@@ -45,7 +45,7 @@ export default class AppBar extends React.Component {
     return (
       <View>
         {this.state.appBarDisplay && (
-          <Appbar.Header>
+          <Appbar.Header statusBarHeight={0}>
             <Appbar.Action icon="menu" onPress={this.toggleNavigation} />
             <Appbar.Content
               title={this.props.title || "eWP"}
@@ -55,7 +55,7 @@ export default class AppBar extends React.Component {
           </Appbar.Header>
         )}
         {this.state.searchBarDisplay && (
-          <Appbar.Header>
+          <Appbar.Header statusBarHeight={0}>
             <SearchBar
               appBarOn={this.appBarOn}
               searchPlaceHolder={
