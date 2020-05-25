@@ -1,37 +1,95 @@
 // author: nirbhay pherwani | pherwani37@gmail.com  | https://nirbhay.me
 import React from "react";
-import {Text, View} from "react-native";
+import { View, FlatList } from "react-native";
 import AppBar from "./../../components/AppBar";
-import {
-  Avatar,
-  Button,
-  Card,
-  Title,
-  Paragraph,
-  IconButton,
-  Colors
-} from 'react-native-paper';
-import {GridCard} from "../../components/GridCard";
+import { GridCard } from "../../components/GridCard";
+import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler";
+import DiscussionPanel from "./../../components/DiscussionPanel";
+import DiscussionView from "./../../components/DiscussionView";
+
+let data = [
+  {
+    key: 1,
+    title: "General",
+    icon: "information",
+  },
+  {
+    key: 2,
+    title: "General",
+    icon: "information",
+  },
+  {
+    key: 3,
+    title: "General",
+    icon: "information",
+  },
+  {
+    key: 4,
+    title: "General",
+    icon: "information",
+  },
+];
 
 export default class WorkPackage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: [],
+      showDiscussionView: false,
+    };
+    axios
+      .get(
+        "http://ganskop.com/proxy/https://rss.itunes.apple.com/api/v1/us/books/top-paid/all/10/explicit.json"
+      )
+      .then((response) => {
+        this.setState({
+          dataSource: data,
+        });
+      });
+  }
   toggleNavBar = () => {
     this.props.navigation.openDrawer();
   };
-
-  leftContent = props => <Avatar.Icon {...props} icon="folder"/>
+  toggleDiscussionView = () => {
+    this.setState({
+      showDiscussionView: !this.state.showDiscussionView,
+    });
+  };
 
   render() {
     return (
-        <View>
-          <AppBar
+      <View style={{ flex: 1 }}>
+        {!this.state.showDiscussionView && (
+          <View style={{ flex: 1 }}>
+            <AppBar
               toggleNavBar={this.toggleNavBar}
               subTitle="Work Package"
               searchPlaceHolder="Search in this work package"
-          />
-          <View>
-            <GridCard icon={"information"} title={"General"}/>
+            />
+            <FlatList
+              data={this.state.dataSource}
+              renderItem={({ item }) => (
+                <View style={{ flex: 1, flexDirection: "column", margin: 1 }}>
+                  <GridCard
+                    key={item.key}
+                    icon={item.icon}
+                    title={item.title}
+                  />
+                </View>
+              )}
+              //Setting the number of column
+              numColumns={2}
+              keyExtractor={(item, index) => index}
+            />
           </View>
-        </View>
+        )}
+        <DiscussionPanel
+          discussionViewOpen={this.state.showDiscussionView}
+          toggleDiscussionView={this.toggleDiscussionView}
+        />
+        {this.state.showDiscussionView && <DiscussionView />}
+      </View>
     );
   }
 }

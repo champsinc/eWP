@@ -1,23 +1,25 @@
 import { Card, Colors, IconButton } from "react-native-paper";
+import { Text } from "react-native";
 import React from "react";
 
 export const GridCard = (props) => {
   return (
-    <Card>
+    <Card
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        margin: 20,
+        paddingBottom: 10,
+      }}
+    >
       <IconButton
         icon={props.icon || "information"}
-        color={Colors.red500}
+        color={Colors.black500}
         size={50}
-        // style={{left: 10}}
-        onPress={() => console.log('Pressed')}
       />
-      {/*<Avatar.icon icon={"folder"} />*/}
-      <Card.Title
-        // style={{width: "51%"}}
-        title={props.title || ""}
-      // left={(props) => <Avatar.Icon {...props} icon="folder" />}
-      // right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-      />
+      <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 16 }}>
+        {props.title || ""}
+      </Text>
     </Card>
   );
-}
+};

@@ -6,4 +6,6 @@ export const theme = {
   accentColor: "#C7C7C7",
   offFocusColor: "#222222",
   backgroundColor: "#FFFFFF",
+  textColor: "#FFFFFF",
+  discussionPanelIconColor: "#6200EE",
 };
