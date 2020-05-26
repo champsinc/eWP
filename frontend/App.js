@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import { Provider as PaperProvider } from "react-native-paper";
-import NavigationDrawer from "./components/NavigationDrawer";
+import NavigationDrawer from "./components/navigation_drawer/NavigationDrawer";
 import { setCustomText } from "react-native-global-props";
 import { Platform } from "react-native";
 
