@@ -37,7 +37,8 @@ export const DiscussionButtonPanel = (props) => {
           props.clearInputBox();
           props.text.length > 0
             ? props.appendMessage({
-                id: "2",
+                id: "5",
+                type: "text",
                 text: props.text,
                 avatar: "Supervisor",
                 left: false,

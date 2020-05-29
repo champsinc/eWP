@@ -3,6 +3,7 @@ import { View } from "react-native";
 import DiscussionInputBox from "./DiscussionInputBox";
 import axios from "axios";
 import ChatBubble from "./ChatBubble";
+import { LogsView } from "./LogsView";
 
 export default class DiscussionView extends React.Component {
   constructor(props) {
@@ -23,20 +24,32 @@ export default class DiscussionView extends React.Component {
   messages = [
     {
       id: "1",
+      type: "text",
       text: "Hi!",
       left: true,
       avatar: "Supervisor",
     },
     {
       id: "2",
+      type: "text",
       text: "Hi!",
       left: false,
       avatar: "Supervisor",
+    },
+    {
+      id: "3",
+      type: "log",
+      user: "User 1",
+      verb: "checked",
+      itemChanged: "Buy plumbing tools",
+      documentChanged: "Intial Procedure",
+      documentType: "list",
     },
   ];
 
   appendMessage = (message) => {
     this.state.messages.push(message);
+    console.log(this.state.messages);
     this.setState({
       messages: this.state.messages,
     });
@@ -46,13 +59,23 @@ export default class DiscussionView extends React.Component {
     return (
       <View>
         {this.state.messages.map((message) => {
-          return (
+          return message.type == "text" ? (
             <ChatBubble
               key={message.id}
               text={message.text}
               left={message.left}
               avatar="../assets/avatar.jpg"
             />
+          ) : message.type == "log" ? (
+            <LogsView
+              userResponsibleForChange={message.user}
+              verb={message.verb}
+              itemChanged={message.itemChanged}
+              documentChanged={message.documentChanged}
+              documentType={message.documentType}
+            ></LogsView>
+          ) : (
+            <View></View>
           );
         })}
         <DiscussionInputBox appendMessage={this.appendMessage} />
