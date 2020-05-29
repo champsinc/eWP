@@ -1,11 +1,20 @@
 import * as React from "react";
 import { TextInput } from "react-native-paper";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { DiscussionButtonPanel } from "./DiscussionButtonPanel";
 
-export default class MyComponent extends React.Component {
-  state = {
-    text: "",
+export default class DiscussionInputBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: "",
+    };
+  }
+
+  clearInputBox = () => {
+    this.setState({
+      text: "",
+    });
   };
 
   render() {
@@ -18,12 +27,27 @@ export default class MyComponent extends React.Component {
           multiline={true}
           numberOfLines={4}
           mode="outlined"
-          style={{ marginHorizontal: 10, marginBottom: 10 }}
+          style={styles.textInput}
         />
-        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <DiscussionButtonPanel />
+        <View style={styles.discussionButtonPanel}>
+          <DiscussionButtonPanel
+            text={this.state.text.trim()}
+            appendMessage={this.props.appendMessage}
+            clearInputBox={this.clearInputBox}
+          />
         </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  textInput: {
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  discussionButtonPanel: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+});

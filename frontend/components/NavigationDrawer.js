@@ -18,62 +18,61 @@ const Drawer = createDrawerNavigator();
 export default class NavigationDrawer extends React.Component {
   render() {
     return (
-        <NavigationContainer>
-          <Drawer.Navigator
-            initialRouteName="Dashboard "
-            drawerStyle={{
-              backgroundColor: theme.backgroundColor,
-              activeBackgroundColor: theme.primaryColor,
+      <NavigationContainer>
+        <Drawer.Navigator
+          initialRouteName="Work Package"
+          drawerStyle={{
+            backgroundColor: theme.backgroundColor,
+          }}
+          drawerContentOptions={{
+            activeTintColor: theme.primaryColor,
+            itemStyle: { marginHorizontal: 0 },
+          }}
+        >
+          <Drawer.Screen
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              title: "Dashboard",
+              drawerIcon: ({ focused, size }) => (
+                <MaterialIcons
+                  name="dashboard"
+                  size={size}
+                  color={focused ? theme.primaryColor : theme.offFocusColor}
+                />
+              ),
             }}
-            drawerContentOptions={{
-              activeTintColor: theme.primaryColor,
-              itemStyle: { marginHorizontal: 0 },
+          />
+          <Drawer.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: "Profile",
+              drawerIcon: ({ focused, size }) => (
+                <MaterialIcons
+                  name="account-circle"
+                  size={size}
+                  color={focused ? theme.primaryColor : theme.offFocusColor}
+                />
+              ),
             }}
-          >
-            <Drawer.Screen
-              name="Dashboard "
-              component={Dashboard}
-              options={{
-                title: "Dashboard ",
-                drawerIcon: ({ focused, size }) => (
-                  <MaterialIcons
-                    name="dashboard"
-                    size={size}
-                    color={focused ? theme.primaryColor : theme.offFocusColor}
-                  />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="Profile"
-              component={Profile}
-              options={{
-                title: "Profile",
-                drawerIcon: ({ focused, size }) => (
-                  <MaterialIcons
-                    name="account-circle"
-                    size={size}
-                    color={focused ? theme.primaryColor : theme.offFocusColor}
-                  />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="Work Package"
-              component={WorkPackage}
-              options={{
-                title: "Work Package",
-                drawerIcon: ({ focused, size }) => (
-                  <MaterialIcons
-                    name="work"
-                    size={size}
-                    color={focused ? theme.primaryColor : theme.offFocusColor}
-                  />
-                ),
-              }}
-            />
-          </Drawer.Navigator>
-        </NavigationContainer>
+          />
+          <Drawer.Screen
+            name="Work Package"
+            component={WorkPackage}
+            options={{
+              title: "Work Package",
+              drawerIcon: ({ focused, size }) => (
+                <MaterialIcons
+                  name="work"
+                  size={size}
+                  color={focused ? theme.primaryColor : theme.offFocusColor}
+                />
+              ),
+            }}
+          />
+        </Drawer.Navigator>
+      </NavigationContainer>
     );
   }
 }

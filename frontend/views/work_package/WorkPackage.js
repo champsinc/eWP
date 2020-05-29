@@ -1,10 +1,9 @@
 // author: nirbhay pherwani | pherwani37@gmail.com  | https://nirbhay.me
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, Platform } from "react-native";
 import AppBar from "./../../components/AppBar";
 import { GridCard } from "../../components/GridCard";
 import axios from "axios";
-import { ScrollView } from "react-native-gesture-handler";
 import DiscussionPanel from "./../../components/DiscussionPanel";
 import DiscussionView from "./../../components/DiscussionView";
 
@@ -48,9 +47,11 @@ export default class WorkPackage extends React.Component {
         });
       });
   }
+
   toggleNavBar = () => {
     this.props.navigation.openDrawer();
   };
+
   toggleDiscussionView = () => {
     this.setState({
       showDiscussionView: !this.state.showDiscussionView,
@@ -79,7 +80,7 @@ export default class WorkPackage extends React.Component {
                 </View>
               )}
               //Setting the number of column
-              numColumns={2}
+              numColumns={Platform.OS == "web" ? 4 : 2}
               keyExtractor={(item, index) => index}
             />
           </View>
@@ -87,6 +88,7 @@ export default class WorkPackage extends React.Component {
         <DiscussionPanel
           discussionViewOpen={this.state.showDiscussionView}
           toggleDiscussionView={this.toggleDiscussionView}
+          ewpNumber={"1234"}
         />
         {this.state.showDiscussionView && <DiscussionView />}
       </View>
