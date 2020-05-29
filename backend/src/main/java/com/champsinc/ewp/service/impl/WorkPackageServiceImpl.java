@@ -8,16 +8,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of each function in the service class
+ * @author Dhiren Chandnani
+ */
 @Service
 public class WorkPackageServiceImpl implements WorkPackageService {
     @Autowired
     private WorkPackageRepository workPackageRepository;
 
+    /**
+     * Function to get all work packages
+     * @return list of all work packges
+     */
     @Override
     public List<WorkPackage> findAll() {
         return workPackageRepository.findAll();
     }
 
+    /**
+     * Function to get work package by id
+     * @return specific work package by id
+     */
     @Override
     public WorkPackage findByewpId(int ewpId){
         return workPackageRepository.findByewpId(ewpId);

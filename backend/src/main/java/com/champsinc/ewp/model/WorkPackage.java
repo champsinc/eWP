@@ -5,6 +5,10 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Model class for work package
+ * @author Dhiren Chandnani
+ */
 @Getter
 @Setter
 @Document(collection = "work_package")
