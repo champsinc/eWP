@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { IconButton } from "react-native-paper";
 import { theme } from "../styles/Main";
 
-export const LogsView = (props) => {
+export const RequestView = (props) => {
   return (
     <View style={styles.topView}>
       <IconButton
@@ -13,10 +13,9 @@ export const LogsView = (props) => {
         style={styles.replyButton}
         onPress={() => console.log("button pressed")}
       />
-      <View style={styles.logsView}>
+      <View style={styles.requestView}>
         <Text style={styles.text}>
-          {props.userResponsibleForChange} {props.verb} "{props.itemChanged}" in
-          "{props.documentChanged}" {props.documentType}
+          {props.userRequesting} requested to "{props.request}"
         </Text>
       </View>
     </View>
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
   topView: {
     flexDirection: "row",
   },
-  logsView: {
+  requestView: {
     flex: 2,
     flexDirection: "row",
     justifyContent: "center",

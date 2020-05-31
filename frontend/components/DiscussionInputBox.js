@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextInput } from "react-native-paper";
 import { View, StyleSheet } from "react-native";
-import { DiscussionButtonPanel } from "./DiscussionButtonPanel";
+import DiscussionButtonPanel from "./DiscussionButtonPanel";
 
 export default class DiscussionInputBox extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ export default class DiscussionInputBox extends React.Component {
           value={this.state.text}
           onChangeText={(text) => this.setState({ text })}
           multiline={true}
-          numberOfLines={4}
+          numberOfLines={3}
           mode="outlined"
           style={styles.textInput}
         />

@@ -1,5 +1,7 @@
 // author: nirbhay pherwani | pherwani37@gmail.com  | https://nirbhay.me
 // app wide themes
+import color from "color";
+
 export const theme = {
   primaryColor: "#6200EE",
   primaryDarkColor: "#FAFAFA",
@@ -8,4 +10,5 @@ export const theme = {
   backgroundColor: "#FFFFFF",
   textColor: "#FFFFFF",
   discussionPanelIconColor: "#6200EE",
+  timeColorInChatBubble: "#F2A84F",
 };

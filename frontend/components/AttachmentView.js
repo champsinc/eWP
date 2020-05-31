@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { IconButton } from "react-native-paper";
 import { theme } from "../styles/Main";
 
-export const LogsView = (props) => {
+export const AttachmentView = (props) => {
   return (
     <View style={styles.topView}>
       <IconButton
@@ -13,10 +13,10 @@ export const LogsView = (props) => {
         style={styles.replyButton}
         onPress={() => console.log("button pressed")}
       />
-      <View style={styles.logsView}>
+      <View style={styles.requestView}>
+        <IconButton icon="attachment" color="black" size={40} />
         <Text style={styles.text}>
-          {props.userResponsibleForChange} {props.verb} "{props.itemChanged}" in
-          "{props.documentChanged}" {props.documentType}
+          {props.userUploaded} sent "{props.fileName}"
         </Text>
       </View>
     </View>
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   topView: {
     flexDirection: "row",
   },
-  logsView: {
+  requestView: {
     flex: 2,
     flexDirection: "row",
     justifyContent: "center",
@@ -35,12 +35,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 5,
     borderColor: "#c7c7c7",
-    borderStyle: "dashed",
+    borderStyle: "soild",
     borderWidth: 1,
   },
   text: {
     padding: 10,
     fontWeight: "bold",
     fontSize: 14,
+    alignSelf: "center",
   },
 });
