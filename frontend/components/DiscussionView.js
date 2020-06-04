@@ -1,5 +1,6 @@
-import * as React from "react";
-import { View } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { IconButton } from "react-native-paper";
 import DiscussionInputBox from "./DiscussionInputBox";
 import axios from "axios";
 import ChatBubble from "./ChatBubble";
@@ -13,6 +14,7 @@ export default class DiscussionView extends React.Component {
     super(props);
     this.state = {
       messages: [],
+      replyingToMessageIndex: "",
     };
     axios
       .get(
@@ -34,15 +36,31 @@ export default class DiscussionView extends React.Component {
       left: true,
       avatar: "Supervisor",
       time: "02:11 PM",
+      thread: [
+        {
+          id: "1.1",
+          type: "text",
+          text: "Hedy!",
+          time: "02:47 PM",
+        },
+      ],
     },
     {
       id: "2",
       type: "text",
-      text: "Hi!",
+      text: "Hey!",
       user: "User 1",
       left: false,
       avatar: "Supervisor",
       time: "02:13 PM",
+      thread: [
+        {
+          id: "2.1",
+          type: "text",
+          text: "Hoy!",
+          time: "02:47 PM",
+        },
+      ],
     },
     {
       id: "3",
@@ -67,19 +85,49 @@ export default class DiscussionView extends React.Component {
       user: "User 1",
       time: "02:45 PM",
     },
+    {
+      id: "6",
+      type: "attachment",
+      fileName: "2020.pdf",
+      user: "User 1",
+      avatar: "Supervisor",
+      time: "2.50 PM",
+    },
   ];
 
   appendMessage = (message) => {
     this.state.messages.push(message);
     this.setState({
       messages: this.state.messages,
+      replyingToMessageIndex: "",
+    });
+  };
+
+  appendThread = (message) => {
+    this.state.messages[this.state.replyingToMessageIndex].thread
+      ? ""
+      : (this.state.messages[this.state.replyingToMessageIndex].thread = []);
+    this.state.messages[this.state.replyingToMessageIndex].thread.push(message);
+    this.resetReplyingTo();
+  };
+
+  setReplyingTo = (index) => {
+    this.discussionInputBox.focusInputField();
+    this.setState({
+      replyingToMessageIndex: index,
+    });
+  };
+
+  resetReplyingTo = () => {
+    this.setState({
+      replyingToMessageIndex: "",
     });
   };
 
   render() {
     return (
       <ScrollView
-        keyboardShouldPersistTaps="handled" //added for the ability to press buttons while typing
+        keyboardShouldPersistTaps="handled" //added this, for the ability to press buttons while typing
         ref={(ref) => {
           this.scrollView = ref;
         }}
@@ -87,43 +135,246 @@ export default class DiscussionView extends React.Component {
           this.scrollView.scrollToEnd({ animated: "true" })
         }
       >
-        <View>
-          {this.state.messages.map((message) => {
-            return message.type == "text" ? (
+        {this.state.messages.map((message, index) => {
+          return message.type == "text" ? (
+            <View>
               <ChatBubble
                 key={message.id}
-                text={message.text}
-                left={message.left}
-                user={message.user}
-                // replyButton={true}
+                messageIndex={index}
+                message={message}
                 avatar="../assets/avatar.jpg"
-                time={message.time}
+                setReplyingTo={this.setReplyingTo}
               />
-            ) : message.type == "log" ? (
+              {message.thread &&
+                message.thread.map((messageInThread) => {
+                  return messageInThread.type == "text" ? (
+                    <ChatBubble
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                    />
+                  ) : messageInThread.type == "request" ? (
+                    <RequestView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      thread={true}
+                    />
+                  ) : messageInThread.type == "attachment" ? (
+                    <AttachmentView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      thread={true}
+                    />
+                  ) : (
+                    ""
+                  );
+                })}
+            </View>
+          ) : message.type == "log" ? (
+            <View>
               <LogsView
-                userResponsibleForChange={message.user}
-                verb={message.verb}
-                itemChanged={message.itemChanged}
-                documentChanged={message.documentChanged}
-                documentType={message.documentType}
+                key={message.id}
+                messageIndex={index}
+                message={message}
+                setReplyingTo={this.setReplyingTo}
               />
-            ) : message.type == "request" ? (
+              {message.thread &&
+                message.thread.map((messageInThread) => {
+                  return messageInThread.type == "text" ? (
+                    <ChatBubble
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                    />
+                  ) : messageInThread.type == "request" ? (
+                    <RequestView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : messageInThread.type == "attachment" ? (
+                    <AttachmentView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : (
+                    ""
+                  );
+                })}
+            </View>
+          ) : message.type == "request" ? (
+            <View>
               <RequestView
-                userRequesting={message.user}
-                request={message.text}
+                key={message.id}
+                messageIndex={index}
+                message={message}
+                setReplyingTo={this.setReplyingTo}
               />
-            ) : message.type == "attachment" ? (
+              {message.thread &&
+                message.thread.map((messageInThread) => {
+                  return messageInThread.type == "text" ? (
+                    <ChatBubble
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                    />
+                  ) : messageInThread.type == "request" ? (
+                    <RequestView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : messageInThread.type == "attachment" ? (
+                    <AttachmentView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : (
+                    ""
+                  );
+                })}
+            </View>
+          ) : message.type == "attachment" ? (
+            <View>
               <AttachmentView
-                userUploaded={message.user}
-                fileName={message.fileName}
+                key={message.id}
+                messageIndex={index}
+                message={message}
+                setReplyingTo={this.setReplyingTo}
               />
-            ) : (
-              <View />
-            );
-          })}
-          <DiscussionInputBox appendMessage={this.appendMessage} />
-        </View>
+              {message.thread &&
+                message.thread.map((messageInThread) => {
+                  return messageInThread.type == "text" ? (
+                    <ChatBubble
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                    />
+                  ) : messageInThread.type == "request" ? (
+                    <RequestView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : messageInThread.type == "attachment" ? (
+                    <AttachmentView
+                      key={messageInThread.id}
+                      parentMessage={message}
+                      message={messageInThread}
+                      messageIndex={index}
+                      setReplyingTo={this.setReplyingTo}
+                      thread={true}
+                    />
+                  ) : (
+                    ""
+                  );
+                })}
+            </View>
+          ) : (
+            <View />
+          );
+        })}
+        {this.state.replyingToMessageIndex !== "" && (
+          <View style={styles.replyingToView}>
+            <Text style={styles.replyingToText}>
+              <Text style={{ fontWeight: "bold" }}>Replying to</Text>
+              {this.messages[this.state.replyingToMessageIndex].type == "text"
+                ? ": " + this.messages[this.state.replyingToMessageIndex].text
+                : this.messages[this.state.replyingToMessageIndex].type == "log"
+                ? ' a LOG: "' +
+                  this.messages[this.state.replyingToMessageIndex].itemChanged +
+                  '" by "' +
+                  this.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : this.messages[this.state.replyingToMessageIndex].type ==
+                  "request"
+                ? ' a REQUEST: "' +
+                  this.messages[this.state.replyingToMessageIndex].text +
+                  '" by "' +
+                  this.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : this.messages[this.state.replyingToMessageIndex].type ==
+                  "attachment"
+                ? ' an ATTACHMENT: "' +
+                  this.messages[this.state.replyingToMessageIndex].fileName +
+                  '" by "' +
+                  this.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : ""}
+            </Text>
+            <IconButton
+              style={styles.replyingToIcon}
+              icon="close"
+              color="gray"
+              size={20}
+              onPress={this.resetReplyingTo}
+            ></IconButton>
+          </View>
+        )}
+        <DiscussionInputBox
+          ref={(ref) => {
+            this.discussionInputBox = ref;
+          }}
+          appendMessage={this.appendMessage}
+          replyingToMessageIndex={this.state.replyingToMessageIndex}
+          appendThread={this.appendThread}
+        />
       </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  replyingToView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 0,
+    borderRadius: 8,
+    borderColor: "#c7c7c7",
+    borderStyle: "solid",
+    borderWidth: 1,
+    padding: 7,
+  },
+  replyingToText: {
+    flex: 1,
+    marginRight: 3,
+    flexDirection: "column",
+    alignSelf: "center",
+  },
+  replyingToIcon: {
+    flex: 0.05,
+    flexDirection: "column",
+    margin: 0,
+    height: "auto",
+    alignSelf: "center",
+  },
+});

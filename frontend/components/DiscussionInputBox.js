@@ -17,10 +17,17 @@ export default class DiscussionInputBox extends React.Component {
     });
   };
 
+  focusInputField = () => {
+    this.input.focus();
+  };
+
   render() {
     return (
       <View>
         <TextInput
+          ref={(ref) => {
+            this.input = ref;
+          }}
           label="Your Message Here ... "
           value={this.state.text}
           onChangeText={(text) => this.setState({ text })}
@@ -32,7 +39,9 @@ export default class DiscussionInputBox extends React.Component {
         <View style={styles.discussionButtonPanel}>
           <DiscussionButtonPanel
             text={this.state.text.trim()}
+            replyingToMessageIndex={this.props.replyingToMessageIndex}
             appendMessage={this.props.appendMessage}
+            appendThread={this.props.appendThread}
             clearInputBox={this.clearInputBox}
           />
         </View>
@@ -45,6 +54,7 @@ const styles = StyleSheet.create({
   textInput: {
     marginHorizontal: 10,
     marginBottom: 10,
+    marginTop: 15,
   },
   discussionButtonPanel: {
     flexDirection: "row",

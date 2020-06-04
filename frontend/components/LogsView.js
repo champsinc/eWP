@@ -11,12 +11,12 @@ export const LogsView = (props) => {
         color={theme.discussionPanelIconColor}
         size={25}
         style={styles.replyButton}
-        onPress={() => console.log("button pressed")}
+        onPress={() => props.setReplyingTo(props.messageIndex)}
       />
       <View style={styles.logsView}>
         <Text style={styles.text}>
-          {props.userResponsibleForChange} {props.verb} "{props.itemChanged}" in
-          "{props.documentChanged}" {props.documentType}
+          {props.message.user} {props.message.verb} "{props.message.itemChanged}
+          " in "{props.message.documentChanged}" {props.message.documentType}
         </Text>
       </View>
     </View>
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginHorizontal: 10,
+    marginLeft: 1,
     marginVertical: 10,
     borderRadius: 5,
     borderColor: "#c7c7c7",
@@ -39,8 +40,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   text: {
-    padding: 10,
+    margin: 10,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  replyButton: {
+    margin: 0,
+    marginLeft: 3,
+    flexDirection: "column",
+    alignSelf: "center",
   },
 });
