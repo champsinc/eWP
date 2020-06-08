@@ -4,9 +4,10 @@
 
 import * as React from "react";
 import { Provider as PaperProvider } from "react-native-paper";
-import NavigationDrawer from "./components/navigation_drawer/NavigationDrawer";
+import NavigationDrawer from "./components/NavigationDrawer";
 import { setCustomText } from "react-native-global-props";
 import { Platform } from "react-native";
+import SafeAreaView, { SafeAreaProvider } from "react-native-safe-area-view";
 
 // to avoid text cutoff in some phones,
 // applying global font styles depending on os
@@ -24,9 +25,16 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <PaperProvider>
-        <NavigationDrawer />
-      </PaperProvider>
+      <SafeAreaProvider>
+        <SafeAreaView
+          forceInset={{ top: "always", bottom: "never" }}
+          style={{ flex: 1 }}
+        >
+          <PaperProvider>
+            <NavigationDrawer />
+          </PaperProvider>
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 }
