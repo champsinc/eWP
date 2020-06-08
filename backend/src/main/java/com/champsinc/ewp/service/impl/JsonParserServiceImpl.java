@@ -1,11 +1,14 @@
 package com.champsinc.ewp.service.impl;
 
 import com.champsinc.ewp.service.JsonParserService;
+import com.champsinc.ewp.util.JsonParserUtils;
+import com.champsinc.ewp.util.JsonParserUtils.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
+import springfox.documentation.spring.web.json.Json;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -20,24 +23,6 @@ import java.util.stream.Stream;
  */
 @Service
 public class JsonParserServiceImpl implements JsonParserService {
-
-    public enum Keywords {
-        type,
-        editable,
-        notes,
-        required,
-        due_date,
-        special_identifier
-    }
-
-    public enum Types {
-        number,
-        date,
-        text,
-        file,
-        checkitem,
-        selectitem
-    }
 
     /**
      * Function to check json string for validity
@@ -55,7 +40,7 @@ public class JsonParserServiceImpl implements JsonParserService {
                 // Check if its a section and type key exists
                 if(checkTypeKey(sectionObject, "section") && sectionObject.size() == 2){
                     String sectionKeyName = getDataKeyName(sectionObject);
-                    if(!sectionKeyName.equals("Extra keys")){
+                    if(!sectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)){
                         System.out.println(sectionKeyName);
                         JsonArray subSectionArray = sectionObject.getAsJsonArray(sectionKeyName);
                         // Parse through each subsection
@@ -64,48 +49,48 @@ public class JsonParserServiceImpl implements JsonParserService {
                             // Check if its a subsection and type key exists
                             if((checkTypeKey(subSectionObject, "sub_section") && subSectionObject.size() <= 3)) {
                                 String subSectionKeyName = getDataKeyName(subSectionObject);
-                                if (!subSectionKeyName.equals("Extra keys")) {
+                                if (!subSectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)) {
                                     System.out.println(subSectionKeyName);
                                     JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(subSectionKeyName);
                                     // Parse through each subsection inner array
                                     for (JsonElement subSectionInnerElement : subSectionInnerArray) {
                                         JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
                                         if(!checkValidTypeValue(subSectionInnerObject.get("type").getAsString())){
-                                            return "Type is not valid";
+                                            return JsonParserUtils.NOT_VALID_TYPE;
                                         }
                                         if(!checkExtraKeysPresent(subSectionInnerObject)){
-                                            return "Extra keys other than valid keys are present";
+                                            return JsonParserUtils.EXTRA_KEYS_INNER;
                                         }
                                         if(!checkOtherKeys(subSectionInnerObject)){
-                                            return "Other keys like editable/required etc. are not of valid type";
+                                            return JsonParserUtils.OTHER_KEYS_NOT_VALID;
                                         }
                                         if(!checkDataByType(subSectionInnerObject)){
-                                            return "Data is not according to type specified";
+                                            return JsonParserUtils.DATA_TYPE_INVALID;
                                         }
                                     }
                                 }
                                 else{
-                                    return "Extra keys other than valid keys are present";
+                                    return JsonParserUtils.EXTRA_KEYS_SUB_SECTION;
                                 }
                             }
                             else{
-                                return "Either type key not specified in sub-section or extra keys are present";
+                                return JsonParserUtils.NO_TYPE_KEY_SUB_SECTION;
                             }
                         }
                     }
                     else{
-                        return "Extra keys other than valid keys are present";
+                        return JsonParserUtils.EXTRA_KEYS_SECTION;
                     }
                 }
                 else{
-                    return "Either type key not specified in section or extra keys are present";
+                    return JsonParserUtils.NO_TYPE_KEY_SECTION;
                 }
             }
         }
         else{
-            return "No work package key";
+            return JsonParserUtils.NO_WORK_PCKG_KEY;
         }
-        return "Valid";
+        return JsonParserUtils.VALID_JSON;
     }
 
 
@@ -118,7 +103,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             return jsonObjectKeys.get(0);
         }
         else{
-            return "Extra keys";
+            return JsonParserUtils.EXTRA_KEYS;
         }
     }
 
@@ -150,7 +135,6 @@ public class JsonParserServiceImpl implements JsonParserService {
         keywordEnumKeys.retainAll(jsonObjectKeys);
         keywordEnumKeys.remove("type");
         keywordEnumKeys.remove("due_date");
-        System.out.println("KEYS:"+keywordEnumKeys);
         for (String key: keywordEnumKeys) {
             if(!jsonObject.getAsJsonPrimitive(key).isBoolean()){
                 return false;
