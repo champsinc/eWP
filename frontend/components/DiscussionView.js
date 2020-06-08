@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { IconButton, Modal, Portal, Provider } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import DiscussionInputBox from "./DiscussionInputBox";
 import axios from "axios";
 import ChatBubble from "./ChatBubble";
@@ -8,6 +8,7 @@ import { LogsView } from "./LogsView";
 import { RequestView } from "./RequestView";
 import { ScrollView } from "react-native-gesture-handler";
 import { AttachmentView } from "./AttachmentView";
+import { theme } from "../styles/Main";
 
 export default class DiscussionView extends React.Component {
   constructor(props) {

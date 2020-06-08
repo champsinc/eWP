@@ -7,9 +7,9 @@
 import * as React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import Dashboard from "./../../views/dashboard/Dashboard";
-import Profile from "./../../views/profile/Profile";
-import WorkPackage from "./../../views/work_package/WorkPackage";
+import Dashboard from "../views/dashboard/Dashboard";
+import Profile from "../views/profile/Profile";
+import WorkPackage from "../views/work_package/WorkPackage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { theme } from "../styles/Main";
 

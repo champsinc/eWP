@@ -19,6 +19,8 @@ export default class DiscussionInputBox extends React.Component {
       keyword: "",
       data: [],
       mentions: new Set(),
+      key: 1,
+      autoFocus: false,
     };
   }
 
@@ -30,7 +32,10 @@ export default class DiscussionInputBox extends React.Component {
   };
 
   focusInputField = () => {
-    this.textInput.focusInputField();
+    this.setState({
+      autoFocus: true,
+      key: ++this.state.key,
+    });
   };
 
   addMentionSymbol = () => {
@@ -102,7 +107,8 @@ export default class DiscussionInputBox extends React.Component {
       <View>
         <View style={styles.container}>
           <MentionsTextInput
-            ref={(ref) => (this.textInput = ref)}
+            key={this.state.key}
+            autoFocus={this.state.autoFocus}
             placeholder={"Your Message Here ... "}
             textInputStyle={{
               borderColor: "gray",

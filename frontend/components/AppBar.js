@@ -5,7 +5,7 @@
 // depending on the screen the search functionalities vary
 import * as React from "react";
 import { View } from "react-native";
-import SearchBar from "../../components/search_bar/SearchBar";
+import SearchBar from "./SearchBar";
 import { Appbar } from "react-native-paper";
 
 export default class AppBar extends React.Component {
