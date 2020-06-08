@@ -1,41 +1,149 @@
 import * as React from "react";
-import { TextInput } from "react-native-paper";
-import { View, StyleSheet } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
+import { theme } from "../styles/Main";
+import MentionsTextInput from "react-native-mentions";
 
 export default class DiscussionInputBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       text: "",
+      keyword: "",
+      data: [],
+      mentions: new Set(),
     };
   }
 
   clearInputBox = () => {
     this.setState({
       text: "",
+      mentions: new Set(),
     });
   };
 
   focusInputField = () => {
-    this.input.focus();
+    this.textInput.focusInputField();
   };
+
+  addMentionSymbol = () => {
+    this.setState({
+      text: this.state.text + " @",
+    });
+  };
+
+  renderSuggestionsRow({ item }, hidePanel) {
+    return (
+      <TouchableOpacity
+        onPress={() => this.onSuggestionTap(item.UserName, hidePanel)}
+      >
+        <View style={styles.suggestionsRowContainer}>
+          <View style={styles.userIconBox}>
+            <Text style={styles.usernameInitials}>
+              {!!item.DisplayName &&
+                item.DisplayName.split(" ")[0][0].toUpperCase() +
+                  item.DisplayName.split(" ").slice(-1)[0][0].toUpperCase()}
+            </Text>
+          </View>
+          <View style={styles.userDetailsBox}>
+            <Text style={styles.displayNameText}>{item.DisplayName}</Text>
+            <Text style={styles.usernameText}>@{item.UserName}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  onSuggestionTap(username, hidePanel) {
+    hidePanel();
+    const comment = this.state.text.slice(0, -this.state.keyword.length);
+    this.setState({
+      data: [],
+      text: comment + "@" + username,
+    });
+    this.onChangeText(comment + "@" + username);
+    this.focusInputField();
+  }
+
+  onChangeText = (text) => {
+    this.props.peopleInvolved.forEach((people) => {
+      text.toLowerCase().indexOf(people.UserName) > -1
+        ? this.state.mentions.add(people.DisplayName)
+        : this.state.mentions.delete(people.DisplayName);
+    });
+    this.setState({
+      text,
+    });
+  };
+
+  callback(keyword) {
+    const filtered = this.props.peopleInvolved.filter((people) => {
+      return (
+        people.DisplayName.toLowerCase().indexOf(
+          keyword.slice(1).toLowerCase()
+        ) > -1
+      );
+    });
+    this.setState({
+      keyword: keyword,
+      data: filtered,
+    });
+  }
 
   render() {
     return (
       <View>
-        <TextInput
-          ref={(ref) => {
-            this.input = ref;
-          }}
-          label="Your Message Here ... "
-          value={this.state.text}
-          onChangeText={(text) => this.setState({ text })}
-          multiline={true}
-          numberOfLines={3}
-          mode="outlined"
-          style={styles.textInput}
-        />
+        <View style={styles.container}>
+          <MentionsTextInput
+            ref={(ref) => (this.textInput = ref)}
+            placeholder={"Your Message Here ... "}
+            textInputStyle={{
+              borderColor: "gray",
+              borderWidth: 1,
+              padding: 5,
+            }}
+            suggestionsPanelStyle={{
+              backgroundColor: "rgba(100,100,100,0.1)",
+              marginBottom: 2,
+            }}
+            loadingComponent={() => <View />}
+            textInputMinHeight={50}
+            textInputMaxHeight={80}
+            trigger={"@"}
+            triggerLocation={"new-word-only"} // 'new-word-only', 'anywhere'
+            value={this.state.text}
+            onChangeText={(text) => this.onChangeText(text)}
+            triggerCallback={this.callback.bind(this)}
+            renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+            suggestionsData={this.state.data} // array of objects
+            keyExtractor={(item, index) => item.UserName}
+            suggestionRowHeight={this.state.data.length > 0 ? 45 : 0}
+            horizontal={false} // defaut is true, change the orientation of the list
+            MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0} // this is required if horizontal={false}
+          />
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          {Array.from(this.state.mentions).map((mention) => {
+            return (
+              <Chip
+                selected={true}
+                disabled={true}
+                style={styles.chip}
+                key={mention}
+                textStyle={styles.chipText}
+              >
+                {mention}
+              </Chip>
+            );
+          })}
+        </View>
         <View style={styles.discussionButtonPanel}>
           <DiscussionButtonPanel
             text={this.state.text.trim()}
@@ -43,12 +151,16 @@ export default class DiscussionInputBox extends React.Component {
             appendMessage={this.props.appendMessage}
             appendThread={this.props.appendThread}
             clearInputBox={this.clearInputBox}
+            peopleInvolved={this.props.peopleInvolved}
+            addMentionSymbol={this.addMentionSymbol}
           />
         </View>
       </View>
     );
   }
 }
+
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   textInput: {
@@ -59,5 +171,51 @@ const styles = StyleSheet.create({
   discussionButtonPanel: {
     flexDirection: "row",
     justifyContent: "flex-end",
+  },
+  container: {
+    margin: 10,
+    justifyContent: "flex-end",
+  },
+  suggestionsRowContainer: {
+    flexDirection: "row",
+  },
+  userAvatarBox: {
+    width: 35,
+    paddingTop: 2,
+  },
+  userIconBox: {
+    height: 45,
+    width: 45,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.primaryColor,
+  },
+  usernameInitials: {
+    color: "#fff",
+    fontWeight: "800",
+    fontSize: 14,
+  },
+  userDetailsBox: {
+    flex: 1,
+    justifyContent: "center",
+    paddingLeft: 10,
+    paddingRight: 15,
+  },
+  displayNameText: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  usernameText: {
+    fontSize: 12,
+    color: "rgba(0,0,0,0.6)",
+  },
+  chip: {
+    marginHorizontal: 10,
+    marginVertical: 3,
+    backgroundColor: "lightgray",
+  },
+  chipText: {
+    color: "black",
+    fontWeight: "bold",
   },
 });

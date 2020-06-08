@@ -10,5 +10,6 @@ export const theme = {
   backgroundColor: "#FFFFFF",
   textColor: "#FFFFFF",
   discussionPanelIconColor: "#6200EE",
-  timeColorInChatBubble: "#F2A84F",
+  timeColorInChatBubble: "#E7EFC5",
+  threadColorInDiscussionSection: "#C09891",
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, Modal, Portal, Provider } from "react-native-paper";
 import DiscussionInputBox from "./DiscussionInputBox";
 import axios from "axios";
 import ChatBubble from "./ChatBubble";
@@ -14,6 +14,7 @@ export default class DiscussionView extends React.Component {
     super(props);
     this.state = {
       messages: [],
+      peopleInvolved: [],
       replyingToMessageIndex: "",
     };
     axios
@@ -23,6 +24,7 @@ export default class DiscussionView extends React.Component {
       .then((res) =>
         this.setState({
           messages: this.messages,
+          peopleInvolved: this.peopleInvolved,
         })
       );
   }
@@ -92,6 +94,24 @@ export default class DiscussionView extends React.Component {
       user: "User 1",
       avatar: "Supervisor",
       time: "2.50 PM",
+    },
+  ];
+
+  peopleInvolved = [
+    {
+      id: 1,
+      UserName: "raghul",
+      DisplayName: "Raghul Krishnan",
+    },
+    {
+      id: 2,
+      UserName: "dhiren",
+      DisplayName: "Dhiren Chadnani",
+    },
+    {
+      id: 3,
+      UserName: "nirbhay",
+      DisplayName: "Nirbhay Pherwani",
     },
   ];
 
@@ -330,7 +350,7 @@ export default class DiscussionView extends React.Component {
                 : ""}
             </Text>
             <IconButton
-              style={styles.replyingToIcon}
+              style={styles.crossIcon}
               icon="close"
               color="gray"
               size={20}
@@ -345,6 +365,7 @@ export default class DiscussionView extends React.Component {
           appendMessage={this.appendMessage}
           replyingToMessageIndex={this.state.replyingToMessageIndex}
           appendThread={this.appendThread}
+          peopleInvolved={this.state.peopleInvolved}
         />
       </ScrollView>
     );
@@ -370,7 +391,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignSelf: "center",
   },
-  replyingToIcon: {
+  crossIcon: {
     flex: 0.05,
     flexDirection: "column",
     margin: 0,

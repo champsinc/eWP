@@ -14,6 +14,12 @@ export const LogsView = (props) => {
         onPress={() => props.setReplyingTo(props.messageIndex)}
       />
       <View style={styles.logsView}>
+        <IconButton
+          icon={"alpha-l-box-outline"}
+          color={theme.discussionPanelIconColor}
+          size={25}
+          style={styles.logIcon}
+        />
         <Text style={styles.text}>
           {props.message.user} {props.message.verb} "{props.message.itemChanged}
           " in "{props.message.documentChanged}" {props.message.documentType}
@@ -30,7 +36,6 @@ const styles = StyleSheet.create({
   logsView: {
     flex: 2,
     flexDirection: "row",
-    justifyContent: "center",
     marginHorizontal: 10,
     marginLeft: 1,
     marginVertical: 10,
@@ -41,8 +46,13 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: 10,
+    marginLeft: 0,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  logIcon: {
+    margin: 0,
+    alignSelf: "center",
   },
   replyButton: {
     margin: 0,

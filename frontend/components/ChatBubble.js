@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     paddingLeft: 10,
     borderLeftWidth: 1.67,
-    borderLeftColor: "red",
+    borderLeftColor: theme.threadColorInDiscussionSection,
   },
   threadTopViewRight: {
     marginRight: 40,
     paddingRight: 10,
     borderRightWidth: 1.67,
-    borderRightColor: "red",
+    borderRightColor: theme.threadColorInDiscussionSection,
   },
   button: {
     marginBottom: 30,

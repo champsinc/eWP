@@ -1,19 +1,15 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableWithoutFeedbackBase,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { IconButton, ToggleButton } from "react-native-paper";
 import { theme } from "./../styles/Main";
-import * as DocumentPicker from "expo-document-picker";
+import FilePondModal from "./FilePondModal";
 
 export default class DiscussionButtonPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       sendAsRequestSelected: "unchecked",
+      modalOpen: false,
     };
   }
 
@@ -30,7 +26,7 @@ export default class DiscussionButtonPanel extends React.Component {
           icon={"at"}
           color={theme.discussionPanelIconColor}
           size={20}
-          onPress={() => console.log("DiscussionButtonPanel.js:19 Pressed")}
+          onPress={this.props.addMentionSymbol}
         />
         <ToggleButton
           icon="alpha-r-box-outline"
@@ -45,34 +41,24 @@ export default class DiscussionButtonPanel extends React.Component {
           size={20}
           onPress={this.sendButtonPressed}
         />
+        <FilePondModal
+          modalOpen={this.state.modalOpen}
+          onModalClose={this.onModalClose}
+        />
       </View>
     );
   }
 
+  onModalClose = () => {
+    this.setState({
+      modalOpen: false,
+    });
+  };
+
   attachButtonPressed = () => {
-    DocumentPicker.getDocumentAsync({})
-      .then((res) => {
-        Number.isInteger(this.props.replyingToMessageIndex)
-          ? this.props.appendThread({
-              id: "6",
-              type: "attachment",
-              fileName: Platform.OS == "web" ? res.file.name : res.name,
-              user: "User 1",
-              avatar: "Supervisor",
-              left: false,
-              time: this.getTime(),
-            })
-          : this.props.appendMessage({
-              id: "6",
-              type: "attachment",
-              fileName: Platform.OS == "web" ? res.file.name : res.name,
-              user: "User 1",
-              avatar: "Supervisor",
-              left: false,
-              time: this.getTime(),
-            });
-      })
-      .catch(() => {});
+    this.setState({
+      modalOpen: true,
+    });
   };
 
   getTime = () => {

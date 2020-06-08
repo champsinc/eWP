@@ -41,7 +41,7 @@ export const AttachmentView = (props) => {
               color="black"
               size={30}
             />
-            <Text style={styles.text1}>
+            <Text style={styles.text}>
               {props.message.user} sent "{props.message.fileName}"
             </Text>
           </View>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#c7c7c7",
     borderTopColor: "#c7c7c7",
     borderBottomColor: "#c7c7c7",
-    borderRightColor: "red",
+    borderRightColor: theme.threadColorInDiscussionSection,
     borderWidth: 0.5,
     paddingRight: 5,
     borderRightWidth: 1.67,
@@ -100,14 +100,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginVertical: 10,
     alignSelf: "center",
-  },
-  text1: {
-    flex: 2,
-    fontWeight: "bold",
-    fontSize: 14,
-    marginRight: 10,
-    marginVertical: 10,
-    // alignSelf: "center",
   },
   replyButton: {
     margin: 0,
