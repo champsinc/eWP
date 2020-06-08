@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginLeft: 1,
     marginVertical: 10,
     borderRadius: 5,
-    borderColor: "#c7c7c7",
+    borderColor: theme.borderColorInDiscussionSection,
     borderStyle: "dashed",
     borderWidth: 1,
   },

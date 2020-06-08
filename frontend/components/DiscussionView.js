@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 0,
     borderRadius: 8,
-    borderColor: "#c7c7c7",
+    borderColor: theme.borderColorInDiscussionSection,
     borderStyle: "solid",
     borderWidth: 1,
     padding: 7,

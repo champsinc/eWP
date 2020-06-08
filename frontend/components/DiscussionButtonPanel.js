@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 10,
     borderRadius: 5,
-    borderColor: "#c7c7c7",
+    borderColor: theme.borderColorInDiscussionSection,
     borderStyle: "solid",
     borderWidth: 1,
   },
