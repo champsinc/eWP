@@ -1,6 +1,8 @@
 package com.champsinc.ewp.service;
 
 import com.champsinc.ewp.model.WorkPackage;
+import com.google.gson.JsonObject;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -9,5 +11,5 @@ import java.util.List;
  * @author Dhiren Chandnani
  */
 public interface JsonParserService {
-    String checkPayload(String payload);
+    JsonObject checkPayload(String payload);
 }

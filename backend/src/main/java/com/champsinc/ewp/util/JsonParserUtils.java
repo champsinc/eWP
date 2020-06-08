@@ -31,4 +31,5 @@ public class JsonParserUtils {
     public static final String NO_WORK_PCKG_KEY = "No work package root key";
     public static final String VALID_JSON = "Valid JSON";
     public static final String EXTRA_KEYS = "Extra keys";
+    public static final String EXCEPTION_MESSAGE = "An exception has occurred while parsing json";
 }
