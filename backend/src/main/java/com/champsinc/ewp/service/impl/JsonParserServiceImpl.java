@@ -30,8 +30,6 @@ public class JsonParserServiceImpl implements JsonParserService {
     @Override
     public JsonObject checkPayload(String payload) {
         JsonObject responseJSON = new JsonObject();
-        JsonObject locationJSON = new JsonObject();
-        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
         try {
             JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
             // Check if first key is work package array and no other key exists
@@ -40,82 +38,36 @@ public class JsonParserServiceImpl implements JsonParserService {
                 // Parse through each section
                 for (JsonElement section : workPackageArray) {
                     JsonObject sectionObject = section.getAsJsonObject();
-                    // Check if its a section and type key exists
-                    if (checkTypeKey(sectionObject, "section") && sectionObject.size() == 2) {
-                        String sectionKeyName = getDataKeyName(sectionObject);
-                        if (!sectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)) {
-                            JsonArray subSectionArray = sectionObject.getAsJsonArray(sectionKeyName);
-                            // Parse through each subsection
-                            for (JsonElement subSection : subSectionArray) {
-                                JsonObject subSectionObject = subSection.getAsJsonObject();
-                                // Check if its a subsection and type key exists
-                                if ((checkTypeKey(subSectionObject, "sub_section") && subSectionObject.size() <= 3)) {
-                                    String subSectionKeyName = getDataKeyName(subSectionObject);
-                                    if (!subSectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)) {
-                                        JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(subSectionKeyName);
-                                        // Parse through each subsection inner array
-                                        for (JsonElement subSectionInnerElement : subSectionInnerArray) {
-                                            JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
-                                            if (!checkValidTypeValue(subSectionInnerObject.get("type").getAsString())) {
-                                                responseJSON.addProperty("error", JsonParserUtils.NOT_VALID_TYPE);
-                                                locationJSON.addProperty("sub_section", subSectionKeyName);
-                                                locationJSON.addProperty("section", sectionKeyName);
-                                                responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                                return responseJSON;
-                                            }
-                                            if (!checkExtraKeysPresent(subSectionInnerObject)) {
-                                                responseJSON.addProperty("error", JsonParserUtils.EXTRA_KEYS_INNER);
-                                                locationJSON.addProperty("sub_section", subSectionKeyName);
-                                                locationJSON.addProperty("section", sectionKeyName);
-                                                responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                                return responseJSON;
-                                            }
-                                            if (!checkOtherKeys(subSectionInnerObject)) {
-                                                responseJSON.addProperty("error", JsonParserUtils.OTHER_KEYS_NOT_VALID);
-                                                locationJSON.addProperty("sub_section", subSectionKeyName);
-                                                locationJSON.addProperty("section", sectionKeyName);
-                                                responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                                return responseJSON;
-                                            }
-                                            if (!checkDataByType(subSectionInnerObject)) {
-                                                responseJSON.addProperty("error", JsonParserUtils.DATA_TYPE_INVALID);
-                                                locationJSON.addProperty("sub_section", subSectionKeyName);
-                                                locationJSON.addProperty("section", sectionKeyName);
-                                                responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                                return responseJSON;
-                                            }
-                                        }
-                                    } else {
-                                        responseJSON.addProperty("error", JsonParserUtils.EXTRA_KEYS_SUB_SECTION);
-                                        locationJSON.addProperty("sub_section", subSectionKeyName);
-                                        locationJSON.addProperty("section", sectionKeyName);
-                                        responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                        return responseJSON;
+                    ArrayList<String> checkSection = checkSection(sectionObject);
+                    if(checkSection.size() == 2){
+                        String sectionKeyName = checkSection.get(1);
+                        JsonArray subSectionArray = sectionObject.getAsJsonArray(sectionKeyName);
+                        // Parse through each subsection
+                        for (JsonElement subSection : subSectionArray) {
+                            JsonObject subSectionObject = subSection.getAsJsonObject();
+                            ArrayList<String> checkSubSection = checkSubSection(subSectionObject, sectionKeyName);
+                            if(checkSubSection.size() == 2){
+                                JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(checkSubSection.get(1));
+                                // Parse through each subsection inner array
+                                for (JsonElement subSectionInnerElement : subSectionInnerArray) {
+                                    JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
+                                    JsonObject checkSubSectionInner = checkSubSectionInner(subSectionInnerObject, sectionKeyName, checkSubSection.get(1));
+                                    if(checkSubSectionInner.has("error")){
+                                        return checkSubSectionInner;
                                     }
-                                } else {
-                                    responseJSON.addProperty("error", JsonParserUtils.NO_TYPE_KEY_SUB_SECTION);
-                                    locationJSON.addProperty("section", sectionKeyName);
-                                    responseJSON.add("location", gson.toJsonTree(locationJSON));
-                                    return responseJSON;
                                 }
                             }
-                        } else {
-                            responseJSON.addProperty("error", JsonParserUtils.EXTRA_KEYS_SECTION);
-                            locationJSON.addProperty("section", sectionKeyName);
-                            responseJSON.add("location", gson.toJsonTree(locationJSON));
-                            return responseJSON;
+                            else{
+                                return sendResponse(checkSubSection.get(1), null, checkSubSection.get(0));
+                            }
                         }
-                    } else {
-                        responseJSON.addProperty("error", JsonParserUtils.NO_TYPE_KEY_SECTION);
-                        locationJSON.addProperty("section", getDataKeyName(sectionObject));
-                        responseJSON.add("location", gson.toJsonTree(locationJSON));
-                        return responseJSON;
+                    }
+                    else {
+                        return sendResponse(checkSection.get(1), null, checkSection.get(0));
                     }
                 }
             } else {
-                responseJSON.addProperty("error", JsonParserUtils.NO_WORK_PCKG_KEY);
-                responseJSON.addProperty("location", "Root node");
-                return responseJSON;
+                return sendResponse(JsonParserUtils.NO_WORK_PCKG_KEY, null, null);
             }
             responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
             return responseJSON;
@@ -124,6 +76,88 @@ public class JsonParserServiceImpl implements JsonParserService {
             responseJSON.addProperty("message", e.getMessage());
             return responseJSON;
         }
+    }
+
+    private JsonObject checkSubSectionInner(JsonObject subSectionInnerObject, String sectionKeyName, String subSectionKeyName){
+        JsonObject subSectionInnerResponse = new JsonObject();
+        if(!checkValidTypeValue(subSectionInnerObject.get("type").getAsString()))
+            return sendResponse(JsonParserUtils.NOT_VALID_TYPE, subSectionKeyName, sectionKeyName);
+        if(!checkExtraKeysPresent(subSectionInnerObject))
+            return sendResponse(JsonParserUtils.EXTRA_KEYS_INNER, subSectionKeyName, sectionKeyName);
+        if (!checkOtherKeys(subSectionInnerObject))
+            return sendResponse(JsonParserUtils.OTHER_KEYS_NOT_VALID, subSectionKeyName, sectionKeyName);
+        if (!checkDataByType(subSectionInnerObject))
+            return sendResponse(JsonParserUtils.DATA_TYPE_INVALID, subSectionKeyName, sectionKeyName);
+        subSectionInnerResponse.addProperty("continue", true);
+        return subSectionInnerResponse;
+    }
+
+    private ArrayList<String> checkSection(JsonObject sectionObject){
+        ArrayList<String> responseList = new ArrayList<>();
+        // Check if its a section and type key exists
+        if (checkTypeKey(sectionObject, "section") && sectionObject.size() == 2) {
+            String sectionKeyName = getDataKeyName(sectionObject);
+            if (!sectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)) {
+                responseList.add("true");
+                responseList.add(sectionKeyName);
+            }
+            else{
+                responseList.add("false");
+                responseList.add(sectionKeyName);
+                responseList.add(JsonParserUtils.EXTRA_KEYS_SECTION);
+            }
+        }
+        else{
+            responseList.add("false");
+            responseList.add(getDataKeyName(sectionObject));
+            responseList.add(JsonParserUtils.NO_TYPE_KEY_SECTION);
+        }
+        return responseList;
+    }
+
+    private JsonObject sendResponse(String error, String subSection, String section){
+        JsonObject responseJSON = new JsonObject();
+        JsonObject locationJSON = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        if(subSection != null){
+            responseJSON.addProperty("error", error);
+            locationJSON.addProperty("sub_section", subSection);
+            locationJSON.addProperty("section", section);
+            responseJSON.add("location", gson.toJsonTree(locationJSON));
+        }
+        else if(section != null){
+            responseJSON.addProperty("error", error);
+            locationJSON.addProperty("section", section);
+            responseJSON.add("location", gson.toJsonTree(locationJSON));
+        }
+        else{
+            responseJSON.addProperty("error", error);
+            responseJSON.addProperty("location", "Root node");
+        }
+        return responseJSON;
+    }
+
+    private ArrayList<String> checkSubSection(JsonObject subSectionObject, String sectionKeyName){
+        ArrayList<String> responseList = new ArrayList<>();
+        // Check if its a section and type key exists
+        if (checkTypeKey(subSectionObject, "sub_section") && subSectionObject.size() <= 3) {
+            String subSectionKeyName = getDataKeyName(subSectionObject);
+            if (!subSectionKeyName.equals(JsonParserUtils.EXTRA_KEYS)) {
+                responseList.add("true");
+                responseList.add(subSectionKeyName);
+            }
+            else{
+                responseList.add("false");
+                responseList.add(subSectionKeyName);
+                responseList.add(JsonParserUtils.EXTRA_KEYS_SECTION);
+            }
+        }
+        else{
+            responseList.add("false");
+            responseList.add(sectionKeyName);
+            responseList.add(JsonParserUtils.NO_TYPE_KEY_SUB_SECTION);
+        }
+        return responseList;
     }
 
     private String getDataKeyName(JsonObject object){
