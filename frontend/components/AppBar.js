@@ -7,6 +7,7 @@ import * as React from "react";
 import { View } from "react-native";
 import SearchBar from "./SearchBar";
 import { Appbar } from "react-native-paper";
+import { customTheme } from "../styles/Main";
 
 export default class AppBar extends React.Component {
   constructor(props) {
@@ -45,8 +46,18 @@ export default class AppBar extends React.Component {
     return (
       <View>
         {this.state.appBarDisplay && (
-          <Appbar.Header statusBarHeight={0}>
-            <Appbar.Action icon="menu" onPress={this.toggleNavigation} />
+          <Appbar.Header
+            statusBarHeight={0}
+            style={{ backgroundColor: customTheme.primaryColor }}
+          >
+            {this.props.backButton ? (
+              <Appbar.Action
+                icon="arrow-left"
+                onPress={this.props.backButtonAction}
+              />
+            ) : (
+              <Appbar.Action icon="menu" onPress={this.toggleNavigation} />
+            )}
             <Appbar.Content
               title={this.props.title || "eWP"}
               subtitle={this.props.subTitle || "Electronic Work Package"}
@@ -55,7 +66,10 @@ export default class AppBar extends React.Component {
           </Appbar.Header>
         )}
         {this.state.searchBarDisplay && (
-          <Appbar.Header statusBarHeight={0}>
+          <Appbar.Header
+            statusBarHeight={0}
+            style={{ backgroundColor: customTheme.primaryColor }}
+          >
             <SearchBar
               appBarOn={this.appBarOn}
               searchPlaceHolder={

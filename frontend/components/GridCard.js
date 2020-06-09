@@ -6,7 +6,7 @@ export const GridCard = (props) => {
   return (
     <Card
       style={styles.cardStyle}
-      onPress={() => console.log("GridCard.js:14 pressed")}
+      onPress={() => props.onPress(props.name)}
       elevation={3}
     >
       <IconButton
@@ -14,7 +14,7 @@ export const GridCard = (props) => {
         color={Colors.black500}
         size={50}
       />
-      <Text style={styles.textInCard}>{props.title || ""}</Text>
+      <Text style={styles.textInCard}>{props.name || ""}</Text>
     </Card>
   );
 };

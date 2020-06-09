@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 import MentionsTextInput from "react-native-mentions";
 
 export default class DiscussionInputBox extends React.Component {
@@ -135,7 +135,7 @@ export default class DiscussionInputBox extends React.Component {
             MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0} // this is required if horizontal={false}
           />
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {Array.from(this.state.mentions).map((mention) => {
             return (
               <Chip
@@ -166,8 +166,6 @@ export default class DiscussionInputBox extends React.Component {
   }
 }
 
-const { height, width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   textInput: {
     marginHorizontal: 10,
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
     width: 45,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.primaryColor,
+    backgroundColor: customTheme.primaryColor,
   },
   usernameInitials: {
     color: "#fff",

@@ -8,6 +8,7 @@ import NavigationDrawer from "./components/NavigationDrawer";
 import { setCustomText } from "react-native-global-props";
 import { Platform } from "react-native";
 import SafeAreaView, { SafeAreaProvider } from "react-native-safe-area-view";
+import { paperTheme } from "./styles/Main";
 
 // to avoid text cutoff in some phones,
 // applying global font styles depending on os
@@ -30,7 +31,7 @@ export default class App extends React.Component {
           forceInset={{ top: "always", bottom: "never" }}
           style={{ flex: 1 }}
         >
-          <PaperProvider>
+          <PaperProvider theme={paperTheme}>
             <NavigationDrawer />
           </PaperProvider>
         </SafeAreaView>

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, IconButton } from "react-native-paper";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 import { Dimensions } from "react-native";
 
 export default class ChatBubble extends React.Component {
@@ -27,7 +27,7 @@ export default class ChatBubble extends React.Component {
             </View>
             <IconButton
               icon={"reply"}
-              color={theme.discussionPanelIconColor}
+              color={customTheme.discussionPanelIconColor}
               size={25}
               style={styles.replyButton}
               onPress={() => this.props.setReplyingTo(this.props.messageIndex)}
@@ -40,7 +40,7 @@ export default class ChatBubble extends React.Component {
           >
             <IconButton
               icon={"reply"}
-              color={theme.discussionPanelIconColor}
+              color={customTheme.discussionPanelIconColor}
               size={25}
               style={styles.replyButton}
               onPress={() => this.props.setReplyingTo(this.props.messageIndex)}
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: constants.borderRadius,
     margin: constants.margin,
     minWidth: constants.minWidth,
-    backgroundColor: theme.primaryColor,
+    backgroundColor: customTheme.primaryColor,
   },
   balloonThread: {
     maxWidth: windowWidth / 2.4,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   time: {
-    color: theme.timeColorInChatBubble,
+    color: customTheme.timeColorInChatBubble,
     flexDirection: "row",
     alignSelf: "flex-end",
     marginTop: 3,
@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     paddingLeft: 10,
     borderLeftWidth: 1.67,
-    borderLeftColor: theme.threadColorInDiscussionSection,
+    borderLeftColor: customTheme.threadColorInDiscussionSection,
   },
   threadTopViewRight: {
     marginRight: 40,
     paddingRight: 10,
     borderRightWidth: 1.67,
-    borderRightColor: theme.threadColorInDiscussionSection,
+    borderRightColor: customTheme.threadColorInDiscussionSection,
   },
   button: {
     marginBottom: 30,

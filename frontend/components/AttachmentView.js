@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 
 export const AttachmentView = (props) => {
   return (
@@ -9,7 +9,7 @@ export const AttachmentView = (props) => {
       {!props.thread && (
         <IconButton
           icon={"reply"}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           size={25}
           style={styles.replyButton}
           onPress={() => props.setReplyingTo(props.messageIndex)}
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginLeft: 1,
     marginVertical: 10,
     borderRadius: 5,
-    borderColor: theme.borderColorInDiscussionSection,
+    borderColor: customTheme.borderColorInDiscussionSection,
     borderStyle: "solid",
     borderWidth: 1,
   },
@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
     marginLeft: 41,
     marginRight: 40,
     borderStyle: "dashed",
-    borderLeftColor: theme.borderColorInDiscussionSection,
-    borderTopColor: theme.borderColorInDiscussionSection,
-    borderBottomColor: theme.borderColorInDiscussionSection,
-    borderRightColor: theme.threadColorInDiscussionSection,
+    borderLeftColor: customTheme.borderColorInDiscussionSection,
+    borderTopColor: customTheme.borderColorInDiscussionSection,
+    borderBottomColor: customTheme.borderColorInDiscussionSection,
+    borderRightColor: customTheme.threadColorInDiscussionSection,
     borderWidth: 0.5,
     paddingRight: 5,
     borderRightWidth: 1.67,

@@ -8,7 +8,7 @@ import { LogsView } from "./LogsView";
 import { RequestView } from "./RequestView";
 import { ScrollView } from "react-native-gesture-handler";
 import { AttachmentView } from "./AttachmentView";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 
 export default class DiscussionView extends React.Component {
   constructor(props) {
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 0,
     borderRadius: 8,
-    borderColor: theme.borderColorInDiscussionSection,
+    borderColor: customTheme.borderColorInDiscussionSection,
     borderStyle: "solid",
     borderWidth: 1,
     padding: 7,
