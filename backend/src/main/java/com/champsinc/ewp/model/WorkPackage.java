@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "work_package")
 public class WorkPackage {
     @Id
-    private String _id;
+    private String id;
 
     private int ewpId;
     private String title;
