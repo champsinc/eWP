@@ -1,6 +1,7 @@
 package com.champsinc.ewp.model;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,5 +18,5 @@ public class Section {
     private String id;
 
     private String key;
-    private ArrayList<SectionValues> value;
+    private ArrayList<ObjectId> value;
 }

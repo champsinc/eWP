@@ -1,8 +1,9 @@
 package com.champsinc.ewp.service.impl;
 
 import com.champsinc.ewp.model.Section;
-import com.champsinc.ewp.model.SectionValues;
 import com.champsinc.ewp.model.SubSection;
+import com.champsinc.ewp.model.DataItem;
+import com.champsinc.ewp.repository.DataItemRepository;
 import com.champsinc.ewp.repository.SectionRepository;
 import com.champsinc.ewp.repository.SubSectionRepository;
 import com.champsinc.ewp.service.JsonParserService;
@@ -33,6 +34,8 @@ public class JsonParserServiceImpl implements JsonParserService {
     private SectionRepository sectionRepository;
     @Autowired
     private SubSectionRepository subSectionRepository;
+    @Autowired
+    private DataItemRepository dataItemRepository;
     /**
      * Function to check json string for validity
      * @return valid or invalid
@@ -44,8 +47,10 @@ public class JsonParserServiceImpl implements JsonParserService {
         try {
             // Keep track of all section objects
             ArrayList<Section> allSections = new ArrayList<>();
-            // Keep track of all subSection objects
+            // Keep track of all section objects
             ArrayList<SubSection> allSubSections = new ArrayList<>();
+            // Keep track of all dataItem objects
+            ArrayList<DataItem> allDataItems = new ArrayList<>();
             JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
             // Check if first key is work package array and no other key exists
             if (rootObject.get(JsonParserUtils.KEYWORD_WORK_PKG).isJsonArray() && rootObject.size() == 1) {
@@ -54,26 +59,20 @@ public class JsonParserServiceImpl implements JsonParserService {
                 for (JsonElement section : workPackageArray) {
                     JsonObject sectionObject = section.getAsJsonObject();
                     // Create section model
-                    Section sectionModel = new Section();
-                    ObjectId sectionId = new ObjectId();
-                    sectionModel.setId(sectionId.toString());
+                    Section sectionModel = createSectionModel();
                     // Validate section
                     ArrayList<String> checkSection = checkSection(sectionObject);
                     if(checkSection.size() == 2){
                         String sectionKeyName = checkSection.get(1);
                         // Add key(section name) to section model
                         sectionModel.setKey(sectionKeyName);
-                        // Keep track of subsections within section model (section values object)
-                        ArrayList<SectionValues> sectionModelArray = new ArrayList<>();
                         JsonArray subSectionArray = sectionObject.getAsJsonArray(sectionKeyName);
                         // Parse through each subsection
                         for (JsonElement subSection : subSectionArray) {
                             JsonObject subSectionObject = subSection.getAsJsonObject();
                             ArrayList<String> checkSubSection = checkSubSection(subSectionObject, sectionKeyName);
                             // Create section values object
-                            SectionValues sectionValueModel = new SectionValues();
-                            sectionValueModel.setKey(getDataKeyName(subSectionObject));
-                            ArrayList<String> sectionValueModelArray = new ArrayList<>();
+                            SubSection subSectionModel = createSubSectionModel(getDataKeyName(subSectionObject));
                             if(checkSubSection.size() == 2){
                                 JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(checkSubSection.get(1));
                                 // Parse through each subsection inner array
@@ -84,18 +83,17 @@ public class JsonParserServiceImpl implements JsonParserService {
                                         return checkSubSectionInner;
                                     }
                                     // Create sub section model
-                                    SubSection subSectionModel = createSubSectionModel(subSectionInnerElement);
-                                    allSubSections.add(subSectionModel);
-                                    sectionValueModelArray.add(subSectionModel.getId());
+                                    DataItem dataItemModel = createDataItemModel(subSectionInnerElement);
+                                    allDataItems.add(dataItemModel);
+                                    subSectionModel.getValue().add(new ObjectId(dataItemModel.getId()));
                                 }
-                                sectionValueModel.setValue(sectionValueModelArray);
                             }
                             else{
                                 return sendResponse(checkSubSection.get(2), null, checkSubSection.get(1));
                             }
-                            sectionModelArray.add(sectionValueModel);
+                            allSubSections.add(subSectionModel);
+                            sectionModel.getValue().add(new ObjectId(subSectionModel.getId()));
                         }
-                        sectionModel.setValue(sectionModelArray);
                     }
                     else {
                         return sendResponse(checkSection.get(2), null, checkSection.get(1));
@@ -105,7 +103,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             } else {
                 return sendResponse(JsonParserUtils.NO_WORK_PKG_KEY, null, null);
             }
-            insertIntoDB(allSections, allSubSections);
+            insertIntoDB(allDataItems, allSubSections, allSections);
             responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
             return responseJSON;
         } catch (Exception e){
@@ -116,20 +114,38 @@ public class JsonParserServiceImpl implements JsonParserService {
         }
     }
 
-    private SubSection createSubSectionModel(JsonElement subSectionInnerElement){
+    private DataItem createDataItemModel(JsonElement subSectionInnerElement){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
         String subSectionDataKeyName = getDataKeyName(subSectionInnerObject);
-        ObjectId subSectionInnerId = new ObjectId();
-        SubSection subSectionModel = gson.fromJson(subSectionInnerElement, SubSection.class);
-        subSectionModel.setId(subSectionInnerId.toString());
-        subSectionModel.setKey(subSectionDataKeyName);
-        subSectionModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
+        ObjectId dataItemId = new ObjectId();
+        DataItem dataItemModel = gson.fromJson(subSectionInnerElement, DataItem.class);
+        dataItemModel.setId(dataItemId.toString());
+        dataItemModel.setKey(subSectionDataKeyName);
+        dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
+        return dataItemModel;
+    }
+
+    private SubSection createSubSectionModel(String subSectionName){
+        SubSection subSectionModel = new SubSection();
+        subSectionModel.setKey(subSectionName);
+        subSectionModel.setId(new ObjectId().toString());
+        subSectionModel.setValue(new ArrayList<>());
         return subSectionModel;
     }
 
-    private void insertIntoDB(ArrayList<Section> allSections, ArrayList<SubSection> allSubSections){
-        for (SubSection subSection: allSubSections) {
+    private Section createSectionModel(){
+        Section sectionModel = new Section();
+        sectionModel.setId(new ObjectId().toString());
+        sectionModel.setValue(new ArrayList<>());
+        return sectionModel;
+    }
+
+    private void insertIntoDB(ArrayList<DataItem> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections){
+        for (DataItem dataItem : allDataItems) {
+            dataItemRepository.save(dataItem);
+        }
+        for(SubSection subSection: allSubSections){
             subSectionRepository.save(subSection);
         }
         for (Section section: allSections) {

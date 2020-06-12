@@ -1,25 +1,23 @@
 package com.champsinc.ewp.model;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+
 /**
- * Model class for subsections
+ * Model class for sections
  * @author Dhiren Chandnani
  */
 @Data
 @Document(collection = "sub_sections")
 public class SubSection {
+
     @Id
     private String id;
 
     private String key;
-    private String type;
-    private String value;
-    private boolean editable;
-    private boolean notes;
-    private boolean required;
-    private String due_date;
-    private boolean special_identifier;
+    private ArrayList<ObjectId> value;
 }
