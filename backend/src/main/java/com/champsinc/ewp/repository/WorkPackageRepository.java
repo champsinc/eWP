@@ -8,5 +8,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Dhiren C
  */
 public interface WorkPackageRepository extends MongoRepository<WorkPackage, String> {
-    WorkPackage findByewpId(int ewpId);
 }

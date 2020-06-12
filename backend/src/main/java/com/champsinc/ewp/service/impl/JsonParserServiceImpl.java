@@ -15,9 +15,11 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -65,7 +67,7 @@ public class JsonParserServiceImpl implements JsonParserService {
                     if(checkSection.size() == 2){
                         String sectionKeyName = checkSection.get(1);
                         // Add key(section name) to section model
-                        sectionModel.setKey(sectionKeyName);
+                        sectionModel.setName(sectionKeyName);
                         JsonArray subSectionArray = sectionObject.getAsJsonArray(sectionKeyName);
                         // Parse through each subsection
                         for (JsonElement subSection : subSectionArray) {
@@ -76,14 +78,14 @@ public class JsonParserServiceImpl implements JsonParserService {
                             if(checkSubSection.size() == 2){
                                 JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(checkSubSection.get(1));
                                 // Parse through each subsection inner array
-                                for (JsonElement subSectionInnerElement : subSectionInnerArray) {
-                                    JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
-                                    JsonObject checkSubSectionInner = checkSubSectionInner(subSectionInnerObject, sectionKeyName, checkSubSection.get(1));
-                                    if(checkSubSectionInner.has(JsonParserUtils.KEYWORD_ERROR)){
-                                        return checkSubSectionInner;
+                                for (JsonElement dataItemElement : subSectionInnerArray) {
+                                    JsonObject dataItemObject = dataItemElement.getAsJsonObject();
+                                    JsonObject checkDataItem = checkDataItem(dataItemObject, sectionKeyName, checkSubSection.get(1));
+                                    if(checkDataItem.has(JsonParserUtils.KEYWORD_ERROR)){
+                                        return checkDataItem;
                                     }
                                     // Create sub section model
-                                    DataItem dataItemModel = createDataItemModel(subSectionInnerElement);
+                                    DataItem dataItemModel = createDataItemModel(dataItemElement);
                                     allDataItems.add(dataItemModel);
                                     subSectionModel.getValue().add(new ObjectId(dataItemModel.getId()));
                                 }
@@ -121,14 +123,14 @@ public class JsonParserServiceImpl implements JsonParserService {
         ObjectId dataItemId = new ObjectId();
         DataItem dataItemModel = gson.fromJson(subSectionInnerElement, DataItem.class);
         dataItemModel.setId(dataItemId.toString());
-        dataItemModel.setKey(subSectionDataKeyName);
+        dataItemModel.setName(subSectionDataKeyName);
         dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
         return dataItemModel;
     }
 
     private SubSection createSubSectionModel(String subSectionName){
         SubSection subSectionModel = new SubSection();
-        subSectionModel.setKey(subSectionName);
+        subSectionModel.setName(subSectionName);
         subSectionModel.setId(new ObjectId().toString());
         subSectionModel.setValue(new ArrayList<>());
         return subSectionModel;
@@ -153,15 +155,15 @@ public class JsonParserServiceImpl implements JsonParserService {
         }
     }
 
-    private JsonObject checkSubSectionInner(JsonObject subSectionInnerObject, String sectionKeyName, String subSectionKeyName){
+    private JsonObject checkDataItem(JsonObject dataItemObject, String sectionKeyName, String subSectionKeyName){
         JsonObject subSectionInnerResponse = new JsonObject();
-        if(!checkValidTypeValue(subSectionInnerObject.get(JsonParserUtils.KEYWORD_TYPE).getAsString()))
+        if(!checkValidTypeValue(dataItemObject.get(JsonParserUtils.KEYWORD_TYPE).getAsString()))
             return sendResponse(JsonParserUtils.NOT_VALID_TYPE, subSectionKeyName, sectionKeyName);
-        if(!checkExtraKeysPresent(subSectionInnerObject))
+        if(!checkExtraKeysPresent(dataItemObject))
             return sendResponse(JsonParserUtils.EXTRA_KEYS_INNER, subSectionKeyName, sectionKeyName);
-        if (!checkOtherKeys(subSectionInnerObject))
+        if (!checkOtherKeys(dataItemObject))
             return sendResponse(JsonParserUtils.OTHER_KEYS_NOT_VALID, subSectionKeyName, sectionKeyName);
-        if (!checkDataByType(subSectionInnerObject))
+        if (!checkDataByType(dataItemObject))
             return sendResponse(JsonParserUtils.DATA_TYPE_INVALID, subSectionKeyName, sectionKeyName);
         return subSectionInnerResponse;
     }
@@ -316,9 +318,10 @@ public class JsonParserServiceImpl implements JsonParserService {
                     return true;
                 }
                 case "file": {
-                    URL obj = new URL(jsonObject.get(jsonObjectKeys.get(0)).getAsString());
-                    obj.toURI();
-                    return true;
+                    String url = jsonObject.get(jsonObjectKeys.get(0)).getAsString();
+                    URLConnection urlConnection = new URL(url).openConnection();
+                    String mimeType = urlConnection.getContentType();
+                    return mimeType.equals(JsonParserUtils.MIME_APPLICATION_PDF) || mimeType.equals(JsonParserUtils.MIME_IMAGE_JPEG) || mimeType.equals(JsonParserUtils.MIME_IMAGE_PNG);
                 }
                 case "text": {
                     jsonObject.get(jsonObjectKeys.get(0)).getAsString();
@@ -338,7 +341,7 @@ public class JsonParserServiceImpl implements JsonParserService {
                 default:
                     return false;
             }
-        } catch(ClassCastException | MalformedURLException | URISyntaxException e){
+        } catch(ClassCastException | IOException e){
             return false;
         }
     }

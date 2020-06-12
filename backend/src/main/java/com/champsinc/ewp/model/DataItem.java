@@ -14,7 +14,7 @@ public class DataItem {
     @Id
     private String id;
 
-    private String key;
+    private String name;
     private String type;
     private String value;
     private boolean editable;

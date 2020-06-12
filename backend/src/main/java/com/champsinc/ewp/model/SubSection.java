@@ -18,6 +18,6 @@ public class SubSection {
     @Id
     private String id;
 
-    private String key;
+    private String name;
     private ArrayList<ObjectId> value;
 }

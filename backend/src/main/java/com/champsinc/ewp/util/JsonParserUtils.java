@@ -48,4 +48,7 @@ public class JsonParserUtils {
     public static final String KEYWORD_DUE_DATE = "due_date";
     public static final String KEYWORD_SPECIAL_IDENTIFIER = "special_identifier";
     public static final String DATE_PATTERN = "MM/dd/yyyy";
+    public static final String MIME_IMAGE_JPEG = "image/jpeg";
+    public static final String MIME_IMAGE_PNG = "image/png";
+    public static final String MIME_APPLICATION_PDF = "application/pdf";
 }
