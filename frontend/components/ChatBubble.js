@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Avatar, IconButton } from "react-native-paper";
 import { customTheme } from "../styles/Main";
 import { Dimensions } from "react-native";
+import { util } from "../assets/Utility";
 
 export default class ChatBubble extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export default class ChatBubble extends React.Component {
           >
             <Avatar.Image
               size={22}
-              source={require("../assets/avatar.jpg")}
+              source={{ uri: this.props.avatar }}
               style={styles.avatar}
             />
             <View style={[styles.balloon, { marginRight: 3 }]}>
@@ -51,7 +52,7 @@ export default class ChatBubble extends React.Component {
             </View>
             <Avatar.Image
               size={22}
-              source={require("../assets/avatar.jpg")}
+              source={{ uri: this.props.avatar }}
               style={styles.avatar}
             />
           </View>
@@ -80,7 +81,7 @@ export default class ChatBubble extends React.Component {
             </TouchableOpacity>
             <Avatar.Image
               size={22}
-              source={require("../assets/avatar.jpg")}
+              source={{ uri: this.props.avatar }}
               style={styles.avatar}
             />
           </View>
@@ -95,7 +96,7 @@ export default class ChatBubble extends React.Component {
           >
             <Avatar.Image
               size={22}
-              source={require("../assets/avatar.jpg")}
+              source={{ uri: this.props.avatar }}
               style={styles.avatar}
             />
             <TouchableOpacity

@@ -4,7 +4,7 @@
 // the title and subtitle can be passed as a prop
 // depending on the screen the search functionalities vary
 import * as React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import SearchBar from "./SearchBar";
 import { Appbar } from "react-native-paper";
 import { customTheme } from "../styles/Main";
@@ -46,10 +46,7 @@ export default class AppBar extends React.Component {
     return (
       <View>
         {this.state.appBarDisplay && (
-          <Appbar.Header
-            statusBarHeight={0}
-            style={{ backgroundColor: customTheme.primaryColor }}
-          >
+          <Appbar.Header statusBarHeight={0} style={styles.headerStyle}>
             {this.props.backButton ? (
               <Appbar.Action
                 icon="arrow-left"
@@ -66,10 +63,7 @@ export default class AppBar extends React.Component {
           </Appbar.Header>
         )}
         {this.state.searchBarDisplay && (
-          <Appbar.Header
-            statusBarHeight={0}
-            style={{ backgroundColor: customTheme.primaryColor }}
-          >
+          <Appbar.Header statusBarHeight={0} style={styles.headerStyle}>
             <SearchBar
               appBarOn={this.appBarOn}
               searchPlaceHolder={
@@ -82,3 +76,9 @@ export default class AppBar extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  headerStyle: {
+    backgroundColor: customTheme.primaryColor,
+  },
+});

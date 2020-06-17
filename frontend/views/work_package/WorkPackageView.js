@@ -1,12 +1,13 @@
 // author: nirbhay pherwani | pherwani37@gmail.com  | https://nirbhay.me
 import React from "react";
 import { View, FlatList, Platform, StyleSheet } from "react-native";
-import AppBar from "./../../components/AppBar";
+import AppBar from "../../components/AppBar";
 import { GridCard } from "../../components/GridCard";
 import axios from "axios";
-import DiscussionPanel from "./../../components/DiscussionPanel";
-import DiscussionView from "./../../components/DiscussionView";
-import { SubSectionMapper } from "../../components/SubSectionMapper";
+import DiscussionPanel from "../../components/DiscussionPanel";
+import DiscussionView from "../../components/DiscussionView";
+import { SectionView } from "./SectionView";
+import { WarningDialog } from "../action_dialog/ActionDialogs";
 
 let data = [
   {
@@ -22,19 +23,28 @@ let data = [
             type: "number",
             name: "Work Order Id",
             value: 12,
-            editable: false,
+            editable: true,
+            required: false,
           },
           {
             type: "text",
             name: "Title",
             value: "Fix water system",
-            editable: false,
+            editable: true,
+            required: true,
           },
           {
             type: "text",
             name: "Description",
             value: "Lorem Ipsum ...",
             editable: false,
+            required: false,
+          },
+          {
+            type: "date",
+            name: "Order Date",
+            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+            editable: true,
           },
         ],
       },
@@ -44,15 +54,16 @@ let data = [
         value: [
           {
             type: "date",
-            name: "order date",
-            value: "23rd May, 2020",
+            name: "Order Date",
+            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: false,
           },
           {
             type: "date",
             name: "Expected Date of Delivery",
-            value: "2nd June 2020",
-            editable: false,
+            value: "",
+            editable: true,
+            required: true,
           },
         ],
       },
@@ -69,9 +80,40 @@ let data = [
         name: "Permission List",
         value: [
           {
-            type: "selectitem",
-            name: "Allowed",
-            value: "selected",
+            type: "selectbox",
+            name: "fruits",
+            value: [
+              {
+                name: "Allowed",
+                value: "selected",
+                type: "selectitem",
+              },
+              {
+                name: "Not Allowed",
+                value: "not-selected",
+                type: "selectitem",
+              },
+              {
+                name: "Not applicable",
+                value: "not-selected",
+                type: "selectitem",
+              },
+            ],
+            required: true,
+            editable: true,
+          },
+        ],
+      },
+      {
+        name: "Checklist of things required",
+        type: "sub_section",
+        value: [
+          {
+            name: "Pipe",
+            value: "checked",
+            type: "checkitem",
+            required: true,
+            editable: true,
           },
         ],
       },
@@ -94,14 +136,17 @@ let data = [
   },
 ];
 
-export default class WorkPackage extends React.Component {
-  constructor(props) {
-    super(props);
+let dataCopy = data;
+
+export class WorkPackageView extends React.Component {
+  constructor() {
+    super();
     this.state = {
       dataSource: [],
       showDiscussionView: false,
       section: "",
       sectionClicked: false,
+      showDialog: false,
     };
     axios
       .get(
@@ -132,18 +177,44 @@ export default class WorkPackage extends React.Component {
     });
   };
 
-  goBack = () => {
-    this.setState({
-      sectionClicked: false,
-      section: "",
-    });
+  goBackFromSubsectionToSection = () => {
+    this.sectionView.finalChangesMade
+      ? this.setState({
+          showDialog: true,
+        })
+      : this.setState({
+          sectionClicked: false,
+          section: "",
+        });
   };
 
   getSubSectionsData = () => {
+    // TODO: Just pass data after making a backend call since retreiving subsection data is done in a separate call
     const section = data.filter((section) => {
       return section.name == this.state.section;
     });
     return section[0].value;
+  };
+
+  setDataCopy = (newData) => {
+    dataCopy = newData;
+  };
+
+  onModalClose = () => {
+    this.setState({
+      showDialog: false,
+    });
+  };
+
+  warningYesClicked = () => {
+    // go back from subsection to section and change all the data in the fields
+    // back to how they were before the user entered the screen, and close the dialog
+    this.setState({
+      sectionClicked: false,
+      section: "",
+      showDialog: false,
+    });
+    // TODO: add code to revert the data back to how it was
   };
 
   render() {
@@ -175,17 +246,28 @@ export default class WorkPackage extends React.Component {
           </View>
         )}
         {this.state.sectionClicked && !this.state.showDiscussionView && (
-          <View style={{ flex: 1 }}>
+          <View style={styles.view}>
             <AppBar
               toggleNavBar={this.toggleNavBar}
               subTitle={this.state.section}
               searchPlaceHolder="Search in this work package"
               backButton={true}
-              backButtonAction={this.goBack}
+              backButtonAction={this.goBackFromSubsectionToSection}
             />
-            <SubSectionMapper
-              subsection={this.state.section}
+            <SectionView
+              ref={(ref) => (this.sectionView = ref)}
+              section={this.state.section}
               subSectionsData={this.getSubSectionsData()}
+            />
+            <WarningDialog
+              showDialog={this.state.showDialog}
+              dialogTitle={"Warning!"}
+              dialogContent={
+                "There are unsaved changes, are you sure you want to go back?"
+              }
+              dialogClickAwayAction={this.onModalClose}
+              yesAction={this.warningYesClicked}
+              noAction={this.onModalClose}
             />
           </View>
         )}

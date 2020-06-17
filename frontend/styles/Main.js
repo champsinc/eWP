@@ -13,6 +13,8 @@ export const customTheme = {
   timeColorInChatBubble: "#E7EFC5",
   threadColorInDiscussionSection: "#C09891",
   borderColorInDiscussionSection: "#C7C7C7",
+  fontFamily: "Roboto, HelveticaNeue",
+  textSelectionColor: "#488FFE",
 };
 
 export const paperTheme = {
@@ -25,3 +27,9 @@ export const paperTheme = {
     accent: "#03dac4",
   },
 };
+
+export const css = `
+<style>
+  input {outline: none !important}
+</style>
+`;

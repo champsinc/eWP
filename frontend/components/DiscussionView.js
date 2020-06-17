@@ -9,6 +9,7 @@ import { RequestView } from "./RequestView";
 import { ScrollView } from "react-native-gesture-handler";
 import { AttachmentView } from "./AttachmentView";
 import { customTheme } from "../styles/Main";
+import { util } from "../assets/Utility";
 
 export default class DiscussionView extends React.Component {
   constructor(props) {
@@ -163,7 +164,7 @@ export default class DiscussionView extends React.Component {
                 key={message.id}
                 messageIndex={index}
                 message={message}
-                avatar="../assets/avatar.jpg"
+                avatar={util.avatarURL}
                 setReplyingTo={this.setReplyingTo}
               />
               {message.thread &&
@@ -174,6 +175,7 @@ export default class DiscussionView extends React.Component {
                       parentMessage={message}
                       message={messageInThread}
                       messageIndex={index}
+                      avatar={util.avatarURL}
                       setReplyingTo={this.setReplyingTo}
                     />
                   ) : messageInThread.type == "request" ? (
@@ -211,6 +213,7 @@ export default class DiscussionView extends React.Component {
                       parentMessage={message}
                       message={messageInThread}
                       messageIndex={index}
+                      avatar={util.avatarURL}
                       setReplyingTo={this.setReplyingTo}
                     />
                   ) : messageInThread.type == "request" ? (
@@ -252,6 +255,7 @@ export default class DiscussionView extends React.Component {
                       parentMessage={message}
                       message={messageInThread}
                       messageIndex={index}
+                      avatar={util.avatarURL}
                       setReplyingTo={this.setReplyingTo}
                     />
                   ) : messageInThread.type == "request" ? (
@@ -293,6 +297,7 @@ export default class DiscussionView extends React.Component {
                       parentMessage={message}
                       message={messageInThread}
                       messageIndex={index}
+                      avatar={util.avatarURL}
                       setReplyingTo={this.setReplyingTo}
                     />
                   ) : messageInThread.type == "request" ? (

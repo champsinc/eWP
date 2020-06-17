@@ -14,7 +14,7 @@ import { paperTheme } from "./styles/Main";
 // applying global font styles depending on os
 const customTextProps = {
   style: {
-    fontFamily: Platform.OS === "ios" ? "HelveticaNeue" : "Roboto",
+    fontFamily: Platform.OS === "android" ? "Roboto" : "System",
   },
 };
 

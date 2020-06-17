@@ -9,7 +9,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import Dashboard from "../views/dashboard/Dashboard";
 import Profile from "../views/profile/Profile";
-import WorkPackage from "../views/work_package/WorkPackage";
+import { WorkPackageView } from "../views/work_package/WorkPackageView";
 import { MaterialIcons } from "@expo/vector-icons";
 import { customTheme } from "../styles/Main";
 
@@ -48,7 +48,7 @@ export default class NavigationDrawer extends React.Component {
           />
           <Drawer.Screen
             name="Work Package"
-            component={WorkPackage}
+            component={WorkPackageView}
             options={{
               title: "Work Package",
               drawerIcon: ({ focused, size }) => (
