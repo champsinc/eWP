@@ -1,5 +1,7 @@
 package com.champsinc.ewp.util;
 
+import java.util.ArrayList;
+
 public class JsonParserUtils {
 
     public enum Keywords {
@@ -17,8 +19,24 @@ public class JsonParserUtils {
         text,
         file,
         checkitem,
-        selectitem
+        selectbox
     }
+
+    public static final ArrayList<String> basicAllowedKeys = new ArrayList<>() {
+        {
+            add(KEYWORD_EDITABLE);
+            add(KEYWORD_REQUIRED);
+        }
+    };
+
+    public static final ArrayList<String> fileAllowedKeys = new ArrayList<>() {
+        {
+            add(KEYWORD_EDITABLE);
+            add(KEYWORD_REQUIRED);
+            add(KEYWORD_DUE_DATE);
+            add(KEYWORD_NOTES);
+        }
+    };
 
     public static final String NOT_VALID_TYPE = "Type is not valid";
     public static final String EXTRA_KEYS_INNER = "Extra keys other than valid keys are present";
@@ -47,6 +65,10 @@ public class JsonParserUtils {
     public static final String KEYWORD_NOT_SELECTED = "not-selected";
     public static final String KEYWORD_DUE_DATE = "due_date";
     public static final String KEYWORD_SPECIAL_IDENTIFIER = "special_identifier";
+    public static final String KEYWORD_EDITABLE = "editable";
+    public static final String KEYWORD_REQUIRED = "required";
+    public static final String KEYWORD_NOTES = "notes";
+    public static final String KEYWORD_SELECTBOX = "selectbox";
     public static final String DATE_PATTERN = "MM/dd/yyyy";
     public static final String MIME_IMAGE_JPEG = "image/jpeg";
     public static final String MIME_IMAGE_PNG = "image/png";

@@ -14,9 +14,11 @@ import java.util.ArrayList;
 @Data
 @Document(collection = "sections")
 public class Section {
+
     @Id
     private String id;
 
     private String name;
     private ArrayList<ObjectId> value;
+
 }

@@ -1,5 +1,6 @@
 package com.champsinc.ewp.service.impl;
 
+import com.champsinc.ewp.model.B;
 import com.champsinc.ewp.model.Section;
 import com.champsinc.ewp.model.WorkPackage;
 import com.champsinc.ewp.repository.SectionRepository;
@@ -42,6 +43,15 @@ public class SectionServiceImpl implements SectionService {
         return mongoTemplate.find(query, Section.class);
         */
         return sectionRepository.findByListOfSectionIds(objectIds);
+    }
+
+    /**
+     * Function to get all work packages
+     * @return specific work package by id
+     */
+    @Override
+    public List<Section> findAll(){
+        return sectionRepository.findAll();
     }
 
 }

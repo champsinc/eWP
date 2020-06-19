@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -88,6 +86,7 @@ public class JsonParserServiceImpl implements JsonParserService {
                                     DataItem dataItemModel = createDataItemModel(dataItemElement);
                                     allDataItems.add(dataItemModel);
                                     subSectionModel.getValue().add(new ObjectId(dataItemModel.getId()));
+                                    subSectionModel.getDataitems().add(dataItemModel);
                                 }
                             }
                             else{
@@ -109,6 +108,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
             return responseJSON;
         } catch (Exception e){
+            e.printStackTrace();
             StackTraceElement[] elements = e.getStackTrace();
             responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, JsonParserUtils.EXCEPTION_MESSAGE);
             responseJSON.addProperty("message", gson.toJson(elements));
@@ -124,7 +124,12 @@ public class JsonParserServiceImpl implements JsonParserService {
         DataItem dataItemModel = gson.fromJson(subSectionInnerElement, DataItem.class);
         dataItemModel.setId(dataItemId.toString());
         dataItemModel.setName(subSectionDataKeyName);
-        dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
+        if(dataItemModel.getType().equals(JsonParserUtils.KEYWORD_SELECTBOX)){
+            dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).toString());
+        }
+        else{
+            dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
+        }
         return dataItemModel;
     }
 
@@ -133,6 +138,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         subSectionModel.setName(subSectionName);
         subSectionModel.setId(new ObjectId().toString());
         subSectionModel.setValue(new ArrayList<>());
+        subSectionModel.setDataitems(new ArrayList<>());
         return subSectionModel;
     }
 
@@ -145,12 +151,15 @@ public class JsonParserServiceImpl implements JsonParserService {
 
     private void insertIntoDB(ArrayList<DataItem> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections){
         for (DataItem dataItem : allDataItems) {
+            System.out.println(dataItem);
             dataItemRepository.save(dataItem);
         }
         for(SubSection subSection: allSubSections){
+            System.out.println(subSection);
             subSectionRepository.save(subSection);
         }
         for (Section section: allSections) {
+            System.out.println(section);
             sectionRepository.save(section);
         }
     }
@@ -167,6 +176,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             return sendResponse(JsonParserUtils.DATA_TYPE_INVALID, subSectionKeyName, sectionKeyName);
         return subSectionInnerResponse;
     }
+
 
     private ArrayList<String> checkSection(JsonObject sectionObject){
         ArrayList<String> responseList = new ArrayList<>();
@@ -210,7 +220,7 @@ public class JsonParserServiceImpl implements JsonParserService {
 
     private ArrayList<String> checkSubSection(JsonObject subSectionObject, String sectionKeyName){
         ArrayList<String> responseList = new ArrayList<>();
-        // Check if its a section and type key exists
+        // Check if its a sub section and type key exists
         if (checkTypeKey(subSectionObject, JsonParserUtils.KEYWORD_SUB_SECTION) && subSectionObject.size() <= 3) {
             String subSectionKeyName = getDataKeyName(subSectionObject);
             if (!subSectionKeyName.equals(JsonParserUtils.EXTRA_KEYS) && checkSpecialIdentifier(subSectionObject)) {
@@ -219,7 +229,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             }
             else{
                 responseList.add(JsonParserUtils.KEYWORD_FALSE);
-                responseList.add(subSectionKeyName);
+                responseList.add(sectionKeyName);
                 responseList.add(JsonParserUtils.EXTRA_KEYS_SUB_SECTION);
             }
         }
@@ -305,44 +315,104 @@ public class JsonParserServiceImpl implements JsonParserService {
         return year > 2000;
     }
 
+    private boolean checkBasicAllowedKeys(ArrayList<String> basicKeys){
+        basicKeys.removeAll(JsonParserUtils.basicAllowedKeys);
+        return basicKeys.size() == 2;
+    }
+
+    private boolean checkFileAllowedKeys(ArrayList<String> fileKeys){
+        fileKeys.removeAll(JsonParserUtils.fileAllowedKeys);
+        return fileKeys.size() == 2;
+    }
+
     private boolean checkDataByType(JsonObject jsonObject){
         String typeValue = jsonObject.get(JsonParserUtils.KEYWORD_TYPE).getAsString();
         ArrayList<String> jsonObjectKeys = new ArrayList<>(jsonObject.keySet());
-        List<String> keywordEnum = Stream.of(Keywords.values()).map(Keywords::name).collect(Collectors.toList());
-        jsonObjectKeys.removeAll(keywordEnum);
+        String dataKeyName = getDataKeyName(jsonObject);
         try{
             switch (typeValue)
             {
                 case "number": {
-                    jsonObject.get(jsonObjectKeys.get(0)).getAsInt();
-                    return true;
-                }
-                case "file": {
-                    String url = jsonObject.get(jsonObjectKeys.get(0)).getAsString();
-                    URLConnection urlConnection = new URL(url).openConnection();
-                    String mimeType = urlConnection.getContentType();
-                    return mimeType.equals(JsonParserUtils.MIME_APPLICATION_PDF) || mimeType.equals(JsonParserUtils.MIME_IMAGE_JPEG) || mimeType.equals(JsonParserUtils.MIME_IMAGE_PNG);
+                    // Check if data key is a number
+                    jsonObject.get(dataKeyName).getAsInt();
+                    // Check if allowed keys are only editable and required
+                    return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
                 }
                 case "text": {
-                    jsonObject.get(jsonObjectKeys.get(0)).getAsString();
-                    return true;
+                    // Check if data key is a string
+                    jsonObject.get(dataKeyName).getAsString();
+                    // Check if allowed keys are only editable and required
+                    return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
                 }
                 case "date": {
-                    return checkDate(jsonObject.get(jsonObjectKeys.get(0)).getAsString());
+                    // Check if data key is a valid date
+                    if(checkDate(jsonObject.get(dataKeyName).getAsString())){
+                        // Check if allowed keys are only editable and required
+                        return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
+                    }
+                    return false;
+                }
+                case "file": {
+                    String url = jsonObject.get(dataKeyName).getAsString();
+                    // Check if file url is valid and allowed keys are editable, required, due_date and notes
+                    if(checkFileURL(url) && checkFileAllowedKeys(jsonObjectKeys)){
+                        // Check if editable is true then due date should be present
+                        if(jsonObject.get(JsonParserUtils.KEYWORD_EDITABLE).getAsBoolean()) {
+                            return jsonObject.has(JsonParserUtils.KEYWORD_DUE_DATE);
+                        }
+                        else{
+                            return !jsonObject.has(JsonParserUtils.KEYWORD_DUE_DATE);
+                        }
+                    }
+                    return false;
                 }
                 case "checkitem": {
-                    if(jsonObject.get(jsonObjectKeys.get(0)).getAsString().equals(JsonParserUtils.KEYWORD_CHECKED) || jsonObject.get(jsonObjectKeys.get(0)).getAsString().equals(JsonParserUtils.KEYWORD_UNCHECKED))
+                    String checkItemValue = jsonObject.get(dataKeyName).getAsString();
+                    if(checkItemValue.equals(JsonParserUtils.KEYWORD_CHECKED) || checkItemValue.equals(JsonParserUtils.KEYWORD_UNCHECKED))
                         return true;
                 }
-                case "selectitem": {
-                    if(jsonObject.get(jsonObjectKeys.get(0)).getAsString().equals(JsonParserUtils.KEYWORD_SELECTED) || jsonObject.get(jsonObjectKeys.get(0)).getAsString().equals(JsonParserUtils.KEYWORD_NOT_SELECTED))
-                        return true;
+                case "selectbox": {
+                    int selectedFlag = 0;
+                    // parse through selectbox array
+                    JsonArray selectboxArray = jsonObject.getAsJsonArray(dataKeyName);
+                    for (JsonElement selectboxElement : selectboxArray) {
+                        JsonObject selectboxObject = selectboxElement.getAsJsonObject();
+                        if(selectboxObject.get(JsonParserUtils.KEYWORD_TYPE).getAsString().equals("selectitem")){
+                            selectboxObject.remove(JsonParserUtils.KEYWORD_TYPE);
+                            String selectboxObjectValue = selectboxObject.get(getDataKeyName(selectboxObject)).getAsString();
+                            if(selectboxObjectValue.equals(JsonParserUtils.KEYWORD_SELECTED)){
+                                if(selectedFlag == 1){
+                                    return false;
+                                }
+                                selectedFlag = 1;
+                            }
+                            else if(!selectboxObjectValue.equals(JsonParserUtils.KEYWORD_NOT_SELECTED)){
+                                return false;
+                            }
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                    return selectedFlag == 1;
                 }
                 default:
                     return false;
             }
-        } catch(ClassCastException | IOException e){
+        } catch(ClassCastException | IllegalStateException e){
             return false;
         }
+    }
+
+    private boolean checkFileURL(String url){
+        URLConnection urlConnection;
+        try{
+            urlConnection = new URL(url).openConnection();
+        }
+        catch (IOException io){
+            return false;
+        }
+        String mimeType = urlConnection.getContentType();
+        return mimeType.equals(JsonParserUtils.MIME_APPLICATION_PDF) || mimeType.equals(JsonParserUtils.MIME_IMAGE_JPEG) || mimeType.equals(JsonParserUtils.MIME_IMAGE_PNG);
     }
 }

@@ -1,6 +1,7 @@
 package com.champsinc.ewp.service;
 
 import com.champsinc.ewp.model.Section;
+import com.champsinc.ewp.model.WorkPackage;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -12,4 +13,5 @@ import java.util.List;
  */
 public interface SectionService {
     List<Section> findByListOfSectionIds(ArrayList<ObjectId> objectIds);
+    List<Section> findAll();
 }
