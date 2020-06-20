@@ -1,13 +1,9 @@
 package com.champsinc.ewp.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.FieldType;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.ArrayList;
 
@@ -19,10 +15,11 @@ import java.util.ArrayList;
 @Document(collection = "work_packages")
 public class WorkPackage {
 
-    @MongoId(value = FieldType.OBJECT_ID)
+    @Id
     private String id;
 
-    ArrayList<ObjectId> sections;
-    ArrayList<ObjectId> users;
-    private String status;
+    private String title;
+    private ArrayList<ObjectId> sections;
+    private ArrayList<ObjectId> users;
+    private int status;
 }

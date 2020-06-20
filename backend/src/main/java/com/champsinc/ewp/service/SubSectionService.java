@@ -1,6 +1,9 @@
 package com.champsinc.ewp.service;
 
 import com.champsinc.ewp.model.SubSection;
+import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,4 +12,5 @@ import java.util.List;
  */
 public interface SubSectionService {
     List<SubSection> findAll();
+    List<SubSection> findByListOfSubSectionIds(ArrayList<ObjectId> objectIds);
 }

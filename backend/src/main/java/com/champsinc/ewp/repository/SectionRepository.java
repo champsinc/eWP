@@ -16,6 +16,4 @@ public interface SectionRepository extends MongoRepository<Section, String> {
 
     @Query(value = "{'_id':{$in: ?0}}", fields = "{'name':1}")
     List<Section> findByListOfSectionIds(ArrayList<ObjectId> objectIds);
-
-
 }

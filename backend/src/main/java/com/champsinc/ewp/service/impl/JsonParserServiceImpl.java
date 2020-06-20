@@ -1,11 +1,7 @@
 package com.champsinc.ewp.service.impl;
 
-import com.champsinc.ewp.model.Section;
-import com.champsinc.ewp.model.SubSection;
-import com.champsinc.ewp.model.DataItem;
-import com.champsinc.ewp.repository.DataItemRepository;
-import com.champsinc.ewp.repository.SectionRepository;
-import com.champsinc.ewp.repository.SubSectionRepository;
+import com.champsinc.ewp.model.*;
+import com.champsinc.ewp.repository.*;
 import com.champsinc.ewp.service.JsonParserService;
 import com.champsinc.ewp.util.JsonParserUtils;
 import com.champsinc.ewp.util.JsonParserUtils.*;
@@ -36,6 +32,10 @@ public class JsonParserServiceImpl implements JsonParserService {
     private SubSectionRepository subSectionRepository;
     @Autowired
     private DataItemRepository dataItemRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WorkPackageRepository workPackageRepository;
     /**
      * Function to check json string for validity
      * @return valid or invalid
@@ -45,6 +45,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         JsonObject responseJSON = new JsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
+            WorkPackage workPackageModel = createWorkPackageModel();
             // Keep track of all section objects
             ArrayList<Section> allSections = new ArrayList<>();
             // Keep track of all section objects
@@ -53,7 +54,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             ArrayList<DataItem> allDataItems = new ArrayList<>();
             JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
             // Check if first key is work package array and no other key exists
-            if (rootObject.get(JsonParserUtils.KEYWORD_WORK_PKG).isJsonArray() && rootObject.size() == 1) {
+            if (rootObject.get(JsonParserUtils.KEYWORD_WORK_PKG).isJsonArray() && rootObject.size() <= 4) {
                 JsonArray workPackageArray = rootObject.getAsJsonArray(JsonParserUtils.KEYWORD_WORK_PKG);
                 // Parse through each section
                 for (JsonElement section : workPackageArray) {
@@ -100,12 +101,26 @@ public class JsonParserServiceImpl implements JsonParserService {
                         return sendResponse(checkSection.get(2), null, checkSection.get(1));
                     }
                     allSections.add(sectionModel);
+                    workPackageModel.getSections().add(new ObjectId(sectionModel.getId()));
                 }
             } else {
                 return sendResponse(JsonParserUtils.NO_WORK_PKG_KEY, null, null);
             }
-            insertIntoDB(allDataItems, allSubSections, allSections);
-            responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
+            if(rootObject.has("user") && rootObject.has("status") && rootObject.has("title")){
+                User user = userRepository.findByEmail(rootObject.get("user").getAsString());
+                if(user != null){
+                    workPackageModel.getUsers().add(new ObjectId(user.getId()));
+                    workPackageModel.setTitle(rootObject.get("title").getAsString());
+                    insertIntoDB(allDataItems, allSubSections, allSections, workPackageModel);
+                    responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
+                }
+                else{
+                    responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No such user present");
+                }
+            }
+            else{
+                responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No user key, title or status present");
+            }
             return responseJSON;
         } catch (Exception e){
             e.printStackTrace();
@@ -114,6 +129,16 @@ public class JsonParserServiceImpl implements JsonParserService {
             responseJSON.addProperty("message", gson.toJson(elements));
             return responseJSON;
         }
+    }
+
+    private WorkPackage createWorkPackageModel() {
+        WorkPackage workPackageModel = new WorkPackage();
+        workPackageModel.setId(new ObjectId().toString());
+        workPackageModel.setSections(new ArrayList<>());
+        workPackageModel.setStatus(1);
+        workPackageModel.setSections(new ArrayList<>());
+        workPackageModel.setUsers(new ArrayList<>());
+        return workPackageModel;
     }
 
     private DataItem createDataItemModel(JsonElement subSectionInnerElement){
@@ -149,19 +174,17 @@ public class JsonParserServiceImpl implements JsonParserService {
         return sectionModel;
     }
 
-    private void insertIntoDB(ArrayList<DataItem> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections){
+    private void insertIntoDB(ArrayList<DataItem> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections, WorkPackage workPackage){
         for (DataItem dataItem : allDataItems) {
-            System.out.println(dataItem);
             dataItemRepository.save(dataItem);
         }
         for(SubSection subSection: allSubSections){
-            System.out.println(subSection);
             subSectionRepository.save(subSection);
         }
         for (Section section: allSections) {
-            System.out.println(section);
             sectionRepository.save(section);
         }
+        workPackageRepository.save(workPackage);
     }
 
     private JsonObject checkDataItem(JsonObject dataItemObject, String sectionKeyName, String subSectionKeyName){

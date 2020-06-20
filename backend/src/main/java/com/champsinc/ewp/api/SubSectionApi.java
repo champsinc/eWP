@@ -1,11 +1,6 @@
 package com.champsinc.ewp.api;
-import com.champsinc.ewp.model.Section;
 import com.champsinc.ewp.model.SubSection;
-import com.champsinc.ewp.model.WorkPackage;
-import com.champsinc.ewp.service.SectionService;
 import com.champsinc.ewp.service.SubSectionService;
-import com.champsinc.ewp.service.WorkPackageService;
-import com.google.gson.JsonObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +32,5 @@ public class SubSectionApi {
         List<SubSection> responseObject =  subSectionService.findAll();
         return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
     }
+
 }

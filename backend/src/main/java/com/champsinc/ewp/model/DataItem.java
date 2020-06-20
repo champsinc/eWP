@@ -22,4 +22,5 @@ public class DataItem {
     private boolean required;
     private String due_date;
     private boolean special_identifier;
+    private int fileStatus;
 }

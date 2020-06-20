@@ -34,7 +34,7 @@ public class WorkPackageApi {
     }
 
     /**
-     * Api endpoint to get all work orders
+     * Api endpoint to get all sections of the work order
      * @param ewpId id of the work order to be fetched
      * @return a particular work order
      */
@@ -47,4 +47,5 @@ public class WorkPackageApi {
         }
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
 }

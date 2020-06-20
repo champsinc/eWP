@@ -1,10 +1,8 @@
 package com.champsinc.ewp.api;
-import com.champsinc.ewp.model.Section;
+import com.champsinc.ewp.model.SubSection;
 import com.champsinc.ewp.model.WorkPackage;
-import com.champsinc.ewp.service.SectionService;
-import com.champsinc.ewp.service.WorkPackageService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.champsinc.ewp.service.SubSectionService;
+import com.champsinc.ewp.service.UserService;
 import com.google.gson.JsonObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,22 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Api(tags = "Work Order API")
-public class SectionApi {
+public class UserApi {
 
     @Autowired
-    private SectionService sectionService;
+    private UserService userService;
 
     /**
      * Api endpoint to get all work orders
      * @return a particular work order
      */
     @ApiOperation(value = "Get work package sections by work package id")
-    @GetMapping(value = "/section/{sectionId}")
-    public ResponseEntity<String> getSectionSubSections(@PathVariable("sectionId") String sectionId) {
-        String responseObject =  sectionService.findSubSectionBySectionId(sectionId);
-        if(responseObject.contains("error")){
-            return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping(value = "/user/wp/{userId}")
+    public ResponseEntity<String> getUserWorkPackages(@PathVariable("userId") String userId) {
+        String responseObject =  userService.findUserWorkPackages(userId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
@@ -47,16 +42,19 @@ public class SectionApi {
      */
     @ApiOperation(value = "Get work package sections by work package id")
     @RequestMapping(
-            value = "/section/update",
+            value = "/user/update",
             method = RequestMethod.POST,
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<String> updateSectionSubSections(String payload) {
-        String responseObject =  sectionService.findSubSectionBySectionId(payload);
-        if(responseObject.contains("error")){
-            return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> updateUser(String userDetails) {
+        JsonObject responseObject =  userService.updateUser(userDetails);
+        if(responseObject.has("error")){
+            return new ResponseEntity<>(responseObject.toString(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+        else{
+            return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
+        }
     }
+
 }
