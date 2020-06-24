@@ -1,14 +1,8 @@
 import * as React from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 import MentionsTextInput from "react-native-mentions";
 
 export default class DiscussionInputBox extends React.Component {
@@ -111,19 +105,19 @@ export default class DiscussionInputBox extends React.Component {
             autoFocus={this.state.autoFocus}
             placeholder={"Your Message Here ... "}
             textInputStyle={{
-              borderColor: "gray",
+              borderColor: "gray", // inline styles because styles variable doesnt work in web
               borderWidth: 1,
-              padding: 5,
+              padding: 10,
             }}
             suggestionsPanelStyle={{
-              backgroundColor: "rgba(100,100,100,0.1)",
+              backgroundColor: "rgba(100,100,100,0.1)", // inline styles because styles variable doesnt work in web
               marginBottom: 2,
             }}
             loadingComponent={() => <View />}
             textInputMinHeight={50}
             textInputMaxHeight={80}
             trigger={"@"}
-            triggerLocation={"new-word-only"} // 'new-word-only', 'anywhere'
+            triggerLocation={"new-word-only"}
             value={this.state.text}
             onChangeText={(text) => this.onChangeText(text)}
             triggerCallback={this.callback.bind(this)}
@@ -131,11 +125,11 @@ export default class DiscussionInputBox extends React.Component {
             suggestionsData={this.state.data} // array of objects
             keyExtractor={(item, index) => item.UserName}
             suggestionRowHeight={this.state.data.length > 0 ? 45 : 0}
-            horizontal={false} // defaut is true, change the orientation of the list
-            MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0} // this is required if horizontal={false}
+            horizontal={false} // the orientation of the list
+            MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0}
           />
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.chipView}>
           {Array.from(this.state.mentions).map((mention) => {
             return (
               <Chip
@@ -166,8 +160,6 @@ export default class DiscussionInputBox extends React.Component {
   }
 }
 
-const { height, width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   textInput: {
     marginHorizontal: 10,
@@ -194,7 +186,7 @@ const styles = StyleSheet.create({
     width: 45,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.primaryColor,
+    backgroundColor: customTheme.primaryColor,
   },
   usernameInitials: {
     color: "#fff",
@@ -223,5 +215,9 @@ const styles = StyleSheet.create({
   chipText: {
     color: "black",
     fontWeight: "bold",
+  },
+  chipView: {
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
 });

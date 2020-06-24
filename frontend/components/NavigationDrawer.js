@@ -9,9 +9,11 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import Dashboard from "../views/dashboard/Dashboard";
 import Profile from "../views/profile/Profile";
-import WorkPackage from "../views/work_package/WorkPackage";
+import { WorkPackageView } from "../views/work_package/WorkPackageView";
+import { WorkPackageUsers } from "../views/work_package/WorkPackageUsers";
 import { MaterialIcons } from "@expo/vector-icons";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
+import { WorkPackageNavigator } from "../views/work_package/WorkPackageNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -20,12 +22,9 @@ export default class NavigationDrawer extends React.Component {
     return (
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName="Work Package"
-          drawerStyle={{
-            backgroundColor: theme.backgroundColor,
-          }}
+          initialRouteName="Dashboard"
           drawerContentOptions={{
-            activeTintColor: theme.primaryColor,
+            activeTintColor: customTheme.primaryColor,
             itemStyle: { marginHorizontal: 0 },
           }}
         >
@@ -35,11 +34,7 @@ export default class NavigationDrawer extends React.Component {
             options={{
               title: "Dashboard",
               drawerIcon: ({ focused, size }) => (
-                <MaterialIcons
-                  name="dashboard"
-                  size={size}
-                  color={focused ? theme.primaryColor : theme.offFocusColor}
-                />
+                <MaterialIcons name="dashboard" size={size} />
               ),
             }}
           />
@@ -49,25 +44,18 @@ export default class NavigationDrawer extends React.Component {
             options={{
               title: "Profile",
               drawerIcon: ({ focused, size }) => (
-                <MaterialIcons
-                  name="account-circle"
-                  size={size}
-                  color={focused ? theme.primaryColor : theme.offFocusColor}
-                />
+                <MaterialIcons name="account-circle" size={size} />
               ),
             }}
           />
           <Drawer.Screen
             name="Work Package"
-            component={WorkPackage}
+            component={WorkPackageNavigator}
+            initialParams={{ drawer: Drawer }}
             options={{
               title: "Work Package",
               drawerIcon: ({ focused, size }) => (
-                <MaterialIcons
-                  name="work"
-                  size={size}
-                  color={focused ? theme.primaryColor : theme.offFocusColor}
-                />
+                <MaterialIcons name="work" size={size} />
               ),
             }}
           />

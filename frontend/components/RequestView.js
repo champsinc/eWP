@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
-import { theme } from "../styles/Main";
+import { customTheme } from "../styles/Main";
 
 export const RequestView = (props) => {
   return (
@@ -9,7 +9,7 @@ export const RequestView = (props) => {
       {!props.thread && (
         <IconButton
           icon={"reply"}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           size={25}
           style={styles.replyButton}
           onPress={() => props.setReplyingTo(props.messageIndex)}
@@ -19,7 +19,7 @@ export const RequestView = (props) => {
         <View style={styles.requestView}>
           <IconButton
             icon={"alpha-r-box-outline"}
-            color={theme.discussionPanelIconColor}
+            color={customTheme.discussionPanelIconColor}
             size={25}
             style={styles.requestIcon}
           />
@@ -37,7 +37,7 @@ export const RequestView = (props) => {
           <View style={styles.requestThreadTopView}>
             <IconButton
               icon={"alpha-r-box-outline"}
-              color={theme.discussionPanelIconColor}
+              color={customTheme.discussionPanelIconColor}
               size={25}
               style={[styles.requestIcon, { marginLeft: 0 }]}
             />
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingRight: 5,
     borderRightWidth: 1.67,
-    borderRightColor: theme.threadColorInDiscussionSection,
+    borderRightColor: customTheme.threadColorInDiscussionSection,
   },
   requestThreadTopView: {
     flex: 2,

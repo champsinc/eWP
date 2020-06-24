@@ -1,8 +1,10 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text, Platform } from "react-native";
 import { IconButton, ToggleButton } from "react-native-paper";
-import { theme } from "./../styles/Main";
+import { customTheme } from "./../styles/Main";
 import FilePondModal from "./FilePondModal";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
 
 export default class DiscussionButtonPanel extends React.Component {
   constructor(props) {
@@ -10,6 +12,7 @@ export default class DiscussionButtonPanel extends React.Component {
     this.state = {
       sendAsRequestSelected: "unchecked",
       modalOpen: false,
+      uri: "",
     };
   }
 
@@ -18,29 +21,30 @@ export default class DiscussionButtonPanel extends React.Component {
       <View style={styles.discussionButtonPanelView}>
         <IconButton
           icon={"attachment"}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           size={20}
           onPress={this.attachButtonPressed}
         />
         <IconButton
           icon={"at"}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           size={20}
           onPress={this.props.addMentionSymbol}
         />
         <ToggleButton
           icon="alpha-r-box-outline"
           size={22}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           status={this.state.sendAsRequestSelected}
           onPress={this.toggleSendAsRequestButton}
         />
         <IconButton
           icon={"send"}
-          color={theme.discussionPanelIconColor}
+          color={customTheme.discussionPanelIconColor}
           size={20}
           onPress={this.sendButtonPressed}
         />
+        {this.state.uri != "" && <Text> **Hi** {this.state.uri}</Text>}
         <FilePondModal
           modalOpen={this.state.modalOpen}
           onModalClose={this.onModalClose}
@@ -55,10 +59,10 @@ export default class DiscussionButtonPanel extends React.Component {
     });
   };
 
-  attachButtonPressed = () => {
+  attachButtonPressed = async (document) => {
     this.setState({
-      modalOpen: true,
-    });
+      
+    })
   };
 
   getTime = () => {
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 10,
     borderRadius: 5,
-    borderColor: theme.borderColorInDiscussionSection,
+    borderColor: customTheme.borderColorInDiscussionSection,
     borderStyle: "solid",
     borderWidth: 1,
   },

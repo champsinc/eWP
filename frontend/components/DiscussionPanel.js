@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, IconButton } from "react-native-paper";
-import { theme } from "./../styles/Main";
+import { customTheme } from "./../styles/Main";
 import { StyleSheet } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
 
@@ -24,7 +24,7 @@ export default class DiscussionPanel extends React.Component {
                 icon={
                   this.props.discussionViewOpen ? "chevron-down" : "chevron-up"
                 }
-                color={theme.textColor}
+                color={customTheme.textColor}
                 size={30}
                 onPress={() => this.props.toggleDiscussionView()}
               />
@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
   discussionPanelCard: {
     marginBottom: 10,
     marginHorizontal: 10,
-    backgroundColor: theme.primaryColor,
+    backgroundColor: customTheme.primaryColor,
   },
   discussionPanelCardTitle: {
-    color: theme.textColor,
+    color: customTheme.textColor,
   },
 });

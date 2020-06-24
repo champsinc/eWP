@@ -4,6 +4,7 @@
 
 import * as React from "react";
 import { Searchbar } from "react-native-paper";
+import { StyleSheet } from "react-native";
 
 export default class SearchBar extends React.Component {
   state = {
@@ -18,7 +19,7 @@ export default class SearchBar extends React.Component {
     return (
       <Searchbar
         autoFocus={true}
-        style={{ width: "100%" }}
+        style={styles.searchBar}
         placeholder={this.props.searchPlaceHolder}
         icon="arrow-left"
         onIconPress={() => this.props.appBarOn()}
@@ -28,3 +29,8 @@ export default class SearchBar extends React.Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  searchBar: {
+    width: "100%",
+  },
+});

@@ -1,34 +1,56 @@
-import { Card, Colors, IconButton } from "react-native-paper";
-import { Text, StyleSheet } from "react-native";
+import { Card, Colors, IconButton, Avatar } from "react-native-paper";
+import {
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Platform,
+  Dimensions,
+} from "react-native";
 import React from "react";
 
 export const GridCard = (props) => {
   return (
-    <Card
-      style={styles.cardStyle}
-      onPress={() => console.log("GridCard.js:14 pressed")}
-      elevation={3}
-    >
-      <IconButton
-        icon={props.icon || "information"}
-        color={Colors.black500}
-        size={50}
-      />
-      <Text style={styles.textInCard}>{props.title || ""}</Text>
-    </Card>
+    <TouchableWithoutFeedback onPress={() => props.onPress(props.name)}>
+      <Card style={styles.cardStyle} elevation={Platform.OS == "web" ? 5 : 10}>
+        <Avatar.Text size={45} label={props.label} style={styles.avatar} />
+        {/* <IconButton
+          icon={props.icon || "information"}
+          color={Colors.black500}
+          size={50}
+          style={styles.iconButton}
+          onPress={() => props.onPress(props.name)}
+        /> */}
+        <Text style={styles.textInCard}>{props.name || ""}</Text>
+      </Card>
+    </TouchableWithoutFeedback>
   );
 };
 
+const windowWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   textInCard: {
+    marginTop: 20,
     textAlign: "center",
-    fontWeight: "bold",
+    fontWeight: Platform.OS == "web" ? "normal" : "bold",
     fontSize: 16,
+    paddingHorizontal: 10,
+  },
+  iconButton: {
+    margin: 0,
+    alignSelf: "center",
   },
   cardStyle: {
-    justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
     margin: 20,
     paddingBottom: 10,
+    paddingTop: 15,
+    height: 150,
+  },
+  avatar: {
+    margin: 0,
+    padding: 0,
+    alignSelf: "center",
   },
 });
