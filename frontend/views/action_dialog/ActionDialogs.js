@@ -2,6 +2,10 @@ import React from "react";
 import { Text, StyleSheet, Platform } from "react-native";
 import { Portal, Dialog, Button } from "react-native-paper";
 
+/**
+ * This constant is used to render the confirm save dialog when the user presses the save button inside a section view of a work package
+ * @author Raghul Krishnan
+ */
 export const ConfirmSaveDialog = (props) => {
   return (
     <Portal>
@@ -29,6 +33,10 @@ export const ConfirmSaveDialog = (props) => {
   );
 };
 
+/**
+ * This constant is used to render the Warning dialog when the user presses the back button from a section view to go to the work package view
+ * @author Raghul Krishnan
+ */
 export const WarningDialog = (props) => {
   return (
     <Portal>

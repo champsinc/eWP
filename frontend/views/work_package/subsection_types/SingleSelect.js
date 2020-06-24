@@ -3,12 +3,15 @@ import { View, Text, StyleSheet, Picker, Platform } from "react-native";
 
 export class SingleSelect extends React.Component {
   intialSelected = "";
+  emptyOption = this.props.fromAttachment
+    ? "Select Status"
+    : "Select Something";
   constructor(props) {
     super(props);
     this.props.value.forEach((selectItem) => {
       selectItem.value == "selected"
         ? (this.intialSelected = selectItem.name)
-        : "";
+        : this.emptyOption;
     });
     this.state = {
       selected: this.intialSelected,
@@ -20,42 +23,58 @@ export class SingleSelect extends React.Component {
     itemValue != this.intialSelected
       ? this.props.setChangesMade(this.props.name, true)
       : this.props.setChangesMade(this.props.name, false);
-    this.props.required && itemValue.length == 0
+    this.props.required && itemValue == this.emptyOption
       ? this.props.setError(this.props.name, true)
       : this.props.setError(this.props.name, false);
     this.setState({
       selected: itemValue,
-      error: this.props.required && itemValue.length == 0 ? true : false,
+      error:
+        this.props.required && itemValue == this.emptyOption ? true : false,
     });
   };
 
   render() {
     return (
-      <View style={styles.topView}>
+      <View style={this.props.fromAttachment ? {} : styles.topView}>
         <View style={{ flexDirection: "row" }}>
-          <Text style={styles.nameTextStyle}>{this.props.name}</Text>
-          {this.props.required && <Text style={styles.asteriskStyle}>*</Text>}
+          <Text
+            style={
+              this.props.fromAttachment
+                ? { fontSize: 16, marginBottom: 10 }
+                : styles.nameTextStyle
+            }
+          >
+            {this.props.name}
+          </Text>
+          {this.props.required && <Text style={styles.asteriskStyle}> *</Text>}
         </View>
-        <Picker
-          style={
-            Platform.OS == "web" ? styles.pickerDesktop : styles.pickerPhone
-          }
-          itemStyle={styles.pickerItem}
-          enabled={this.props.editable}
-          selectedValue={this.state.selected}
-          onValueChange={this.onValueChange}
-        >
-          <Picker.Item label={""} value={""} />
-          {this.props.value.map((selectItem) => {
-            return (
-              <Picker.Item
-                label={selectItem.name}
-                key={selectItem.name}
-                value={selectItem.name}
-              />
-            );
-          })}
-        </Picker>
+        <View style={Platform.OS == "web" ? {} : styles.pickerView}>
+          <Picker
+            style={
+              Platform.OS == "web" ? styles.pickerDesktop : styles.pickerPhone
+            }
+            mode={"dropdown"}
+            itemStyle={styles.pickerItem}
+            enabled={this.props.editable}
+            selectedValue={this.state.selected}
+            onValueChange={this.onValueChange}
+          >
+            <Picker.Item
+              label={this.emptyOption}
+              key={this.emptyOption}
+              value={this.emptyOption}
+            />
+            {this.props.value.map((selectItem) => {
+              return (
+                <Picker.Item
+                  label={selectItem.name}
+                  key={selectItem.name}
+                  value={selectItem.name}
+                />
+              );
+            })}
+          </Picker>
+        </View>
         {this.state.error && (
           <View>
             <Text style={styles.errorText}>This is a required field</Text>
@@ -76,16 +95,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: Platform.OS == "web" ? 10 : 15,
   },
+  pickerView: {
+    borderWidth: 1,
+    borderRadius: 5,
+    width: "75%",
+  },
   pickerDesktop: {
-    width: 200,
+    width: "75%",
+    paddingHorizontal: 5,
+    paddingEnd: 5,
     height: 40,
     backgroundColor: "white",
-    // borderColor: "black",
-    // borderWidth: 1,
+    borderRadius: 5,
   },
   pickerPhone: {
-    width: 200,
+    width: "100%",
     height: 40,
+    borderColor: "black",
+    borderWidth: 2,
   },
   pickerItem: {
     height: 40,

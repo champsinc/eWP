@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { TextInput } from "react-native-paper";
 import { customTheme } from "../../../styles/Main";
+import AddNote from "../../../components/AddNote";
 
 /**
  * This class is used to render a single unit item of a subsection of text or number type
@@ -21,7 +22,7 @@ export default class TextType extends React.Component {
       this.props.type == "number"
         ? textInputText.replace(/[^0-9]/g, "") // restrict non-numeric characters if the field type is number
         : textInputText;
-    this.props.value != textInputText // if the current value is/[is not] equal to the value it was when it was last saved then
+    this.props.value.toLowerCase() != textInputText.trim().toLowerCase() // if the current value is/[is not] equal to the value it was when it was last saved then
       ? this.props.setChangesMade(this.props.name, true) // set changesMade object associated with this component key to true
       : this.props.setChangesMade(this.props.name, false); // set changesMade object associated with this component key to false
     this.props.required && textInputText.length == 0
@@ -41,15 +42,6 @@ export default class TextType extends React.Component {
           {this.props.required && (
             <Text style={this.styles.asteriskStyle}>*</Text>
           )}
-          {/* <Text
-            style={
-              this.state.error
-                ? [this.styles.nameTextStyle, this.styles.switchBasedOnError]
-                : this.styles.nameTextStyle
-            }
-          >
-            {": "}
-          </Text> */}
         </View>
         {this.props.editable ? (
           <View>
@@ -92,6 +84,11 @@ export default class TextType extends React.Component {
         ) : (
           <Text style={this.styles.valueTextStyle}>{this.props.value}</Text>
         )}
+        <View>
+          {this.props.notes && (
+            <AddNote previousNotes={this.props.previousNotes} />
+          )}
+        </View>
       </View>
     );
   }
@@ -100,7 +97,6 @@ export default class TextType extends React.Component {
     topView: {
       marginLeft: 75,
       marginBottom: 20,
-      maxWidth: 250,
     },
     nameTextStyle: {
       fontWeight: "bold",
@@ -111,11 +107,12 @@ export default class TextType extends React.Component {
     textInputStyle: {
       height: 40,
       fontSize: 16,
-      minWidth: 120,
+      width: "75%",
     },
     valueTextStyle: {
       marginTop: 5,
       fontSize: 16,
+      marginRight: 35,
     },
     asteriskStyle: {
       color: "red",

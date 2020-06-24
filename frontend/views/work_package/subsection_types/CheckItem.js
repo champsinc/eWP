@@ -1,74 +1,90 @@
 import React from "react";
-import { View, Text, StyleSheet, Picker, Platform } from "react-native";
-import CheckBox from "react-native-check-box";
+import { View, StyleSheet, Text, Dimensions, Platform } from "react-native";
+import { Checkbox } from "react-native-paper";
 import { customTheme } from "../../../styles/Main";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
+/**
+ * This class is used to render a single unit item of a subsection of checkitem type
+ * @author Raghul Krishnan
+ */
 export class CheckItem extends React.Component {
-  intialCheckBoxStatus = this.props.value == "checked";
+  intialCheckBoxStatus = this.props.value;
   constructor(props) {
     super(props);
     this.state = {
-      checkBoxStatus: this.props.value == "checked",
+      checkBoxStatus: this.props.value,
     };
   }
 
   onValueChange = () => {
-    !this.state.checkBoxStatus != this.intialCheckBoxStatus
-      ? this.props.setChangesMade(this.props.name, true)
-      : this.props.setChangesMade(this.props.name, false);
-    this.setState({
-      checkBoxStatus: !this.state.checkBoxStatus,
-    });
+    this.setState(
+      {
+        checkBoxStatus:
+          this.state.checkBoxStatus == "checked" ? "unchecked" : "checked",
+      },
+      () => {
+        this.state.checkBoxStatus != this.intialCheckBoxStatus
+          ? this.props.setChangesMade(this.props.name, true)
+          : this.props.setChangesMade(this.props.name, false);
+      }
+    );
   };
 
   render() {
     return (
       <View style={styles.topView}>
-        <Text>*</Text>
-        <CheckBox
+        <Checkbox
           disabled={!this.props.editable}
-          isChecked={this.state.checkBoxStatus}
-          onClick={this.onValueChange}
-          rightText={this.props.name}
-          checkBoxColor={customTheme.primaryColor}
+          status={this.state.checkBoxStatus}
+          onPress={this.onValueChange}
+          color={
+            this.props.editable
+              ? customTheme.primaryColor
+              : customTheme.disabledColor
+          }
         />
+        <TouchableWithoutFeedback
+          onPress={this.props.editable ? this.onValueChange : () => {}}
+        >
+          <View style={styles.touchableView}>
+            <Text style={styles.textStyle}>
+              {this.props.name}
+              {this.props.required && (
+                <Text style={styles.asteriskStyle}> *</Text>
+              )}
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
 }
 
+const windowWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   topView: {
-    marginLeft: 75,
+    marginHorizontal: 15,
     marginBottom: 20,
     flexDirection: "row",
   },
   asteriskStyle: {
     color: "red",
     fontSize: 16,
-    lineHeight: Platform.OS == "web" ? 10 : 15,
+    lineHeight: 20,
+    position: "relative",
+    bottom: 3,
   },
-  pickerDesktop: {
-    width: 200,
-    height: 40,
-    backgroundColor: "white",
+  touchableView: {
+    marginTop: 7,
+    marginHorizontal: 20,
+    marginRight: 55,
+    maxWidth: Platform.OS == "web" ? windowWidth - 100 : windowWidth / 1.1,
+    flexDirection: "row",
   },
-  pickerPhone: {
-    width: 200,
-    height: 40,
-  },
-  pickerItem: {
-    height: 40,
-    color: "red",
-  },
-  nameTextStyle: {
-    fontWeight: "bold",
+  textStyle: {
     fontSize: 16,
-    marginBottom: 10,
-  },
-  errorText: {
-    marginTop: 5,
-    flexWrap: "wrap",
-    color: "red",
+    lineHeight: 20,
   },
 });

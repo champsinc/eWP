@@ -5,7 +5,7 @@ import { Portal, Dialog, Button, IconButton } from "react-native-paper";
 import { customTheme } from "../../../styles/Main";
 
 /**
- * This class is used to render a single unit item of a subsection of text or number type
+ * This class is used to render a single unit item of a subsection of date type
  * @author Raghul Krishnan
  */
 export default class DateType extends React.Component {
@@ -168,7 +168,6 @@ export default class DateType extends React.Component {
   // styles are p[laced inside beacuse props are used to style components
   styles = StyleSheet.create({
     topView: {
-      // flexDirection: "row",
       marginLeft: 15,
       marginBottom: 10,
     },

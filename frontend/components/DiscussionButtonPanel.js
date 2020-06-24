@@ -1,8 +1,10 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text, Platform } from "react-native";
 import { IconButton, ToggleButton } from "react-native-paper";
 import { customTheme } from "./../styles/Main";
 import FilePondModal from "./FilePondModal";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
 
 export default class DiscussionButtonPanel extends React.Component {
   constructor(props) {
@@ -10,6 +12,7 @@ export default class DiscussionButtonPanel extends React.Component {
     this.state = {
       sendAsRequestSelected: "unchecked",
       modalOpen: false,
+      uri: "",
     };
   }
 
@@ -41,6 +44,7 @@ export default class DiscussionButtonPanel extends React.Component {
           size={20}
           onPress={this.sendButtonPressed}
         />
+        {this.state.uri != "" && <Text> **Hi** {this.state.uri}</Text>}
         <FilePondModal
           modalOpen={this.state.modalOpen}
           onModalClose={this.onModalClose}
@@ -55,10 +59,10 @@ export default class DiscussionButtonPanel extends React.Component {
     });
   };
 
-  attachButtonPressed = () => {
+  attachButtonPressed = async (document) => {
     this.setState({
-      modalOpen: true,
-    });
+      
+    })
   };
 
   getTime = () => {

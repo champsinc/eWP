@@ -15,6 +15,7 @@ export const customTheme = {
   borderColorInDiscussionSection: "#C7C7C7",
   fontFamily: "Roboto, HelveticaNeue",
   textSelectionColor: "#488FFE",
+  disabledColor: "#C7C7C7",
 };
 
 export const paperTheme = {
@@ -27,9 +28,3 @@ export const paperTheme = {
     accent: "#03dac4",
   },
 };
-
-export const css = `
-<style>
-  input {outline: none !important}
-</style>
-`;
