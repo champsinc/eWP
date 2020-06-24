@@ -70,7 +70,6 @@ let data = [
         ],
       },
     ],
-    icon: "alpha-d-circle-outline",
   },
   {
     key: 2,
@@ -182,7 +181,6 @@ let data = [
         ],
       },
     ],
-    icon: "information",
   },
   {
     key: 3,
@@ -247,57 +245,47 @@ let data = [
         ],
       },
     ],
-    icon: "information",
   },
   {
     key: 4,
     type: "section",
     name: "Parts List",
     value: [],
-    icon: "information",
   },
   {
     key: 5,
     type: "section",
     name: "Tool List",
     value: [],
-    icon: "information",
   },
   {
     key: 6,
     type: "section",
     name: "Route",
     value: [],
-    icon: "information",
   },
   {
     key: 7,
     type: "section",
     name: "Time Entry",
     value: [],
-    icon: "information",
   },
   {
     key: 8,
     type: "section",
     name: "Completion",
     value: [],
-    icon: "information",
   },
   {
     key: 9,
     type: "section",
     name: "Add New",
     value: [],
-    icon: "information",
   },
 
   {
     key: 10,
-    type: "section",
-    name: "Add New",
-    value: [],
-    icon: "information",
+    name: "Users",
   },
 ];
 
@@ -380,7 +368,7 @@ export class WorkPackageView extends React.Component {
   };
 
   usersClicked = () => {
-    this.props.navigation.navigate("Work Package Users");
+    this.props.navigation.push("Work Package Users");
   };
 
   warningYesClicked = () => {
@@ -397,7 +385,6 @@ export class WorkPackageView extends React.Component {
   render() {
     return (
       <View style={styles.view}>
-        {/* <WorkPackageNavigator properties={this.props} /> */}
         {!this.state.showDiscussionView && !this.state.sectionClicked && (
           <View style={styles.view}>
             <AppBar
@@ -405,7 +392,7 @@ export class WorkPackageView extends React.Component {
               subTitle="Work Package"
               searchPlaceHolder="Search in this work package"
             />
-            {/* <View style={styles.gridCardTopView1}>
+            {/* <View style={styles.gridCardTopView}>
               {data.map((item, index) => {
                 return (
                   <View>

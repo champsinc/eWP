@@ -22,7 +22,7 @@ export default class NavigationDrawer extends React.Component {
     return (
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName="Dashboard"
+          initialRouteName="Work Package"
           drawerContentOptions={{
             activeTintColor: customTheme.primaryColor,
             itemStyle: { marginHorizontal: 0 },

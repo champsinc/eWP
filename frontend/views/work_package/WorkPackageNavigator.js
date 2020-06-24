@@ -13,13 +13,25 @@ export class WorkPackageNavigator extends React.Component {
   render() {
     return (
       <Stack.Navigator
-        initialRouteName={"Work Package"}
+        initialRouteName={"Work Package View"}
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Work Package" component={WorkPackageView} />
-        <Stack.Screen name="Work Package Users" component={WorkPackageUsers} />
+        <Stack.Screen
+          name="Work Package View"
+          component={WorkPackageView}
+          options={{
+            animationEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="Work Package Users"
+          component={WorkPackageUsers}
+          options={{
+            animationEnabled: false,
+          }}
+        />
       </Stack.Navigator>
     );
   }
