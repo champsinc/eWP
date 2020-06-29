@@ -7,6 +7,7 @@ import DiscussionPanel from "../../components/DiscussionPanel";
 import DiscussionView from "../../components/DiscussionView";
 import { SubsectionMapper } from "./SubsectionMapper";
 import { WarningDialog } from "../action_dialog/ActionDialogs";
+import { ScrollView } from "react-native-gesture-handler";
 
 let data = [
   {
@@ -42,6 +43,7 @@ let data = [
             notes: true,
             previousNotes: [],
           },
+
           {
             type: "date",
             name: "Order Date",
@@ -336,7 +338,7 @@ export class WorkPackageView extends React.Component {
 
   // this is the ref of the section view that is used to access a varibale to
   // set if the warning dialog should be shown or not
-  sectionView;
+  // sectionView;
 
   goBackFromSubsectionToSection = () => {
     this.sectionView.finalChangesMade

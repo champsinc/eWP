@@ -1,34 +1,33 @@
 import React from "react";
-import { WorkPackageUsers } from "./WorkPackageUsers";
-import { WorkPackageView } from "../../views/work_package/WorkPackageView";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Login } from "./Login";
 import { createStackNavigator } from "@react-navigation/stack";
+import { SignUp } from "./SignUp";
 
 let Stack = createStackNavigator();
 
-export class WorkPackageNavigator extends React.Component {
+export class LoginNavigator extends React.Component {
   constructor(props) {
     super(props);
+    // Stack = this.props.route.params.drawer;
   }
-
   render() {
     return (
       <Stack.Navigator
-        initialRouteName={"Work Package View"}
+        initialRouteName={"Login"}
         screenOptions={{
           headerShown: false,
         }}
       >
         <Stack.Screen
-          name="Work Package View"
-          component={WorkPackageView}
+          name="Login"
+          component={Login}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
-          name="Work Package Users"
-          component={WorkPackageUsers}
+          name="SignUp"
+          component={SignUp}
           options={{
             animationEnabled: false,
           }}

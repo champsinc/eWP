@@ -27,6 +27,7 @@ export default class App extends React.Component {
   render() {
     return (
       <SafeAreaProvider>
+        {/* {(console.disableYellowBox = true)} */}
         <StatusBar
           backgroundColor={customTheme.primaryColor}
           barStyle="light-content"

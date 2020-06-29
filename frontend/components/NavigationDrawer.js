@@ -9,11 +9,10 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import Dashboard from "../views/dashboard/Dashboard";
 import Profile from "../views/profile/Profile";
-import { WorkPackageView } from "../views/work_package/WorkPackageView";
-import { WorkPackageUsers } from "../views/work_package/WorkPackageUsers";
 import { MaterialIcons } from "@expo/vector-icons";
 import { customTheme } from "../styles/Main";
 import { WorkPackageNavigator } from "../views/work_package/WorkPackageNavigator";
+import { LoginNavigator } from "../views/login/LoginNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -22,12 +21,23 @@ export default class NavigationDrawer extends React.Component {
     return (
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName="Work Package"
+          initialRouteName="Login"
           drawerContentOptions={{
             activeTintColor: customTheme.primaryColor,
             itemStyle: { marginHorizontal: 0 },
           }}
+          backBehavior={"history"}
         >
+          <Drawer.Screen
+            name="Login"
+            component={LoginNavigator}
+            options={{
+              title: "Login",
+              drawerIcon: ({ focused, size }) => (
+                <MaterialIcons name="dashboard" size={size} />
+              ),
+            }}
+          />
           <Drawer.Screen
             name="Dashboard"
             component={Dashboard}
