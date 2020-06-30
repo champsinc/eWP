@@ -1,6 +1,7 @@
 package com.champsinc.ewp.service;
 
 import com.champsinc.ewp.model.WorkPackage;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -9,6 +10,6 @@ import java.util.List;
  * @author Dhiren Chandnani
  */
 public interface WorkPackageService {
+    String findById(String id);
     List<WorkPackage> findAll();
-    WorkPackage findByewpId(int ewpId);
 }
