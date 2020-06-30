@@ -1,5 +1,6 @@
 package com.champsinc.ewp.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -15,14 +16,13 @@ import java.util.List;
  */
 @Data
 @Document(collection = "sub_sections")
+@ApiModel
 public class SubSection {
 
     @Id
     private String id;
 
     private String name;
-    private ArrayList<ObjectId> value;
-
     @DBRef
     private List<DataItem> dataitems;
 }

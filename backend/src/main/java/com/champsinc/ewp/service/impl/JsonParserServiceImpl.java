@@ -86,7 +86,6 @@ public class JsonParserServiceImpl implements JsonParserService {
                                     // Create sub section model
                                     DataItem dataItemModel = createDataItemModel(dataItemElement);
                                     allDataItems.add(dataItemModel);
-                                    subSectionModel.getValue().add(new ObjectId(dataItemModel.getId()));
                                     subSectionModel.getDataitems().add(dataItemModel);
                                 }
                             }
@@ -162,7 +161,6 @@ public class JsonParserServiceImpl implements JsonParserService {
         SubSection subSectionModel = new SubSection();
         subSectionModel.setName(subSectionName);
         subSectionModel.setId(new ObjectId().toString());
-        subSectionModel.setValue(new ArrayList<>());
         subSectionModel.setDataitems(new ArrayList<>());
         return subSectionModel;
     }
@@ -187,7 +185,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         workPackageRepository.save(workPackage);
     }
 
-    private JsonObject checkDataItem(JsonObject dataItemObject, String sectionKeyName, String subSectionKeyName){
+    protected JsonObject checkDataItem(JsonObject dataItemObject, String sectionKeyName, String subSectionKeyName){
         JsonObject subSectionInnerResponse = new JsonObject();
         if(!checkValidTypeValue(dataItemObject.get(JsonParserUtils.KEYWORD_TYPE).getAsString()))
             return sendResponse(JsonParserUtils.NOT_VALID_TYPE, subSectionKeyName, sectionKeyName);
@@ -293,7 +291,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         }
     }
 
-    private boolean checkValidTypeValue(String type){
+    protected boolean checkValidTypeValue(String type){
         List<String> typeValuesEnum = Stream.of(Types.values()).map(Types::name).collect(Collectors.toList());
         return typeValuesEnum.contains(type);
     }
@@ -324,7 +322,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         return true;
     }
 
-    private boolean checkDate(String dateStr) {
+    protected boolean checkDate(String dateStr) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(JsonParserUtils.DATE_PATTERN);
         Date checkDate;
         try {

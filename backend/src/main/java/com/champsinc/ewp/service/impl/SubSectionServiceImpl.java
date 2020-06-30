@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of each function in the service class
@@ -37,5 +38,14 @@ public class SubSectionServiceImpl implements SubSectionService {
     public List<SubSection> findByListOfSubSectionIds(ArrayList<ObjectId> objectIds){
 
         return subSectionRepository.findByListOfSubSectionIds(objectIds);
+    }
+
+    /**
+     * Function to get work package by id
+     * @return specific work package by id
+     */
+    @Override
+    public Optional<SubSection> findById(String subSectionId){
+        return subSectionRepository.findById(subSectionId);
     }
 }

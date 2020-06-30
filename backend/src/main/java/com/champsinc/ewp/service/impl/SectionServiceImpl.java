@@ -1,19 +1,15 @@
 package com.champsinc.ewp.service.impl;
 
-import com.champsinc.ewp.model.B;
-import com.champsinc.ewp.model.Section;
-import com.champsinc.ewp.model.SubSection;
-import com.champsinc.ewp.model.WorkPackage;
+import com.champsinc.ewp.model.*;
+import com.champsinc.ewp.repository.DataItemRepository;
 import com.champsinc.ewp.repository.SectionRepository;
 import com.champsinc.ewp.repository.SubSectionRepository;
 import com.champsinc.ewp.repository.WorkPackageRepository;
 import com.champsinc.ewp.service.SectionService;
 import com.champsinc.ewp.service.SubSectionService;
 import com.champsinc.ewp.service.WorkPackageService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.champsinc.ewp.util.JsonParserUtils;
+import com.google.gson.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +33,10 @@ public class SectionServiceImpl implements SectionService {
     SectionRepository sectionRepository;
     @Autowired
     SubSectionService subSectionService;
+    @Autowired
+    JsonParserServiceImpl jsonParserService;
+    @Autowired
+    DataItemRepository dataItemRepository;
 
     /**
      * Function to get work package by id
@@ -89,10 +90,65 @@ public class SectionServiceImpl implements SectionService {
      */
     @Override
     public JsonObject updateSectionSubSections(String payload){
-        JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
-        String sectionId = rootObject.get("sectionId").getAsString();
-        String subSections = findSubSectionBySectionId(sectionId);
-        return null;
+        JsonObject response = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        ArrayList<DataItem> allDataItems = new ArrayList<>();
+        try {
+            JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
+            if (rootObject.has("sectionId")) {
+                String sectionId = rootObject.get("sectionId").getAsString();
+                Optional<Section> section = sectionRepository.findById(sectionId);
+                if (section.isPresent()) {
+                    if (rootObject.has("sub_sections")) {
+                        JsonArray subSectionArray = rootObject.getAsJsonArray("sub_sections");
+                        for (JsonElement subSection : subSectionArray) {
+                            JsonObject subSectionObject = subSection.getAsJsonObject();
+                            String subSectionId = subSectionObject.get("id").getAsString();
+                            if (subSectionService.findById(subSectionId).isPresent()) {
+                                JsonArray dataItemArray = subSectionObject.getAsJsonArray("value");
+                                // Parse through each subsection inner array
+                                for (JsonElement dataItemElement : dataItemArray) {
+                                    JsonObject dataItemObject = dataItemElement.getAsJsonObject();
+                                    Optional<DataItem> dataItemFromDB = dataItemRepository.findById(dataItemObject.get("id").getAsString());
+                                    if(dataItemFromDB.isPresent()) {
+                                        DataItem dataItemFromJson = gson.fromJson(dataItemObject, DataItem.class);
+                                        allDataItems.add(dataItemFromJson);
+                                    }
+                                    else{
+                                        response.addProperty("Error", "No such data item exists");
+                                    }
+                                }
+                            } else {
+                                response.addProperty("Error", "No such subsection exists");
+                            }
+                        }
+                        updateDataItem(allDataItems);
+                        response.addProperty("Success", "Data items updated successfully");
+                    } else {
+                        response.addProperty("error", "No such section exists");
+                    }
+                } else {
+                    response.addProperty("error", "No such section exists");
+                }
+            } else {
+                response.addProperty("error", "No Section id key present");
+            }
+            return response;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            StackTraceElement[] elements = e.getStackTrace();
+            response.addProperty("error", "exception has occurred");
+            response.addProperty("message", gson.toJson(elements));
+            return response;
+        }
+    }
+
+    private void updateDataItem(ArrayList<DataItem> allDataItems){
+        for (DataItem dataItem : allDataItems) {
+            //dataItemRepository.save(dataItem);
+            System.out.println(dataItem);
+        }
     }
 
 }

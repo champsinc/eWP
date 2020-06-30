@@ -1,5 +1,6 @@
 package com.champsinc.ewp.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
  */
 @Data
 @Document(collection = "sections")
+@ApiModel(value = "Defines a section")
 public class Section {
 
     @Id

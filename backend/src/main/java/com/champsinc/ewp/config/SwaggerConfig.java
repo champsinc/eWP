@@ -49,8 +49,13 @@ public class SwaggerConfig {
      * @return ApiInfoBuilder object
      */
     private ApiInfo metaData() {
-        return new ApiInfoBuilder().title(title)
-                .description(description)
+        return new ApiInfoBuilder()
+                .title("eWP Api Documentation")
+                .description(
+                        "Spring Boot REST API - This page documents all endpoints which can be accessed in the eWP application. " +
+                        "Any organization can test out these API links directly to see the type of data required and the expected output. " +
+                        "You can track the progress on eWP via Trello: https://trello.com/b/5bwLbCmN/ewp-champs"
+                )
                 .version(version)
                 .build();
     }
