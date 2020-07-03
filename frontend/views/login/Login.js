@@ -5,30 +5,37 @@ import {
   Text,
   Dimensions,
   Platform,
-  TouchableWithoutFeedbackBase,
+  Linking,
+  StatusBar,
 } from "react-native";
-import AppBar from "./../../components/AppBar";
-import { Button, TextInput } from "react-native-paper";
+import { Button, HelperText, Card } from "react-native-paper";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Fumi } from "react-native-textinput-effects";
+import { customTheme } from "../../styles/Main";
+import { ScrollView } from "react-native-gesture-handler";
+import { Image } from "react-native";
+import { util } from "../../assets/Utility";
 
 export class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      email: "",
-      password: "",
-      showError: false,
-      emailError: false,
-      passwordError: false,
-      shouldShowLogin: false,
-    };
+    this.state = this.initialState;
   }
+
+  initialState = {
+    email: "",
+    password: "",
+    showError: false,
+    emailError: false,
+    passwordError: false,
+  };
 
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   crendentials = [
     {
-      email: "raghul.sathya@gmail.com",
-      password: "abcd",
+      email: "r@go.co",
+      password: "abcdefgh",
     },
   ];
 
@@ -41,53 +48,50 @@ export class Login extends React.Component {
   };
 
   onLoginPress = () => {
-    this.crendentials.filter((credential) => {
-      return (
-        credential.email == this.state.email &&
-        credential.password == this.state.password
-      );
-    }).length > 0
-      ? this.props.navigation.navigate("Dashboard")
-      : this.setState({
-          showError: true,
-        });
+    this.checkEmailAddress();
+    this.checkPassword();
+    !this.state.emailError &&
+    this.state.email.trim() != "" &&
+    !this.state.passwordError &&
+    this.state.password != ""
+      ? this.crendentials.filter((credential) => {
+          return (
+            credential.email == this.state.email &&
+            credential.password == this.state.password
+          );
+        }).length > 0
+        ? [
+            this.setState(this.initialState),
+            this.props.navigation.push("2 Factor Auth", {
+              email: this.state.email,
+            }),
+          ]
+        : this.setState({
+            showError: true,
+          })
+      : "";
+  };
+
+  onResetPress = () => {
+    this.props.navigation.push("Reset Password Generate Link");
   };
 
   onChangeEmail = (email) => {
-    this.setState(
-      {
-        email,
-      },
-      () => {
-        this.setState({
-          shouldShowLogin: this.shouldShowLogin(),
-        });
-      }
-    );
+    this.setState({
+      email,
+      showError: false,
+    });
   };
 
   onChangePassword = (password) => {
-    this.setState(
-      {
-        password,
-      },
-      () => {
-        this.setState({
-          shouldShowLogin: this.shouldShowLogin(),
-        });
-      }
-    );
-  };
-
-  shouldShowLogin = () => {
-    return (
-      this.emailRegex.test(String(this.state.email).toLowerCase()) &&
-      this.state.password.length > 3
-    );
+    this.setState({
+      password,
+      showError: false,
+    });
   };
 
   checkEmailAddress = () => {
-    this.emailRegex.test(String(this.state.email).toLowerCase())
+    this.emailRegex.test(String(this.state.email))
       ? this.setState({
           emailError: false,
         })
@@ -97,7 +101,7 @@ export class Login extends React.Component {
   };
 
   checkPassword = () => {
-    this.state.password.length > 3
+    this.state.password.length >= 8
       ? this.setState({
           passwordError: false,
         })
@@ -109,32 +113,82 @@ export class Login extends React.Component {
   render() {
     return (
       <View style={styles.view}>
-        <AppBar toggleNavBar={this.toggleNavBar} subTitle="Login" />
-        <View style={styles.container}>
-          <View style={styles.oneRow}>
-            <Text style={styles.fieldName}>Email:</Text>
-            <TextInput
-              mode={"outlined"}
+        <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
+        <Image
+          source={{ uri: util.logoURL }}
+          style={styles.logo}
+          width={windowWidth - 20}
+          height={(windowWidth - 20) * 0.2566}
+        />
+        <Card style={styles.container} elevation={3}>
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={() => {}}
+              mode={"text"}
+              uppercase={false}
+              compact={false}
+              labelStyle={styles.authNavButtonActive}
+              style={{
+                borderBottomColor: customTheme.primaryColor,
+                borderBottomWidth: 3,
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              onPress={this.onSignUpPress}
+              mode={"text"}
+              uppercase={false}
+              compact={false}
+              labelStyle={styles.authNavButtonInActive}
+            >
+              Register
+            </Button>
+          </View>
+          <ScrollView>
+            <Fumi
+              label={"Your Email"}
               value={this.state.email}
               autoCapitalize={"none"}
               onChangeText={this.onChangeEmail}
               keyboardType={"email-address"}
               error={this.state.emailError}
-              style={styles.textInput}
               textContentType={"emailAddress"}
               textBreakStrategy={"balanced"}
               onBlur={this.checkEmailAddress}
+              iconClass={FontAwesomeIcon}
+              iconName={"user"}
+              iconColor={
+                this.state.emailError
+                  ? "rgb(176, 0, 32)"
+                  : customTheme.primaryColor
+              }
+              passiveIconColor={
+                this.state.emailError ? "rgb(176, 0, 32)" : "#a3a3a3"
+              }
+              iconSize={22}
+              iconWidth={40}
+              inputPadding={18}
+              inputStyle={{
+                color: "black",
+                outline: "none",
+              }}
+              height={50}
+              style={[
+                styles.textInput,
+                { marginTop: Platform.OS == "web" ? 80 : 50 },
+              ]}
+              autoCompleteType="off"
             />
-          </View>
-          {this.state.emailError && (
-            <Text style={styles.errorText}>
-              Please enter a vaild Email Address
-            </Text>
-          )}
-          <View style={styles.oneRow}>
-            <Text style={styles.fieldName}>Password:</Text>
-            <TextInput
-              mode={"outlined"}
+            <HelperText
+              type="error"
+              style={styles.helperText}
+              visible={this.state.emailError}
+            >
+              Email address is invalid!
+            </HelperText>
+            <Fumi
+              label={"Password"}
               autoCapitalize={"none"}
               secureTextEntry={true}
               value={this.state.password}
@@ -142,26 +196,68 @@ export class Login extends React.Component {
               error={this.state.passwordError}
               style={styles.textInput}
               onBlur={this.checkPassword}
+              iconClass={FontAwesomeIcon}
+              iconName={"key"}
+              iconColor={
+                this.state.passwordError
+                  ? "rgb(176, 0, 32)"
+                  : customTheme.primaryColor
+              }
+              passiveIconColor={
+                this.state.passwordError ? "rgb(176, 0, 32)" : "#a3a3a3"
+              }
+              iconSize={22}
+              iconWidth={40}
+              inputPadding={18}
+              height={50}
+              inputStyle={{ color: "black", outline: "none" }}
+              autoCompleteType="off"
             />
-          </View>
-          {this.state.passwordError && (
-            <Text style={styles.errorText}>Minimum passsword length is 4</Text>
-          )}
-          {this.state.shouldShowLogin && (
-            <View style={styles.oneRow}>
-              <Button onPress={this.onLoginPress}>Login</Button>
-            </View>
-          )}
-          {this.state.showError && (
-            <Text style={styles.errorText}>
-              Your email address and password do not match our records
+            <HelperText
+              type="error"
+              style={[styles.helperText, { marginBottom: 0 }]}
+              visible={this.state.passwordError}
+            >
+              Password is invalid!
+            </HelperText>
+
+            <HelperText type="info" style={styles.forgotPasswordLink}>
+              <Text onPress={this.onResetPress}>Forgot Password?</Text>
+            </HelperText>
+
+            {this.state.showError && (
+              <Text style={styles.errorText}>
+                Your email address and password do not match our records
+              </Text>
+            )}
+            <Button
+              mode={"contained"}
+              style={styles.loginButton}
+              uppercase={false}
+              labelStyle={{
+                fontSize: 18,
+              }}
+              onPress={this.onLoginPress}
+              compact={false}
+            >
+              Login
+            </Button>
+
+            <Text style={styles.termsAndConditionsText}>
+              By continuing you agree to CHAMPS's{" "}
+              <Text
+                style={{ color: customTheme.linkColor }}
+                onPress={() => {
+                  Platform.OS === "web"
+                    ? window.open("https://google.com", "_blank")
+                    : Linking.openURL("https://google.com");
+                }}
+              >
+                Terms of Use
+              </Text>
             </Text>
-          )}
-          <View style={styles.oneRow}>
-            <Text style={styles.newUserText}>New User?</Text>
-            <Button onPress={this.onSignUpPress}> Sign Up</Button>
-          </View>
-        </View>
+          </ScrollView>
+        </Card>
       </View>
     );
   }
@@ -169,32 +265,73 @@ export class Login extends React.Component {
 
 const windowHeight = Dimensions.get("window").height;
 
+const windowWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    backgroundColor: "#f6f6f6",
+  },
+  logo: {
+    minHeight: Platform.OS == "web" ? 100 : 50,
+    alignSelf: "center",
+    top: Platform.OS == "web" ? windowHeight / 8 : windowHeight / 10,
+    width: Platform.OS == "web" ? 390 : windowWidth,
   },
   container: {
-    marginTop: windowHeight / 4,
-  },
-  oneRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fieldName: {
+    flex: 1,
+    marginTop: Platform.OS == "web" ? windowHeight / 4 : windowHeight / 5,
     alignSelf: "center",
-    flex: Platform.OS == "web" ? 0.1 : 0.5,
+    width: "100%",
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: Platform.OS == "web" ? "space-evenly" : "space-evenly",
+    marginTop: Platform.OS == "web" ? 40 : 20,
   },
   textInput: {
-    minWidth: 150,
-    maxWidth: 250,
-  },
-  newUserText: {
-    marginRight: 10,
+    marginHorizontal: Platform.OS == "web" ? "30%" : "10%",
+    width: Platform.OS == "web" ? "40%" : "80%",
+    borderRadius: 15,
+    backgroundColor: "rgba(206,206,206, 0.3)",
+    borderColor: "red",
   },
   errorText: {
-    color: "red",
+    color: "rgb(176, 0, 32)",
     fontSize: 14,
     textAlign: "center",
+  },
+  helperText: {
+    marginHorizontal: Platform.OS == "web" ? "30%" : "10%",
+    width: Platform.OS == "web" ? "40%" : "80%",
+    marginBottom: 10,
+    fontWeight: "bold",
+  },
+  forgotPasswordLink: {
+    marginHorizontal: Platform.OS == "web" ? "30%" : "10%",
+    width: Platform.OS == "web" ? "40%" : "80%",
+    textAlign: "right",
+    fontSize: 15,
+    color: customTheme.linkColor,
+  },
+  loginButton: {
+    minWidth: Platform.OS == "web" ? 300 : 200,
+    alignSelf: "center",
+    marginTop: 60,
+  },
+  termsAndConditionsText: {
+    textAlign: "center",
+    marginTop: 45,
+    color: "rgba(0,0,0,0.36)",
+  },
+  authNavButtonActive: {
+    fontSize: 20,
+    paddingBottom: 5,
+  },
+  authNavButtonInActive: {
+    fontSize: 20,
+    color: "#777",
   },
 });

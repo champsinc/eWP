@@ -2,13 +2,15 @@ import React from "react";
 import { Login } from "./Login";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SignUp } from "./SignUp";
+import { ResetPasswordGenerateLink } from "./ResetPasswordGenerateLink";
+import { ResetPassword } from "./ResetPassword";
+import { TwoFactorAuth } from "./TwoFactorAuth";
 
 let Stack = createStackNavigator();
 
 export class LoginNavigator extends React.Component {
   constructor(props) {
     super(props);
-    // Stack = this.props.route.params.drawer;
   }
   render() {
     return (
@@ -31,6 +33,29 @@ export class LoginNavigator extends React.Component {
           options={{
             animationEnabled: false,
           }}
+        />
+        <Stack.Screen
+          name="Reset Password Generate Link"
+          component={ResetPasswordGenerateLink}
+          options={{
+            animationEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="2 Factor Auth"
+          component={TwoFactorAuth}
+          options={{
+            animationEnabled: false,
+          }}
+          initialParams={{ email: "none" }}
+        />
+        <Stack.Screen
+          name="Reset Password"
+          component={ResetPassword}
+          options={{
+            animationEnabled: false,
+          }}
+          initialParams={{ email: "none" }}
         />
       </Stack.Navigator>
     );

@@ -102,6 +102,7 @@ export class SubsectionMapper extends React.Component {
           ) : (
             <View>
               {this.props.subSectionsData.map((subsection) => {
+                console.log(subsection);
                 return (
                   <View key={subsection.name}>
                     <List.Accordion

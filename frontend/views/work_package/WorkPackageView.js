@@ -7,7 +7,7 @@ import DiscussionPanel from "../../components/DiscussionPanel";
 import DiscussionView from "../../components/DiscussionView";
 import { SubsectionMapper } from "./SubsectionMapper";
 import { WarningDialog } from "../action_dialog/ActionDialogs";
-import { ScrollView } from "react-native-gesture-handler";
+import { util } from "../../assets/Utility";
 
 let data = [
   {
@@ -306,14 +306,18 @@ export class WorkPackageView extends React.Component {
       section: "",
       sectionClicked: false,
       showDialog: false,
+      subSectionData: [],
     };
     axios
-      .get(
-        "http://ganskop.com/proxy/https://rss.itunes.apple.com/api/v1/us/books/top-paid/all/10/explicit.json"
-      )
+      .get("http://ewpackage.gq:8080/api/wp/5ef26f1efbbc26166d2fcffe", {
+        headers: {
+          api_key: util.api_key,
+        },
+      })
       .then((response) => {
+        response.data.push({ id: "123456", name: "users" });
         this.setState({
-          dataSource: data,
+          dataSource: response.data,
         });
       });
   }
@@ -351,12 +355,29 @@ export class WorkPackageView extends React.Component {
         });
   };
 
+  getSectionId = () => {
+    return this.state.dataSource.filter((data) => {
+      return this.state.section == data.name;
+    })[0].id;
+  };
+
   getSubSectionsData = () => {
     // TODO: Just pass data after making a backend call since retreiving subsection data is done in a separate call
-    const section = data.filter((section) => {
-      return section.name == this.state.section;
-    });
-    return section[0].value;
+    axios
+      .get("http://ewpackage.gq:8080/api/section/" + this.getSectionId(), {
+        headers: {
+          api_key: util.api_key,
+        },
+      })
+      .then((response) => {
+        this.setState({ subSectionData: response.data });
+        return response.data;
+      });
+
+    // const section = data.filter((section) => {
+    //   return section.name == this.state.section;
+    // });
+    // return section[0].value;
   };
 
   setDataCopy = (newData) => {
@@ -394,35 +415,6 @@ export class WorkPackageView extends React.Component {
               subTitle="Work Package"
               searchPlaceHolder="Search in this work package"
             />
-            {/* <View style={styles.gridCardTopView}>
-              {data.map((item, index) => {
-                return (
-                  <View>
-                    <GridCard
-                      key={item.name}
-                      label={item.name.trim().substring(0, 1).toUpperCase()}
-                      icon={
-                        "alpha-" +
-                        item.name.trim().substring(0, 1).toLowerCase() +
-                        "-box-outline"
-                      }
-                      name={item.name}
-                      onPress={this.sectionClicked}
-                    />
-                    {index == 0 && (
-                      <GridCard
-                        key={"Users"}
-                        label={"U"}
-                        icon={"alpha-u-box-outline"}
-                        name={"Users"}
-                        onPress={this.sectionClicked}
-                      />
-                    )}
-                  </View>
-                );
-              })}
-            </View> */}
-
             <FlatList
               data={this.state.dataSource}
               renderItem={({ item, index }) => (
@@ -435,7 +427,7 @@ export class WorkPackageView extends React.Component {
                       item.name.trim().substring(0, 1).toLowerCase() +
                       "-box-outline"
                     }
-                    name={item.name}
+                    name={item.name.trim()}
                     onPress={
                       index == this.state.dataSource.length - 1
                         ? this.usersClicked
@@ -448,43 +440,36 @@ export class WorkPackageView extends React.Component {
               numColumns={Platform.OS == "web" ? 4 : 2}
               keyExtractor={(item, index) => index}
             />
-            {/* <View style={styles.gridCardTopView}>
-              <GridCard
-                key={"Users"}
-                label={"U"}
-                icon={"alpha-u-box-outline"}
-                name={"Users"}
-                onPress={this.usersClicked}
+          </View>
+        )}
+        {this.state.sectionClicked &&
+          !this.state.showDiscussionView &&
+          this.state.subSectionData.length != 0 && (
+            <View style={styles.view}>
+              <AppBar
+                toggleNavBar={this.toggleNavBar}
+                subTitle={this.state.section}
+                searchPlaceHolder="Search in this work package"
+                backButton={true}
+                backButtonAction={this.goBackFromSubsectionToSection}
               />
-            </View> */}
-          </View>
-        )}
-        {this.state.sectionClicked && !this.state.showDiscussionView && (
-          <View style={styles.view}>
-            <AppBar
-              toggleNavBar={this.toggleNavBar}
-              subTitle={this.state.section}
-              searchPlaceHolder="Search in this work package"
-              backButton={true}
-              backButtonAction={this.goBackFromSubsectionToSection}
-            />
-            <SubsectionMapper
-              ref={(ref) => (this.sectionView = ref)}
-              section={this.state.section}
-              subSectionsData={this.getSubSectionsData()}
-            />
-            <WarningDialog
-              showDialog={this.state.showDialog}
-              dialogTitle={"Warning!"}
-              dialogContent={
-                "There are unsaved changes, are you sure you want to go back?"
-              }
-              dialogClickAwayAction={this.onModalClose}
-              yesAction={this.warningYesClicked}
-              noAction={this.onModalClose}
-            />
-          </View>
-        )}
+              <SubsectionMapper
+                ref={(ref) => (this.sectionView = ref)}
+                section={this.state.section}
+                subSectionsData={this.state.subSectionData}
+              />
+              <WarningDialog
+                showDialog={this.state.showDialog}
+                dialogTitle={"Warning!"}
+                dialogContent={
+                  "There are unsaved changes, are you sure you want to go back?"
+                }
+                dialogClickAwayAction={this.onModalClose}
+                yesAction={this.warningYesClicked}
+                noAction={this.onModalClose}
+              />
+            </View>
+          )}
         <DiscussionPanel
           discussionViewOpen={this.state.showDiscussionView}
           toggleDiscussionView={this.toggleDiscussionView}

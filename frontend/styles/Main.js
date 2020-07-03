@@ -16,6 +16,7 @@ export const customTheme = {
   fontFamily: "Roboto, HelveticaNeue",
   textSelectionColor: "#488FFE",
   disabledColor: "#C7C7C7",
+  linkColor: "#0077B5",
 };
 
 export const paperTheme = {
