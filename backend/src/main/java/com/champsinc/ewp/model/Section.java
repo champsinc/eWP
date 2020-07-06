@@ -9,19 +9,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 
 /**
- * Model class for work package
+ * Model class for sections
  * @author Dhiren Chandnani
  */
 @Data
-@Document(collection = "work_packages")
-@ApiModel
-public class WorkPackage {
+@Document(collection = "sections")
+@ApiModel(value = "Defines a section")
+public class Section {
 
     @Id
     private String id;
 
-    private String title;
-    private ArrayList<ObjectId> sections;
-    private ArrayList<ObjectId> users;
-    private int status;
+    private String name;
+    private ArrayList<ObjectId> value;
+
 }

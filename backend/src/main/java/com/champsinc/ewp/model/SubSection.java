@@ -4,24 +4,25 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Model class for work package
+ * Model class for sections
  * @author Dhiren Chandnani
  */
 @Data
-@Document(collection = "work_packages")
+@Document(collection = "sub_sections")
 @ApiModel
-public class WorkPackage {
+public class SubSection {
 
     @Id
     private String id;
 
-    private String title;
-    private ArrayList<ObjectId> sections;
-    private ArrayList<ObjectId> users;
-    private int status;
+    private String name;
+    @DBRef
+    private List<DataItem> dataitems;
 }

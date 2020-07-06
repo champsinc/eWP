@@ -1,11 +1,12 @@
 package com.champsinc.ewp.config;
 
+import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoClient;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
@@ -28,8 +29,12 @@ public class MongoConfig {
      */
     @Bean
     public MongoClient mongoClient() {
-        MongoClientURI mongoUri = new MongoClientURI(mongosUri);
-        return new MongoClient(mongoUri);
+        return MongoClients.create(mongosUri);
     }
+
+    public @Bean MongoTemplate mongoTemplate() {
+        return new MongoTemplate(mongoClient(), databaseName);
+    }
+
 
 }
