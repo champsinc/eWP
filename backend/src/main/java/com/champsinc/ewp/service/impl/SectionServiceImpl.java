@@ -109,6 +109,9 @@ public class SectionServiceImpl implements SectionService {
                                 // Parse through each subsection inner array
                                 for (JsonElement dataItemElement : dataItemArray) {
                                     JsonObject dataItemObject = dataItemElement.getAsJsonObject();
+
+                                    // TODO
+
                                     Optional<DataItem> dataItemFromDB = dataItemRepository.findById(dataItemObject.get("id").getAsString());
                                     if(dataItemFromDB.isPresent()) {
                                         DataItem dataItemFromJson = gson.fromJson(dataItemObject, DataItem.class);

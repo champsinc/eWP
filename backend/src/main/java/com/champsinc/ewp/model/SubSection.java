@@ -24,5 +24,5 @@ public class SubSection {
 
     private String name;
     @DBRef
-    private List<DataItem> dataitems;
+    private List<Object> dataitems;
 }

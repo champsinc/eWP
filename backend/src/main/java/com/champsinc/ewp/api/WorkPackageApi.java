@@ -15,6 +15,7 @@ import java.util.List;
  * @author Dhiren Chandnani
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 @Api(tags = "Work Package API")
 public class WorkPackageApi {

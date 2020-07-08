@@ -78,14 +78,18 @@ public class JsonParserServiceImpl implements JsonParserService {
                                 JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(checkSubSection.get(1));
                                 // Parse through each subsection inner array
                                 for (JsonElement dataItemElement : subSectionInnerArray) {
+
                                     JsonObject dataItemObject = dataItemElement.getAsJsonObject();
                                     JsonObject checkDataItem = checkDataItem(dataItemObject, sectionKeyName, checkSubSection.get(1));
                                     if(checkDataItem.has(JsonParserUtils.KEYWORD_ERROR)){
                                         return checkDataItem;
                                     }
+
+                                    // TODO
                                     // Create sub section model
                                     DataItem dataItemModel = createDataItemModel(dataItemElement);
                                     allDataItems.add(dataItemModel);
+
                                     subSectionModel.getDataitems().add(dataItemModel);
                                 }
                             }

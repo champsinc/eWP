@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Dhiren Chandnani
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 @Api(tags = "Section API")
 public class SectionApi {

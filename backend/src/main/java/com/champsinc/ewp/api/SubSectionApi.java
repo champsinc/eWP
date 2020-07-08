@@ -16,6 +16,7 @@ import java.util.Optional;
  * @author Dhiren Chandnani
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 @Api(tags = "Sub Section API")
 public class SubSectionApi {
@@ -44,5 +45,7 @@ public class SubSectionApi {
         Optional<SubSection> subSection = subSectionService.findById(subSectionId);
         return subSection.map(mapSubSection -> new ResponseEntity<>(mapSubSection, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
+
+
 
 }

@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * Model class for sections
@@ -40,6 +41,9 @@ public class User {
 
     @Expose
     private boolean verified;
-
     private String activationCode;
+
+    private String forgotPasswordToken;
+    private Date forgotPasswordExpiryDate;
+
 }

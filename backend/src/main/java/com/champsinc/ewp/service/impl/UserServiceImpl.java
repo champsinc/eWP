@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Implementation of each function in the service class
@@ -123,17 +121,18 @@ public class UserServiceImpl implements UserService {
         User user = gson.fromJson(userCredentials, User.class);
         if(userRepository.findByEmail(user.getEmail()) == null){
             String activationCode = UUID.randomUUID().toString();
-            if(sendEmail(user.getEmail(), user.getName(), activationCode)){
-                user.setActivationCode(activationCode);
-                user.setVerified(false);
-                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-                responseJSON.addProperty("registration", true);
-            }
-            else{
-                responseJSON.addProperty("registration", false);
-            }
+            String url = "http://localhost:8080/api/user/activate?id="+activationCode;
+            String body = "Hi "+ user.getName() + ",\n" +
+                    "Thanks for registration. Please open this link to verify your email address.\n"+
+                    "Link: <a href=\""+url+"\">"+url+"</a>\n"+
+                    "\nBest Regards,\nChamps Software";
+            String subject = "New Account Activation";
+            user.setActivationCode(activationCode);
+            user.setVerified(false);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            responseJSON.addProperty("registration", sendEmail(user.getEmail(), subject, body));
         }
         else{
             responseJSON.addProperty("registration", false);
@@ -141,17 +140,11 @@ public class UserServiceImpl implements UserService {
         return gson.toJson(responseJSON);
     }
 
-    private boolean sendEmail(String email, String name, String token){
+    private boolean sendEmail(String email, String subject, String body){
         SimpleMailMessage msg = new SimpleMailMessage();
-        String url = "http://localhost:8080/api/user/activate?id="+token;
         msg.setTo(email);
-        msg.setSubject("New Account Activation");
-        msg.setText(
-                "Hi "+ name + ",\n" +
-                        "Thanks for registration. Please open this link to verify your email address.\n"+
-                        "Link: <a href=\""+url+"\">"+url+"</a>\n"+
-                        "\nBest Regards,\nChamps Software"
-                );
+        msg.setSubject(subject);
+        msg.setText(body);
         try{
             javaMailSender.send(msg);
             return true;
@@ -177,5 +170,68 @@ public class UserServiceImpl implements UserService {
         else{
             return false;
         }
+    }
+
+    /**
+     * Function to send forgot password email
+     * @return string response
+     */
+    @Override
+    public String userForgotPassword(String emailId){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        User user = userRepository.findByEmail(emailId);
+        JsonObject responseJSON = new JsonObject();
+        if(user != null){
+            String subject = "Reset Password";
+            String forgotPasswordCode = UUID.randomUUID().toString();
+            String url = "https://ewp.github.io/resetPassword?id=" + forgotPasswordCode;
+            String body = "Hi "+ user.getName() + ",\n" +
+                    "Please open the following link to reset your password.\n"+
+                    "Link: <a href=\""+url+"\">Reset Password</a>\n"+
+                    "\nBest Regards,\nChamps Software";
+            user.setForgotPasswordToken(forgotPasswordCode);
+            user.setForgotPasswordExpiryDate(calculateExpiryDate());
+            userRepository.save(user);
+            responseJSON.addProperty("forgot_password", sendEmail(user.getEmail(), subject, body));
+        }
+        else{
+            responseJSON.addProperty("forgot_password", false);
+        }
+        return gson.toJson(responseJSON);
+    }
+
+    private Date calculateExpiryDate(){
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(new Date().getTime());
+        cal.add(Calendar.MINUTE, 60*24);
+        return new Date(cal.getTime().getTime());
+    }
+
+    /**
+     * Function to send forgot password email
+     * @return string response
+     */
+    @Override
+    public String userForgotPasswordProcess(String forgotPasswordToken, String password){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject responseJSON = new JsonObject();
+        User user = userRepository.findByForgotPasswordToken(forgotPasswordToken);
+        if(user != null && checkExpiryDate(user.getForgotPasswordExpiryDate())){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setForgotPasswordExpiryDate(null);
+            user.setForgotPasswordToken(null);
+            userRepository.save(user);
+            responseJSON.addProperty("reset_password", true);
+        }
+        else{
+            responseJSON.addProperty("reset_password", false);
+        }
+        return gson.toJson(responseJSON);
+    }
+
+    private boolean checkExpiryDate(Date expiryDate){
+        final Calendar cal = Calendar.getInstance();
+        return expiryDate.before(cal.getTime());
     }
 }

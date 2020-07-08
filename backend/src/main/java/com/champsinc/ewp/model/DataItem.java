@@ -1,8 +1,6 @@
 package com.champsinc.ewp.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -28,4 +26,5 @@ public class DataItem {
     private int fileStatus;
     private int fileSize;
     private String fileType;
+
 }
