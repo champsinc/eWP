@@ -8,7 +8,9 @@ export class SingleSelect extends React.Component {
     : "Select Something";
   constructor(props) {
     super(props);
+    console.log(this.props.value);
     this.props.value.forEach((selectItem) => {
+      console.log(selectItem);
       selectItem.value == "selected"
         ? (this.intialSelected = selectItem.name)
         : this.emptyOption;
@@ -21,11 +23,11 @@ export class SingleSelect extends React.Component {
 
   onValueChange = (itemValue) => {
     itemValue != this.intialSelected
-      ? this.props.setChangesMade(this.props.name, true)
-      : this.props.setChangesMade(this.props.name, false);
+      ? this.props.setChangesMade(this.props.fieldName, true)
+      : this.props.setChangesMade(this.props.fieldName, false);
     this.props.required && itemValue == this.emptyOption
-      ? this.props.setError(this.props.name, true)
-      : this.props.setError(this.props.name, false);
+      ? this.props.setError(this.props.fieldName, true)
+      : this.props.setError(this.props.fieldName, false);
     this.setState({
       selected: itemValue,
       error:

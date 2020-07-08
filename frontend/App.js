@@ -18,29 +18,24 @@ const customTextProps = {
   },
 };
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    setCustomText(customTextProps);
-  }
+export default function App({ navigation }) {
+  setCustomText(customTextProps);
 
-  render() {
-    return (
-      <SafeAreaProvider>
-        {/* {(console.disableYellowBox = true)} */}
-        <StatusBar
-          backgroundColor={customTheme.primaryColor}
-          barStyle="light-content"
-        />
-        <SafeAreaView
-          forceInset={{ top: "always", bottom: "never" }}
-          style={{ flex: 1 }}
-        >
-          <PaperProvider theme={paperTheme}>
-            <NavigationDrawer />
-          </PaperProvider>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
+  return (
+    <SafeAreaProvider>
+      {/* {(console.disableYellowBox = true)} */}
+      <StatusBar
+        backgroundColor={customTheme.primaryColor}
+        barStyle="light-content"
+      />
+      <SafeAreaView
+        forceInset={{ top: "always", bottom: "never" }}
+        style={{ flex: 1 }}
+      >
+        <PaperProvider theme={paperTheme}>
+          <NavigationDrawer />
+        </PaperProvider>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }

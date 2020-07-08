@@ -13,15 +13,21 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { customTheme } from "../styles/Main";
 import { WorkPackageNavigator } from "../views/work_package/WorkPackageNavigator";
 import { LoginNavigator } from "../views/login/LoginNavigator";
+import { util } from "../assets/Utility";
+import { Linking } from "react-native";
 
 const Drawer = createDrawerNavigator();
+
+const linking = {
+  prefixes: [Linking],
+};
 
 export default class NavigationDrawer extends React.Component {
   render() {
     return (
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Drawer.Navigator
-          initialRouteName="Work Package"
+          initialRouteName="Login"
           drawerContentOptions={{
             activeTintColor: customTheme.primaryColor,
             itemStyle: { marginHorizontal: 0 },
@@ -61,7 +67,6 @@ export default class NavigationDrawer extends React.Component {
           <Drawer.Screen
             name="Work Package"
             component={WorkPackageNavigator}
-            initialParams={{ drawer: Drawer }}
             options={{
               title: "Work Package",
               drawerIcon: ({ focused, size }) => (

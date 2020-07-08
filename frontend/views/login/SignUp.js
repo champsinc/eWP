@@ -15,6 +15,7 @@ import { Fumi } from "react-native-textinput-effects";
 import { customTheme } from "../../styles/Main";
 import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native";
+import { Link } from "@react-navigation/native";
 import { util } from "../../assets/Utility";
 
 export class SignUp extends React.Component {
@@ -32,20 +33,16 @@ export class SignUp extends React.Component {
       emailError: false,
       passwordError: false,
       confirmPasswordError: false,
+      userNameOverlap: false,
+      emailAddressOverlap: false,
+      registerEmailSent: false,
     };
   }
 
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  crendentials = [
-    {
-      email: "raghul.sathya@gmail.com",
-      password: "abcd",
-    },
-  ];
-
   onLoginPress = () => {
-    this.props.navigation.pop();
+    this.props.navigation.navigate("Login");
   };
 
   onSignUpPress = () => {
@@ -64,7 +61,34 @@ export class SignUp extends React.Component {
     this.state.password != "" &&
     !this.state.confirmPasswordError &&
     this.state.confirmPassword != ""
-      ? axios.post("URL")
+      ? axios
+          .post(
+            util.api_url + "/user/register",
+            {
+              name: this.state.name,
+              userName: this.state.userName,
+              email: this.state.email,
+              password: this.state.password,
+            },
+            {
+              headers: {
+                api_key: util.api_key,
+              },
+            }
+          )
+          .then((res) => {
+            !res.userNameOverlap && !res.emailAddressOverlap
+              ? this.setState({
+                  registerEmailSent: true,
+                })
+              : "";
+          })
+          .catch((err) => {
+            this.setState({
+              userNameOverlap: err.userNameOverlap || true,
+              emailAddressOverlap: err.emailAddressOverlap || true,
+            });
+          })
       : "";
   };
 
@@ -109,7 +133,7 @@ export class SignUp extends React.Component {
   };
 
   checkName = () => {
-    this.state.name.length >= 8
+    this.state.name.length >= 4
       ? this.setState({
           nameError: false,
         })
@@ -119,7 +143,7 @@ export class SignUp extends React.Component {
   };
 
   checkUserName = () => {
-    this.state.userName.length >= 6
+    this.state.userName.length >= 4
       ? this.setState({
           userNameError: false,
         })
@@ -263,9 +287,11 @@ export class SignUp extends React.Component {
               style={styles.helperText}
               visible={this.state.userNameError}
             >
-              User name is invalid!
+              User name should be atleast 4 characters
             </HelperText>
-
+            <Link to="/Profile" style={styles.link}>
+              Jamie's Profile
+            </Link>
             <Fumi
               label={"Your Email"}
               value={this.state.email}
@@ -372,6 +398,27 @@ export class SignUp extends React.Component {
               Passwords do not match!
             </HelperText>
 
+            {this.state.registerEmailSent && (
+              <Text style={styles.infoText}>
+                An email has been sent to {this.state.email}, click on the link
+                to activate
+              </Text>
+            )}
+
+            {this.state.userNameOverlap || this.state.emailAddressOverlap ? (
+              <Text style={styles.errorText}>
+                {this.state.userNameOverlap && this.state.emailAddressOverlap
+                  ? "Username and email address are already taken"
+                  : this.state.emailAddressOverlap
+                  ? "Email Address is already taken"
+                  : this.state.userNameOverlap
+                  ? "Username is already taken"
+                  : ""}
+              </Text>
+            ) : (
+              <View />
+            )}
+
             <Button
               mode={"contained"}
               style={styles.loginButton}
@@ -401,127 +448,6 @@ export class SignUp extends React.Component {
           </ScrollView>
         </Card>
       </View>
-
-      //       <Text style={styles.fieldName}>Name:</Text>
-      //       <TextInput
-      //         mode={"outlined"}
-      //         value={this.state.name}
-      //         autoCapitalize={"none"}
-      //         onChangeText={this.onChangeName}
-      //         error={this.state.nameError}
-      //         style={styles.textInput}
-      //         textBreakStrategy={"balanced"}
-      //         onBlur={this.checkName}
-      //         autoCompleteType="off"
-      //       />
-      //     </View>
-      //     {this.state.nameError && (
-      //       <View style={styles.oneRow}>
-      //         <Text style={styles.errorText}>
-      //           Name should be a minimum of 8 characters
-      //         </Text>
-      //       </View>
-      //     )}
-      //     <View style={styles.oneRow}>
-      //       <Text style={styles.fieldName}>User Name:</Text>
-      //       <TextInput
-      //         mode={"outlined"}
-      //         value={this.state.userName}
-      //         autoCapitalize={"none"}
-      //         onChangeText={this.onChangeUserName}
-      //         error={this.state.userNameError}
-      //         style={styles.textInput}
-      //         textBreakStrategy={"balanced"}
-      //         onBlur={this.checkUserName}
-      //         autoCompleteType="off"
-      //       />
-      //     </View>
-      //     {this.state.userNameError && (
-      //       <View style={styles.oneRow}>
-      //         <Text style={styles.errorText}>
-      //           User Name should be a minimum of 6 characters
-      //         </Text>
-      //       </View>
-      //     )}
-      //     <View style={styles.oneRow}>
-      //       <Text style={styles.fieldName}>Email:</Text>
-
-      //       <TextInput
-      //         mode={"outlined"}
-      //         value={this.state.email}
-      //         autoCapitalize={"none"}
-      //         onChangeText={this.onChangeEmail}
-      //         keyboardType={"email-address"}
-      //         error={this.state.emailError}
-      //         style={styles.textInput}
-      //         textContentType={"emailAddress"}
-      //         textBreakStrategy={"balanced"}
-      //         onBlur={this.checkEmailAddress}
-      //         autoCompleteType="off"
-      //       />
-      //     </View>
-      //     {this.state.emailError && (
-      //       <Text style={styles.errorText}>
-      //         Please enter a vaild Email Address
-      //       </Text>
-      //     )}
-      //     <View style={styles.oneRow}>
-      //       <Text style={styles.fieldName}>Password:</Text>
-      //       <TextInput
-      //         mode={"outlined"}
-      //         autoCapitalize={"none"}
-      //         secureTextEntry={true}
-      //         value={this.state.password}
-      //         onChangeText={this.onChangePassword}
-      //         error={this.state.passwordError}
-      //         style={styles.textInput}
-      //         onBlur={this.checkPassword}
-      //         autoCompleteType="off"
-      //       />
-      //     </View>
-      //     {this.state.passwordError && (
-      //       <View>
-      //         <Text style={styles.errorText}>
-      //           Your Password does not match the requirements:
-      //         </Text>
-      //         <Text style={styles.errorText}>1. Atleast 8 characters</Text>
-      //         <Text style={styles.errorText}>2. Atleast one number</Text>
-      //         <Text style={styles.errorText}>
-      //           3. Atleast one uppercase and one lower case
-      //         </Text>
-      //         <Text style={styles.errorText}>
-      //           4. Atleast one special character
-      //         </Text>
-      //       </View>
-      //     )}
-      //     <View style={styles.oneRow}>
-      //       <Text style={styles.fieldName}>Confirm Password:</Text>
-      //       <TextInput
-      //         mode={"outlined"}
-      //         autoCapitalize={"none"}
-      //         secureTextEntry={true}
-      //         value={this.state.confirmPassword}
-      //         onChangeText={this.onChangeConfirmPassword}
-      //         error={this.state.confirmPasswordError}
-      //         style={styles.textInput}
-      //         onBlur={this.checkConfirmPassword}
-      //         autoCompleteType="off"
-      //       />
-      //     </View>
-      //     {!this.state.passwordError && this.state.confirmPasswordError && (
-      //       <Text style={styles.errorText}>Passwords do not match</Text>
-      //     )}
-
-      //     <View style={styles.oneRow}>
-      //       <Button onPress={this.onSignUpPress}>Sign Up</Button>
-      //     </View>
-
-      //     <View style={styles.oneRow}>
-      //       <Text style={styles.newUserText}>Existing User?</Text>
-      //       <Button onPress={this.onExistingPress}>Login</Button>
-      //     </View>
-      //   </View>
-      // </View>
     );
   }
 }
@@ -535,6 +461,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f6f6f6",
   },
+
   logo: {
     minHeight: Platform.OS == "web" ? 100 : 50,
     alignSelf: "center",
@@ -572,7 +499,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: "bold",
   },
-  forgotPasswordLink: {
+  link: {
     marginHorizontal: Platform.OS == "web" ? "30%" : "10%",
     width: Platform.OS == "web" ? "40%" : "80%",
     textAlign: "right",
@@ -597,32 +524,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#777",
   },
-
-  // view: {
-  //   flex: 1,
-  // },
-  // container: {
-  //   marginTop: windowHeight / 4,
-  // },
-  // oneRow: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  // },
-  // fieldName: {
-  //   alignSelf: "center",
-  //   flex: Platform.OS == "web" ? 0.06 : 0.5,
-  // },
-  // textInput: {
-  //   minWidth: 150,
-  //   maxWidth: 250,
-  // },
-  // newUserText: {
-  //   marginRight: 10,
-  // },
-  // errorText: {
-  //   color: "red",
-  //   fontSize: 16,
-  //   textAlign: "center",
-  // },
+  infoText: {
+    textAlign: "center",
+    fontSize: 14,
+    color: customTheme.linkColor,
+  },
 });

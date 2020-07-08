@@ -15,6 +15,7 @@ import { customTheme } from "../../styles/Main";
 import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native";
 import { util } from "../../assets/Utility";
+import axios from "axios";
 
 export class Login extends React.Component {
   constructor(props) {
@@ -54,20 +55,26 @@ export class Login extends React.Component {
     this.state.email.trim() != "" &&
     !this.state.passwordError &&
     this.state.password != ""
-      ? this.crendentials.filter((credential) => {
-          return (
-            credential.email == this.state.email &&
-            credential.password == this.state.password
-          );
-        }).length > 0
-        ? [
-            this.setState(this.initialState),
-            this.props.navigation.push("2 Factor Auth", {
+      ? axios
+          .post(
+            util.api_url + "/user/login",
+            {
               email: this.state.email,
-            }),
-          ]
-        : this.setState({
-            showError: true,
+              password: this.state.password,
+            },
+            {
+              headers: {
+                api_key: util.api_key,
+              },
+            }
+          )
+          .then((res) => {
+            this.props.navigation.navigate("Dashboard");
+          })
+          .catch((err) => {
+            this.setState({
+              showError: true,
+            });
           })
       : "";
   };
@@ -227,7 +234,7 @@ export class Login extends React.Component {
 
             {this.state.showError && (
               <Text style={styles.errorText}>
-                Your email address and password do not match our records
+                Your email address or password is not correct
               </Text>
             )}
             <Button
@@ -299,6 +306,7 @@ const styles = StyleSheet.create({
     borderColor: "red",
   },
   errorText: {
+    marginTop: 20,
     color: "rgb(176, 0, 32)",
     fontSize: 14,
     textAlign: "center",

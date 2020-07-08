@@ -15,6 +15,7 @@ import { customTheme } from "../../styles/Main";
 import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native";
 import { util } from "../../assets/Utility";
+import axios from "axios";
 
 export class ResetPasswordGenerateLink extends React.Component {
   constructor(props) {
@@ -23,7 +24,6 @@ export class ResetPasswordGenerateLink extends React.Component {
       email: "",
       emailError: false,
       showError: false,
-      showSent: false,
       showSent: false,
     };
   }
@@ -44,20 +44,37 @@ export class ResetPasswordGenerateLink extends React.Component {
   };
 
   onSendResetPress = () => {
-    // TODO: Axios call and then check
     this.checkEmail();
-    let valid = true; //whether this email belongs in our system
-    !this.state.emailError && this.state.email.trim() != ""
-      ? valid
-        ? this.setState({ showError: false, showSent: true })
-        : this.setState({ showError: true, showSent: false })
+    this.state.email != "" && !this.state.emailError
+      ? axios
+          .get(
+            util.api_url + "/user/forgot_password?emailId=" + this.state.email,
+            {
+              headers: {
+                api_key: util.api_key,
+              },
+            }
+          )
+          .then((res) => {
+            this.setState({
+              showSent: true,
+            });
+          })
+          .catch((err) => {
+            this.setState({
+              showError: true,
+            });
+          })
       : "";
   };
 
   render() {
     return (
       <View style={styles.view}>
-        <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor={customTheme.loginColor}
+        />
         <Image
           source={{ uri: util.logoURL }}
           style={styles.logo}
@@ -67,7 +84,6 @@ export class ResetPasswordGenerateLink extends React.Component {
         <Card style={styles.container} elevation={3}>
           <View style={styles.buttonContainer}>
             <Text style={styles.headingText}>Reset Password</Text>
-            <Text style={{ color: "#fff" }}>Reset Passwword</Text>
           </View>
           <ScrollView>
             <Text style={styles.questionText}>
@@ -123,7 +139,7 @@ export class ResetPasswordGenerateLink extends React.Component {
             )}
             {this.state.showSent && (
               <HelperText type="info" style={styles.emailSentText}>
-                An Email with the reset link has been sent to {this.state.email}
+                An email with the reset link has been sent to {this.state.email}
               </HelperText>
             )}
             <View style={styles.actionButtonContainer}>
@@ -134,7 +150,7 @@ export class ResetPasswordGenerateLink extends React.Component {
                 labelStyle={{
                   fontSize: 18,
                 }}
-                onPress={() => this.props.navigation.pop()}
+                onPress={() => this.props.navigation.navigate("Login")}
                 compact={false}
               >
                 Back
@@ -183,8 +199,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: Platform.OS == "web" ? "space-evenly" : "space-evenly",
     marginTop: Platform.OS == "web" ? 40 : 20,
   },
   questionText: {
@@ -218,6 +232,8 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: 22,
+    fontWeight: "bold",
+    textAlign: "center",
     color: "#777",
     marginLeft: Platform.OS == "web" ? 35 : -15,
   },

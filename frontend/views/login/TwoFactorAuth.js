@@ -9,7 +9,7 @@ import {
   Linking,
 } from "react-native";
 import { Button, HelperText, Card } from "react-native-paper";
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Fumi } from "react-native-textinput-effects";
 import { customTheme } from "../../styles/Main";
 import { ScrollView } from "react-native-gesture-handler";
@@ -73,7 +73,10 @@ export class TwoFactorAuth extends React.Component {
     let props = this.props.route.params;
     return (
       <View style={styles.view}>
-        <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor={customTheme.loginStatusBarColor}
+        />
         <Image
           source={{ uri: util.logoURL }}
           style={styles.logo}
@@ -82,8 +85,7 @@ export class TwoFactorAuth extends React.Component {
         />
         <Card style={styles.container} elevation={3}>
           <View style={styles.buttonContainer}>
-            <Text style={styles.headingText}>Two-Factor Authentication</Text>
-            <Text style={{ color: "#fff" }}></Text>
+            <Text style={styles.headingText}>Two Step Verification</Text>
           </View>
           <ScrollView>
             <Text style={styles.questionText}>
@@ -98,8 +100,8 @@ export class TwoFactorAuth extends React.Component {
               error={this.state.codeError}
               onBlur={this.checkCode}
               textBreakStrategy={"balanced"}
-              iconClass={FontAwesomeIcon}
-              iconName={"user"}
+              iconClass={Icon}
+              iconName={"numeric"}
               iconColor={
                 this.state.codeError
                   ? "rgb(176, 0, 32)"
@@ -193,8 +195,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: Platform.OS == "web" ? "space-evenly" : "space-evenly",
     marginTop: Platform.OS == "web" ? 40 : 20,
   },
   questionText: {
@@ -228,8 +228,9 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: 22,
+    fontWeight: "bold",
     color: "#777",
-    marginLeft: Platform.OS == "web" ? 35 : -15,
+    textAlign: "center",
   },
   actionButtonContainer: {
     flexDirection: "row",

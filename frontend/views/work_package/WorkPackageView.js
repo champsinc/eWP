@@ -11,32 +11,26 @@ import { util } from "../../assets/Utility";
 
 let data = [
   {
-    key: 1,
     type: "section",
-    name: "Details",
-    value: [
+    Details: [
       {
         type: "sub_section",
-        name: "Work Order Info Details",
-        value: [
+        "Work Order Info Details": [
           {
             type: "number",
-            name: "Work Order Id",
-            value: 12,
+            "Work Order Id": 12,
             editable: true,
             required: false,
           },
           {
             type: "text",
-            name: "Title",
-            value: "Fix water system",
+            Title: "Fix water system",
             editable: true,
             required: true,
           },
           {
             type: "text",
-            name: "Description",
-            value:
+            Description:
               "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
             editable: false,
             required: false,
@@ -46,26 +40,24 @@ let data = [
 
           {
             type: "date",
-            name: "Order Date",
-            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+            "Order Date":
+              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: true,
           },
         ],
       },
       {
         type: "sub_section",
-        name: "Work Order Time Line Details",
-        value: [
+        "Work Order Time Line Details": [
           {
             type: "date",
-            name: "Order Date",
-            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+            "Order Date":
+              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: false,
           },
           {
             type: "date",
-            name: "Expected Date of Delivery",
-            value: "",
+            "Expected Date of Delivery": "",
             editable: true,
             required: true,
           },
@@ -74,31 +66,24 @@ let data = [
     ],
   },
   {
-    key: 2,
     type: "section",
-    name: "Instructions",
-    value: [
+    Instructions: [
       {
         type: "sub_section",
-        name: "Abstract list",
-        value: [
+        "Abstract list": [
           {
             type: "selectbox",
-            name: "Fruits",
-            value: [
+            Fruits: [
               {
-                name: "Orange",
-                value: "selected",
+                Orange: "selected",
                 type: "selectitem",
               },
               {
-                name: "Apple",
-                value: "not-selected",
+                Apple: "not-selected",
                 type: "selectitem",
               },
               {
-                name: "Bananas",
-                value: "not-selected",
+                Bananas: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -107,21 +92,17 @@ let data = [
           },
           {
             type: "selectbox",
-            name: "Animals",
-            value: [
+            Animals: [
               {
-                name: "Cat",
-                value: "selected",
+                Cat: "selected",
                 type: "selectitem",
               },
               {
-                name: "Lion",
-                value: "not-selected",
+                Lion: "not-selected",
                 type: "selectitem",
               },
               {
-                name: "Tiger",
-                value: "not-selected",
+                Tiger: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -130,21 +111,17 @@ let data = [
           },
           {
             type: "selectbox",
-            name: "Birds",
-            value: [
+            Birds: [
               {
-                name: "Peacock",
-                value: "selected",
+                Peacock: "selected",
                 type: "selectitem",
               },
               {
-                name: "Crow",
-                value: "not-selected",
+                Crow: "not-selected",
                 type: "selectitem",
               },
               {
-                name: "Pigeon",
-                value: "not-selected",
+                Pigeon: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -154,48 +131,41 @@ let data = [
         ],
       },
       {
-        name: "Checklist of things required",
-        type: "sub_section",
-        value: [
+        "Checklist of things required": [
           {
-            name:
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            value: "checked",
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.":
+              "checked",
             type: "checkitem",
             required: false,
             editable: false,
           },
           {
-            name:
-              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
-            value: "checked",
+            "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with":
+              "checked",
             type: "checkitem",
             required: true,
             editable: true,
           },
           {
-            name: "Lorem Ipsum is ",
-            value: "checked",
+            "Lorem Ipsum is ": "checked",
             type: "checkitem",
             required: true,
             editable: true,
           },
         ],
+        type: "sub_section",
       },
     ],
   },
   {
-    key: 3,
     type: "section",
-    name: "Attachments",
-    value: [
+    Attachments: [
       {
         type: "sub_section",
-        name: "General Info Documents",
-        value: [
+        "General Info Documents": [
           {
-            name: "Purchase Items - Part List A",
-            value: "http://www.africau.edu/images/default/sample.pdf",
+            "Purchase Items - Part List A":
+              "http://www.africau.edu/images/default/sample.pdf",
             type: "file",
             editable: true,
             required: true,
@@ -207,8 +177,7 @@ let data = [
             previousNotes: [],
           },
           {
-            name: "Random Picture Q",
-            value: "https://picsum.photos/700",
+            "Random Picture Q": "https://picsum.photos/700",
             type: "file",
             editable: true,
             required: true,
@@ -221,11 +190,10 @@ let data = [
       },
       {
         type: "sub_section",
-        name: "Equipment Related Documents",
-        value: [
+        "Equipment Related Documents": [
           {
-            name: "Sampling and Sub-Sampling Results",
-            value: "http://www.africau.edu/images/default/sample.pdf",
+            "Sampling and Sub-Sampling Results":
+              "http://www.africau.edu/images/default/sample.pdf",
             type: "file",
             editable: true,
             status: 1,
@@ -236,8 +204,7 @@ let data = [
             previousNotes: [],
           },
           {
-            name: "Random Equipment X",
-            value: "https://picsum.photos/800",
+            "Random Equipment X": "https://picsum.photos/800",
             type: "file",
             editable: false,
             fileSize: "3MB",
@@ -249,45 +216,28 @@ let data = [
     ],
   },
   {
-    key: 4,
     type: "section",
-    name: "Parts List",
-    value: [],
+    "Parts List": [],
   },
   {
-    key: 5,
     type: "section",
-    name: "Tool List",
-    value: [],
+    "Tool List": [],
   },
   {
-    key: 6,
     type: "section",
-    name: "Route",
-    value: [],
+    Route: [],
   },
   {
-    key: 7,
     type: "section",
-    name: "Time Entry",
-    value: [],
+    "Time Entry": [],
   },
   {
-    key: 8,
     type: "section",
-    name: "Completion",
-    value: [],
+    Completion: [],
   },
   {
-    key: 9,
     type: "section",
-    name: "Add New",
-    value: [],
-  },
-
-  {
-    key: 10,
-    name: "Users",
+    "Add New": [],
   },
 ];
 
@@ -308,8 +258,9 @@ export class WorkPackageView extends React.Component {
       showDialog: false,
       subSectionData: [],
     };
+
     axios
-      .get("http://ewpackage.gq:8080/api/wp/5ef26f1efbbc26166d2fcffe", {
+      .get(util.api_url + "/wp/5ef26f1efbbc26166d2fcffe", {
         headers: {
           api_key: util.api_key,
         },
@@ -364,7 +315,7 @@ export class WorkPackageView extends React.Component {
   getSubSectionsData = () => {
     // TODO: Just pass data after making a backend call since retreiving subsection data is done in a separate call
     axios
-      .get("http://ewpackage.gq:8080/api/section/" + this.getSectionId(), {
+      .get(util.api_url + "/section/" + this.getSectionId(), {
         headers: {
           api_key: util.api_key,
         },
@@ -442,34 +393,33 @@ export class WorkPackageView extends React.Component {
             />
           </View>
         )}
-        {this.state.sectionClicked &&
-          !this.state.showDiscussionView &&
-          this.state.subSectionData.length != 0 && (
-            <View style={styles.view}>
-              <AppBar
-                toggleNavBar={this.toggleNavBar}
-                subTitle={this.state.section}
-                searchPlaceHolder="Search in this work package"
-                backButton={true}
-                backButtonAction={this.goBackFromSubsectionToSection}
-              />
-              <SubsectionMapper
-                ref={(ref) => (this.sectionView = ref)}
-                section={this.state.section}
-                subSectionsData={this.state.subSectionData}
-              />
-              <WarningDialog
-                showDialog={this.state.showDialog}
-                dialogTitle={"Warning!"}
-                dialogContent={
-                  "There are unsaved changes, are you sure you want to go back?"
-                }
-                dialogClickAwayAction={this.onModalClose}
-                yesAction={this.warningYesClicked}
-                noAction={this.onModalClose}
-              />
-            </View>
-          )}
+        {this.state.sectionClicked && !this.state.showDiscussionView && (
+          <View style={styles.view}>
+            <AppBar
+              toggleNavBar={this.toggleNavBar}
+              subTitle={this.state.section}
+              searchPlaceHolder="Search in this work package"
+              backButton={true}
+              backButtonAction={this.goBackFromSubsectionToSection}
+            />
+            <SubsectionMapper
+              ref={(ref) => (this.sectionView = ref)}
+              section={this.state.section}
+              sectionId={this.getSectionId()}
+              // subSectionsData={this.state.subSectionData}
+            />
+            <WarningDialog
+              showDialog={this.state.showDialog}
+              dialogTitle={"Warning!"}
+              dialogContent={
+                "There are unsaved changes, are you sure you want to go back?"
+              }
+              dialogClickAwayAction={this.onModalClose}
+              yesAction={this.warningYesClicked}
+              noAction={this.onModalClose}
+            />
+          </View>
+        )}
         <DiscussionPanel
           discussionViewOpen={this.state.showDiscussionView}
           toggleDiscussionView={this.toggleDiscussionView}

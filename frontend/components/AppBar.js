@@ -7,7 +7,7 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import SearchBar from "./SearchBar";
 import { Appbar } from "react-native-paper";
-import { customTheme } from "../styles/Main";
+import { customTheme, commonStyles } from "../styles/Main";
 
 export default class AppBar extends React.Component {
   constructor(props) {
@@ -58,6 +58,7 @@ export default class AppBar extends React.Component {
             <Appbar.Content
               title={this.props.title || "eWP"}
               subtitle={this.props.subTitle || "Electronic Work Package"}
+              subtitleStyle={commonStyles.capitalizeText}
             />
             <Appbar.Action icon="magnify" onPress={this.searchBarOn} />
           </Appbar.Header>

@@ -96,41 +96,6 @@ export class WorkPackageUsers extends React.Component {
                             filterRole={"Planner"}
                           />
                         ) : (
-                          // <MentionsTextInput
-                          //   key={"Planner Details"}
-                          //   placeHolder={user.name}
-                          //   textInputStyle={{
-                          //     borderColor: "gray", // inline styles because styles variable doesnt work in web
-                          //     borderWidth: 1,
-                          //     padding: 10,
-                          //   }}
-                          //   suggestionsPanelStyle={{
-                          //     backgroundColor: "rgba(100,100,100,0.1)", // inline styles because styles variable doesnt work in web
-                          //     marginBottom: 2,
-                          //   }}
-                          //   loadingComponent={() => <View />}
-                          //   textInputMinHeight={50}
-                          //   textInputMaxHeight={80}
-                          //   trigger={"@"}
-                          //   triggerLocation={"new-word-only"}
-                          //   value={user}
-                          //   onChangeText={(text) =>
-                          //     this.onChangeText(text)
-                          //   }
-                          //   triggerCallback={this.callback.bind(this)}
-                          //   renderSuggestionsRow={this.renderSuggestionsRow.bind(
-                          //     this
-                          //   )}
-                          //   suggestionsData={this.state.data} // array of objects
-                          //   keyExtractor={(item, index) => item.UserName}
-                          //   suggestionRowHeight={
-                          //     this.state.data.length > 0 ? 45 : 0
-                          //   }
-                          //   horizontal={false} // the orientation of the list
-                          //   MaxVisibleRowCount={
-                          //     this.state.data.length > 0 ? 3 : 0
-                          //   }
-                          // />
                           <Text style={styles.personName}>
                             {user.DisplayName}
                           </Text>

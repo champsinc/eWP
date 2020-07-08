@@ -1,8 +1,14 @@
 import React from "react";
 import MentionsTextInput from "react-native-mentions";
-import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Text,
+  Dimensions,
+} from "react-native";
 import { customTheme } from "../styles/Main";
-import { Button, Chip } from "react-native-paper";
+import { Button, Chip, Avatar } from "react-native-paper";
 import { util } from "../assets/Utility";
 
 export class AutoCompleteTextBox extends React.Component {
@@ -57,10 +63,15 @@ export class AutoCompleteTextBox extends React.Component {
       text: comment + "@" + username,
     });
     this.onChangeText(comment + "@" + username);
-    this.setState({
-      autoFocus: true,
-      key: ++this.state.key,
-    });
+    this.setState(
+      {
+        autoFocus: true,
+        key: ++this.state.key,
+      },
+      () => {
+        this.addUser();
+      }
+    );
   }
 
   onChangeText = (text) => {
@@ -93,7 +104,7 @@ export class AutoCompleteTextBox extends React.Component {
     });
   }
 
-  onAdd = () => {
+  addUser = () => {
     this.props.users.forEach((user) => {
       this.state.text.trim().toLowerCase().indexOf(user.UserName) > -1
         ? this.state.mentions.add(user.DisplayName)
@@ -120,13 +131,13 @@ export class AutoCompleteTextBox extends React.Component {
           <MentionsTextInput
             key={this.state.key}
             ref={(ref) => (this.mentionsInput = ref)}
-            placeholder={"Mention one user at a time"}
+            placeholder={"Mention one user at a time by typing @..."}
             autoFocus={this.state.autoFocus}
             textInputStyle={{
               borderColor: "gray", // inline styles because styles variable doesnt work in web
               borderWidth: 1,
               padding: 10,
-              minWidth: 200,
+              width: windowWidth - 150,
             }}
             suggestionsPanelStyle={{
               backgroundColor: "rgba(100,100,100,0.1)", // inline styles because styles variable doesnt work in web
@@ -146,19 +157,21 @@ export class AutoCompleteTextBox extends React.Component {
             horizontal={false} // the orientation of the list
             MaxVisibleRowCount={3}
           />
-          {this.state.showAddButton && (
-            <Button onPress={this.onAdd}>Add</Button>
-          )}
         </View>
         <View style={styles.chipView}>
           {Array.from(this.state.mentions).map((mention) => {
             return (
               <Chip
-                selected={true}
                 style={styles.chip}
                 key={mention}
                 textStyle={styles.chipText}
                 onClose={() => this.onRemove(mention)}
+                avatar={
+                  <Avatar.Image
+                    source={{ uri: util.avatarURL }}
+                    size={24}
+                  ></Avatar.Image>
+                }
               >
                 {mention}
               </Chip>
@@ -169,6 +182,8 @@ export class AutoCompleteTextBox extends React.Component {
     );
   }
 }
+
+const windowWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   textInput: {

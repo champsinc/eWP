@@ -5,6 +5,7 @@ import { SignUp } from "./SignUp";
 import { ResetPasswordGenerateLink } from "./ResetPasswordGenerateLink";
 import { ResetPassword } from "./ResetPassword";
 import { TwoFactorAuth } from "./TwoFactorAuth";
+import { VerifyEmail } from "./VerifyEmail";
 
 let Stack = createStackNavigator();
 
@@ -47,7 +48,7 @@ export class LoginNavigator extends React.Component {
           options={{
             animationEnabled: false,
           }}
-          initialParams={{ email: "none" }}
+          initialParams={{ email: "none", password: "none" }}
         />
         <Stack.Screen
           name="Reset Password"
@@ -55,7 +56,13 @@ export class LoginNavigator extends React.Component {
           options={{
             animationEnabled: false,
           }}
-          initialParams={{ email: "none" }}
+        />
+        <Stack.Screen
+          name="verify_email"
+          component={VerifyEmail}
+          options={{
+            animationEnabled: false,
+          }}
         />
       </Stack.Navigator>
     );
