@@ -17,6 +17,15 @@ import { Image } from "react-native";
 import { util } from "../../assets/Utility";
 import axios from "axios";
 
+import { AuthContext } from "./../../App";
+
+const Temp = (props) => {
+  const { signIn } = React.useContext(AuthContext);
+  console.log("I cam here !!", props.token);
+  signIn(props);
+  return null;
+};
+
 export class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +38,7 @@ export class Login extends React.Component {
     showError: false,
     emailError: false,
     passwordError: false,
+    tempX: null,
   };
 
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -69,11 +79,14 @@ export class Login extends React.Component {
             }
           )
           .then((res) => {
-            this.props.navigation.navigate("Dashboard");
+            //this.props.navigation.navigate("Dashboard");
           })
           .catch((err) => {
             this.setState({
               showError: true,
+              tempX: (
+                <Temp navigation={this.props.navigation} token="dummy-token" />
+              ),
             });
           })
       : "";
@@ -120,6 +133,7 @@ export class Login extends React.Component {
   render() {
     return (
       <View style={styles.view}>
+        {this.state.tempX}
         <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
         <Image
           source={{ uri: util.logoURL }}
@@ -154,8 +168,9 @@ export class Login extends React.Component {
           </View>
           <ScrollView>
             <Fumi
+              value="a@aol.commm"
               label={"Your Email"}
-              value={this.state.email}
+              // value={this.state.email}
               autoCapitalize={"none"}
               onChangeText={this.onChangeEmail}
               keyboardType={"email-address"}
@@ -195,10 +210,11 @@ export class Login extends React.Component {
               Email address is invalid!
             </HelperText>
             <Fumi
+              value="a@aol.commssssssm"
               label={"Password"}
               autoCapitalize={"none"}
               secureTextEntry={true}
-              value={this.state.password}
+              // value={this.state.password}
               onChangeText={this.onChangePassword}
               error={this.state.passwordError}
               style={styles.textInput}

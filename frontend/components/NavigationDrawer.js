@@ -23,11 +23,14 @@ const linking = {
 };
 
 export default class NavigationDrawer extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <NavigationContainer linking={linking}>
         <Drawer.Navigator
-          initialRouteName="Login"
+          initialRouteName={"Auth"}
           drawerContentOptions={{
             activeTintColor: customTheme.primaryColor,
             itemStyle: { marginHorizontal: 0 },
@@ -35,8 +38,9 @@ export default class NavigationDrawer extends React.Component {
           backBehavior={"history"}
         >
           <Drawer.Screen
-            name="Login"
+            name="Auth"
             component={LoginNavigator}
+            initialParams={{ userToken: this.props.userToken }}
             options={{
               title: "Login",
               drawerIcon: ({ focused, size }) => (
