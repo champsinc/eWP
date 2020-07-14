@@ -50,7 +50,7 @@ export class WorkPackageUsers extends React.Component {
   };
 
   goBackFromUsersToWorkPackage = () => {
-    this.props.navigation.pop();
+    this.props.navigation.navigate("work_package_view");
   };
 
   toggleDiscussionView = () => {

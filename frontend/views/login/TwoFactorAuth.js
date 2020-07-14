@@ -48,7 +48,7 @@ export class TwoFactorAuth extends React.Component {
           // valid= axios.get().then((res=>res.data.valid))
           let valid = false;
           valid
-            ? this.props.navigation.navigate("Dashboard")
+            ? this.props.navigation.navigate("dashboard")
             : this.setState({
                 showError: true,
               });
@@ -146,7 +146,7 @@ export class TwoFactorAuth extends React.Component {
                 labelStyle={{
                   fontSize: 18,
                 }}
-                onPress={() => this.props.navigation.pop()}
+                onPress={() => this.props.navigation.navigate("login")}
                 compact={false}
               >
                 Back

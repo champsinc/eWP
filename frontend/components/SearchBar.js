@@ -20,6 +20,9 @@ export default class SearchBar extends React.Component {
       <Searchbar
         autoFocus={true}
         style={styles.searchBar}
+        inputStyle={{
+          outline: "none",
+        }}
         placeholder={this.props.searchPlaceHolder}
         icon="arrow-left"
         onIconPress={() => this.props.appBarOn()}

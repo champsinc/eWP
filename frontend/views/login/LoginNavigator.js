@@ -16,46 +16,46 @@ export class LoginNavigator extends React.Component {
   render() {
     return (
       <Stack.Navigator
-        initialRouteName={"Login"}
+        initialRouteName={"login"}
         screenOptions={{
           headerShown: false,
         }}
       >
         <Stack.Screen
-          name="Login"
+          name="login"
           component={Login}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
-          name="SignUp"
+          name="sign_up"
           component={SignUp}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
-          name="Reset Password Generate Link"
+          name="reset_password"
           component={ResetPasswordGenerateLink}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
-          name="2 Factor Auth"
+          name="new_password"
+          component={ResetPassword}
+          options={{
+            animationEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="two_step_verfication"
           component={TwoFactorAuth}
           options={{
             animationEnabled: false,
           }}
           initialParams={{ email: "none", password: "none" }}
-        />
-        <Stack.Screen
-          name="Reset Password"
-          component={ResetPassword}
-          options={{
-            animationEnabled: false,
-          }}
         />
         <Stack.Screen
           name="verify_email"

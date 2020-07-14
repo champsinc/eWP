@@ -33,6 +33,7 @@ export class SubsectionMapper extends React.Component {
         },
       })
       .then((response) => {
+        console.log(response);
         this.setState({ subSectionsData: response.data }, () => {
           this.state.subSectionsData.forEach((subsection) => {
             subsection.dataitems.forEach((listItem) => {
@@ -107,7 +108,10 @@ export class SubsectionMapper extends React.Component {
           title={this.props.section}
           titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
         >
-          {this.state.subSectionsData.length == 0 ? (
+          {this.state.subSectionsData.length &&
+          this.state.subSectionsData.every((subsection) => {
+            return subsection.dataitems.length > 0;
+          }) == 0 ? (
             <View>
               <IconButton
                 style={styles.sadIcon}
@@ -177,26 +181,23 @@ export class SubsectionMapper extends React.Component {
                             setChangesMade={this.setChangesMade}
                           />
                         ) : listItem.type == "file" ? (
-                          (console.log(),
-                          (
-                            <FileType
-                              name={listItem.name}
-                              key={listItem.name}
-                              value={
-                                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png"
-                              }
-                              fileType={listItem.fileType}
-                              fileSize={listItem.fileSize}
-                              statusCode={listItem.fileStatus}
-                              dueDate={listItem.dueDate}
-                              editable={listItem.editable}
-                              required={listItem.required}
-                              notes={listItem.notes}
-                              previousNotes={listItem.previousNotes}
-                              setChangesMade={this.setChangesMade}
-                              setError={this.setError}
-                            />
-                          ))
+                          <FileType
+                            name={listItem.name}
+                            key={listItem.name}
+                            value={
+                              "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png"
+                            }
+                            fileType={listItem.fileType}
+                            fileSize={listItem.fileSize}
+                            statusCode={listItem.fileStatus}
+                            dueDate={listItem.dueDate}
+                            editable={listItem.editable}
+                            required={listItem.required}
+                            notes={listItem.notes}
+                            previousNotes={listItem.previousNotes}
+                            setChangesMade={this.setChangesMade}
+                            setError={this.setError}
+                          />
                         ) : (
                           <View />
                         );

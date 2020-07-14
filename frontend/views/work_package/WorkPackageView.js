@@ -259,6 +259,8 @@ export class WorkPackageView extends React.Component {
       subSectionData: [],
     };
 
+    console.log(this.props.wpId);
+
     axios
       .get(util.api_url + "/wp/5ef26f1efbbc26166d2fcffe", {
         headers: {
@@ -312,25 +314,6 @@ export class WorkPackageView extends React.Component {
     })[0].id;
   };
 
-  getSubSectionsData = () => {
-    // TODO: Just pass data after making a backend call since retreiving subsection data is done in a separate call
-    axios
-      .get(util.api_url + "/section/" + this.getSectionId(), {
-        headers: {
-          api_key: util.api_key,
-        },
-      })
-      .then((response) => {
-        this.setState({ subSectionData: response.data });
-        return response.data;
-      });
-
-    // const section = data.filter((section) => {
-    //   return section.name == this.state.section;
-    // });
-    // return section[0].value;
-  };
-
   setDataCopy = (newData) => {
     dataCopy = newData;
   };
@@ -342,7 +325,7 @@ export class WorkPackageView extends React.Component {
   };
 
   usersClicked = () => {
-    this.props.navigation.push("Work Package Users");
+    this.props.navigation.navigate("work_package_users");
   };
 
   warningYesClicked = () => {

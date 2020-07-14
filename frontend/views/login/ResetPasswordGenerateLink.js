@@ -150,7 +150,7 @@ export class ResetPasswordGenerateLink extends React.Component {
                 labelStyle={{
                   fontSize: 18,
                 }}
-                onPress={() => this.props.navigation.navigate("Login")}
+                onPress={() => this.props.navigation.navigate("login")}
                 compact={false}
               >
                 Back

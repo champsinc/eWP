@@ -90,13 +90,11 @@ export class ResetPassword extends React.Component {
             }
           )
           .then((res) => {
-            console.log("in");
             this.setState({
               showSuccess: true,
             });
           })
           .catch((err) => {
-            console.log("in");
             this.setState({
               tokenError: true,
             });
@@ -226,7 +224,7 @@ export class ResetPassword extends React.Component {
                     fontSize: 18,
                   }}
                   onPress={() => {
-                    this.props.navigation.navigate("Login");
+                    this.props.navigation.navigate("login");
                   }}
                   compact={false}
                 >

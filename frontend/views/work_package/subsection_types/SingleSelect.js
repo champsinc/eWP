@@ -8,9 +8,7 @@ export class SingleSelect extends React.Component {
     : "Select Something";
   constructor(props) {
     super(props);
-    console.log(this.props.value);
     this.props.value.forEach((selectItem) => {
-      console.log(selectItem);
       selectItem.value == "selected"
         ? (this.intialSelected = selectItem.name)
         : this.emptyOption;

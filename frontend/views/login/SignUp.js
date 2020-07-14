@@ -6,7 +6,6 @@ import {
   Dimensions,
   Platform,
   Linking,
-  StatusBar,
 } from "react-native";
 import { Button, HelperText, Card } from "react-native-paper";
 import axios from "axios";
@@ -17,6 +16,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native";
 import { Link } from "@react-navigation/native";
 import { util } from "../../assets/Utility";
+import { AuthContext } from "../../App";
+
+const NewSignUp = (props) => {
+  const { signUp } = React.useContext(AuthContext);
+  signUp(props);
+  return null;
+};
 
 export class SignUp extends React.Component {
   constructor(props) {
@@ -36,13 +42,14 @@ export class SignUp extends React.Component {
       userNameOverlap: false,
       emailAddressOverlap: false,
       registerEmailSent: false,
+      signUp: null,
     };
   }
 
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   onLoginPress = () => {
-    this.props.navigation.navigate("Login");
+    this.props.navigation.navigate("login");
   };
 
   onSignUpPress = () => {
@@ -87,6 +94,12 @@ export class SignUp extends React.Component {
             this.setState({
               userNameOverlap: err.userNameOverlap || true,
               emailAddressOverlap: err.emailAddressOverlap || true,
+              signUp: (
+                <NewSignUp
+                  navigation={this.props.navigation}
+                  token="dummy-token"
+                />
+              ),
             });
           })
       : "";
@@ -180,6 +193,7 @@ export class SignUp extends React.Component {
   render() {
     return (
       <View style={styles.view}>
+        {this.state.signUp}
         <Image
           source={{ uri: util.logoURL }}
           style={styles.logo}
@@ -289,7 +303,7 @@ export class SignUp extends React.Component {
             >
               User name should be atleast 4 characters
             </HelperText>
-            <Link to="/Profile" style={styles.link}>
+            <Link to="/profile" style={styles.link}>
               Jamie's Profile
             </Link>
             <Fumi
