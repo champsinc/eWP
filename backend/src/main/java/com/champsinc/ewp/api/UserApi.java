@@ -61,7 +61,9 @@ public class UserApi {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<String> updateUser(@ApiParam(value = "User JSON with fields to be changed", required = true) String userDetails) {
+    public ResponseEntity<String> updateUser(
+            @ApiParam(value = "User JSON with fields to be changed", required = true)
+                    String userDetails) {
         JsonObject responseObject =  userService.updateUser(userDetails);
         if(responseObject.has("error")){
             return new ResponseEntity<>(responseObject.toString(), HttpStatus.BAD_REQUEST);
@@ -104,12 +106,7 @@ public class UserApi {
             @ApiParam(value = "User credentials (email, password)", required = true)
             @RequestBody String userCredentials) {
         String response = userService.userLogin(userCredentials);
-        if(response.contains("validated")){
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
-        else{
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**

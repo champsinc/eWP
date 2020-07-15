@@ -48,7 +48,6 @@ public class SectionApi {
      * @return status if update was successful or if any errors were present
      */
 
-    /*
     @ApiOperation(
             notes = "API endpoint to update any subsections of a section",
             value = "Update all subsections for a section"
@@ -59,12 +58,11 @@ public class SectionApi {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<String> updateSectionSubSections(@ApiParam("JSON containing arraylist of subsections for a section") String payload) {
+    public ResponseEntity<String> updateSectionSubSections(@ApiParam("JSON containing arraylist of subsections for a section") @RequestBody String payload) {
         JsonObject responseObject =  sectionService.updateSectionSubSections(payload);
         if(responseObject.has("error")){
             return new ResponseEntity<>(responseObject.toString(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
     }
-    */
 }

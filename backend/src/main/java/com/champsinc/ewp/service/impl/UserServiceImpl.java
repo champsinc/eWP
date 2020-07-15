@@ -95,17 +95,23 @@ public class UserServiceImpl implements UserService {
         JsonObject userCredentialsObject = JsonParser.parseString(userCredentials).getAsJsonObject();
         User user = userRepository.findByEmail(userCredentialsObject.get("email").getAsString());
         if(user != null && user.isVerified()){
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            if(passwordEncoder.matches(userCredentialsObject.get("password").getAsString(), user.getPassword())){
-                return gson.toJson(user);
+            if(user.isVerified()){
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                if(passwordEncoder.matches(userCredentialsObject.get("password").getAsString(), user.getPassword())){
+                    return gson.toJson(user);
+                }
+                else{
+                    responseJSON.addProperty("error", "Incorrect email/password");
+                    return gson.toJson(responseJSON);
+                }
             }
             else{
-                responseJSON.addProperty("validated", false);
+                responseJSON.addProperty("error", "User is not verified");
                 return gson.toJson(responseJSON);
             }
         }
         else{
-            responseJSON.addProperty("validated", false);
+            responseJSON.addProperty("error", "Incorrect email/password");
             return gson.toJson(responseJSON);
         }
     }
