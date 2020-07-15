@@ -11,8 +11,6 @@ import SafeAreaView, { SafeAreaProvider } from "react-native-safe-area-view";
 import { paperTheme, customTheme } from "./styles/Main";
 import AsyncStorage from "@react-native-community/async-storage";
 import { LoginNavigator } from "./views/login/LoginNavigator";
-import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
-import Axios from "axios";
 
 // to avoid text cutoff in some phones,
 // applying global font styles depending on os
@@ -51,6 +49,7 @@ export default function App() {
             isSignout: true,
             userToken: null,
             navigator: action.navigator,
+            navigateTo: null,
           };
         case "SIGN_UP":
           return {

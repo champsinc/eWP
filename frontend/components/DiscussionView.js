@@ -72,6 +72,7 @@ export default class DiscussionView extends React.Component {
       user: "User 1", //user who sent the message/request/attachment
       verb: "checked",
       itemChanged: "Buy plumbing tools",
+      dataItemId: "5a5defef8e4fef85",
       documentChanged: "Intial Procedure",
       documentType: "list",
       time: "02:16 PM",

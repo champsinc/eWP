@@ -35,13 +35,17 @@ export class SubsectionMapper extends React.Component {
       .then((response) => {
         console.log(response);
         this.setState({ subSectionsData: response.data }, () => {
-          this.state.subSectionsData.forEach((subsection) => {
-            subsection.dataitems.forEach((listItem) => {
+          this.state.subSectionsData.forEach((subSection) => {
+            subSection.dataitems.forEach((listItem) => {
               this.changesMade[listItem.name] = false;
               this.errorsInFields[listItem.name] = false;
             });
           });
         });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ subSectionsData: [] });
       });
   }
 
@@ -108,7 +112,7 @@ export class SubsectionMapper extends React.Component {
           title={this.props.section}
           titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
         >
-          {this.state.subSectionsData.length &&
+          {this.state.subSectionsData.length ||
           this.state.subSectionsData.every((subsection) => {
             return subsection.dataitems.length > 0;
           }) == 0 ? (

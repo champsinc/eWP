@@ -45,9 +45,7 @@ let workPackages = [
 
 const NavigateTo = (props) => {
   const linkTo = useLinkTo();
-  console.log(props.navigateTo);
-  console.log("IN");
-  linkTo(props.navigateTo);
+  linkTo("/" + props.navigateTo);
   return <View />;
 };
 
@@ -58,11 +56,6 @@ export default class Dashboard extends React.Component {
     this.state = {
       navigateTo: null,
     };
-    this.props.navigateTo
-      ? this.setState({
-          navigateTo: <NavigateTo navigateTo={this.props.navigateTo} />,
-        })
-      : "";
     axios
       .get(util.api_url + "/user/wp?userId=" + this.props.user.id, {
         headers: {
@@ -70,12 +63,22 @@ export default class Dashboard extends React.Component {
         },
       })
       .then((res) => {
+        //TODO: get the data from the backend and display it in cards
         console.log(res);
       })
       .catch((res) => {
+        this.goToURL();
         console.log(res);
       });
   }
+
+  goToURL = () => {
+    this.props.navigateTo
+      ? this.setState({
+          navigateTo: <NavigateTo navigateTo={this.props.navigateTo} />,
+        })
+      : "";
+  };
 
   toggleNavBar = () => {
     this.props.navigation.openDrawer();

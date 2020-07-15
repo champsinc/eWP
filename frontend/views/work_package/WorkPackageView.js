@@ -259,10 +259,8 @@ export class WorkPackageView extends React.Component {
       subSectionData: [],
     };
 
-    console.log(this.props.wpId);
-
     axios
-      .get(util.api_url + "/wp/5ef26f1efbbc26166d2fcffe", {
+      .get(util.api_url + "/wp/5f0f3b8d0546703461cb37e4", {
         headers: {
           api_key: util.api_key,
         },
