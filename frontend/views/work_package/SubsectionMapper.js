@@ -8,7 +8,9 @@ import { ConfirmSaveDialog } from "../action_dialog/ActionDialogs";
 import { SingleSelect } from "./subsection_types/SingleSelect";
 import { CheckItem } from "./subsection_types/CheckItem";
 import FileType from "./subsection_types/FileType";
-import { customTheme } from "../../styles/Main";
+import { customTheme, commonStyles } from "../../styles/Main";
+import axios from "axios";
+import { util } from "../../assets/Utility";
 
 /**
  * This class is used to render any section inside a work package
@@ -17,16 +19,34 @@ import { customTheme } from "../../styles/Main";
 export class SubsectionMapper extends React.Component {
   constructor(props) {
     super(props);
-    this.props.subSectionsData.forEach((subsection) => {
-      subsection.value.forEach((listItem) => {
-        this.changesMade[listItem.name] = false;
-        this.errorsInFields[listItem.name] = false;
-      });
-    });
+
     this.state = {
       showDialog: false,
       showSave: false,
+      subSectionsData: [],
     };
+
+    axios
+      .get(util.api_url + "/section/" + this.props.sectionId, {
+        headers: {
+          api_key: util.api_key,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        this.setState({ subSectionsData: response.data }, () => {
+          this.state.subSectionsData.forEach((subSection) => {
+            subSection.dataitems.forEach((listItem) => {
+              this.changesMade[listItem.name] = false;
+              this.errorsInFields[listItem.name] = false;
+            });
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ subSectionsData: [] });
+      });
   }
 
   changesMade = {};
@@ -88,8 +108,14 @@ export class SubsectionMapper extends React.Component {
   render() {
     return (
       <ScrollView>
-        <List.Section title={this.props.section} titleStyle={styles.titleStyle}>
-          {this.props.subSectionsData.length == 0 ? (
+        <List.Section
+          title={this.props.section}
+          titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
+        >
+          {this.state.subSectionsData.length ||
+          this.state.subSectionsData.every((subsection) => {
+            return subsection.dataitems.length > 0;
+          }) == 0 ? (
             <View>
               <IconButton
                 style={styles.sadIcon}
@@ -101,15 +127,16 @@ export class SubsectionMapper extends React.Component {
             </View>
           ) : (
             <View>
-              {this.props.subSectionsData.map((subsection) => {
+              {this.state.subSectionsData.map((subsection) => {
                 return (
                   <View key={subsection.name}>
                     <List.Accordion
                       key={subsection.name}
                       title={subsection.name}
+                      style={commonStyles.capitalizeText}
                       left={(props) => <List.Icon {...props} icon="folder" />}
                     >
-                      {subsection.value.map((listItem) => {
+                      {subsection.dataitems.map((listItem) => {
                         return listItem.type == "text" ||
                           listItem.type == "number" ? (
                           <TextType
@@ -120,7 +147,7 @@ export class SubsectionMapper extends React.Component {
                             editable={listItem.editable}
                             required={listItem.required}
                             notes={listItem.notes}
-                            previousNotes={listItem.previousNotes}
+                            previousNotes={listItem.previousNotes || []}
                             setChangesMade={this.setChangesMade}
                             setError={this.setError}
                           />
@@ -138,9 +165,10 @@ export class SubsectionMapper extends React.Component {
                         ) : listItem.type == "selectbox" ? (
                           <SingleSelect
                             name={listItem.name}
+                            fieldName={listItem.name}
                             key={listItem.name}
                             type={listItem.type}
-                            value={listItem.value}
+                            value={JSON.parse(listItem.value)}
                             editable={listItem.editable}
                             required={listItem.required}
                             setChangesMade={this.setChangesMade}
@@ -160,17 +188,19 @@ export class SubsectionMapper extends React.Component {
                           <FileType
                             name={listItem.name}
                             key={listItem.name}
-                            value={listItem.value}
+                            value={
+                              "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png"
+                            }
                             fileType={listItem.fileType}
                             fileSize={listItem.fileSize}
-                            statusCode={listItem.status}
+                            statusCode={listItem.fileStatus}
                             dueDate={listItem.dueDate}
                             editable={listItem.editable}
                             required={listItem.required}
                             notes={listItem.notes}
                             previousNotes={listItem.previousNotes}
                             setChangesMade={this.setChangesMade}
-                            setError={() => {}}
+                            setError={this.setError}
                           />
                         ) : (
                           <View />

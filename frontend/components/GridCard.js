@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     fontWeight: Platform.OS == "web" ? "normal" : "bold",
     fontSize: 16,
     paddingHorizontal: 10,
+    textTransform: "capitalize",
   },
   iconButton: {
     margin: 0,

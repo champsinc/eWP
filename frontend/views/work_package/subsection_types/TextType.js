@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { TextInput } from "react-native-paper";
-import { customTheme } from "../../../styles/Main";
+import { customTheme, commonStyles } from "../../../styles/Main";
 import AddNote from "../../../components/AddNote";
 
 /**
@@ -38,7 +38,11 @@ export default class TextType extends React.Component {
     return (
       <View style={this.styles.topView}>
         <View style={{ flexDirection: "row" }}>
-          <Text style={this.styles.nameTextStyle}>{this.props.name} </Text>
+          <Text
+            style={[this.styles.nameTextStyle, commonStyles.capitalizeText]}
+          >
+            {this.props.name}{" "}
+          </Text>
           {this.props.required && (
             <Text style={this.styles.asteriskStyle}>*</Text>
           )}

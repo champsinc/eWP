@@ -2,6 +2,7 @@
 // app wide themes
 import color from "react-native-paper";
 import { DefaultTheme } from "react-native-paper";
+import { StyleSheet } from "react-native";
 
 const primaryColor = "#6200EE";
 
@@ -16,7 +17,15 @@ export const customTheme = {
   fontFamily: "Roboto, HelveticaNeue",
   textSelectionColor: "#488FFE",
   disabledColor: "#C7C7C7",
+  linkColor: "#0077B5",
+  loginStatusBarColor: "#f6f6f6",
 };
+
+export const commonStyles = StyleSheet.create({
+  capitalizeText: {
+    textTransform: "capitalize",
+  },
+});
 
 export const paperTheme = {
   ...DefaultTheme,

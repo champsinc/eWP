@@ -43,13 +43,7 @@ export const WorkPackageCard = (props) => {
       />
       <Card.Content style={styles.cardContent}>
         <View style={styles.percentageIndicator}>
-          {/* {props.percentageComplete} */}
-          <Text>0</Text>
-          <Text>20</Text>
-          <Text>40</Text>
-          <Text>60</Text>
-          <Text>80</Text>
-          <Text>100</Text>
+          <Text>{props.percentageComplete} %</Text>
         </View>
         <ProgressBar
           progress={props.percentageComplete / 100}
@@ -72,11 +66,11 @@ export const WorkPackageCard = (props) => {
         <Button icon={"bell"} onPress={() => {}}>
           Notifications
           {props.unopenedNotifications && (
-            <Text style={styles.badgeIcon}>•</Text>
+            <Text style={styles.badgeIcon}> •</Text>
           )}
         </Button>
         <Button icon={"playlist-edit"} onPress={() => {}}>
-          Logs{props.unopenedLogs && <Text style={styles.badgeIcon}>•</Text>}
+          Logs{props.unopenedLogs && <Text style={styles.badgeIcon}> •</Text>}
         </Button>
       </Card.Actions>
     </Card>
@@ -93,9 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   percentageIndicator: {
-    // alignSelf: "flex-end",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignSelf: "flex-end",
   },
   progressBar: {
     marginTop: 5,
@@ -108,6 +100,8 @@ const styles = StyleSheet.create({
   },
   badgeIcon: {
     color: "red",
+    flexDirection: "column",
+    alignSelf: "flex-start",
     position: "relative",
     bottom: 5,
   },

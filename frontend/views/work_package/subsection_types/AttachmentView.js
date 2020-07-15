@@ -5,6 +5,7 @@ import { SingleSelect } from "./SingleSelect";
 import AddNote from "../../../components/AddNote";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import * as WebBrowser from "expo-web-browser";
+import { commonStyles } from "../../../styles/Main";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="attachment" />;
 
@@ -37,22 +38,26 @@ export const AttachmentView = (props) => {
     },
   ];
   props = props.data;
-  props.statusCode && props.statusCode >= 0 && props.statusCode <= 2
+  props.statusCode >= 0 && props.statusCode <= 2
     ? (options[props.statusCode].value = "selected")
     : "";
 
   const subTitle =
-    (props.dueDate ? "Due on " + props.dueDate : "") +
-    (props.dueDate && (props.fileSize || props.fileType) ? " • " : "") +
-    (props.fileSize ? "Size " + props.fileSize : "") +
-    (props.fileSize && props.fileType ? " • " : "") +
-    (props.fileType ? props.fileType.toUpperCase() : "");
+    (props.dueDate != undefined ? "Due on " + props.dueDate : "") +
+    (props.dueDate != undefined &&
+    (props.fileSize != undefined || props.fileType != undefined)
+      ? " • "
+      : "") +
+    (props.fileSize != undefined ? "Size " + props.fileSize : "") +
+    (props.fileSize != undefined && props.fileType != undefined ? " • " : "") +
+    (props.fileType != undefined ? props.fileType.toUpperCase() : "");
 
   return (
     <Card style={styles.card} elevation={Platform.OS == "web" ? 5 : 10}>
       <Card.Title
         style={styles.cardTitle}
         title={props.name}
+        titleStyle={[commonStyles.capitalizeText]}
         subtitle={subTitle}
         left={LeftContent}
       />
@@ -60,6 +65,7 @@ export const AttachmentView = (props) => {
         <Card.Content>
           <SingleSelect
             name={"Change Status"}
+            fieldName={props.name}
             key={"Change Status"}
             value={options}
             editable={props.editable}
@@ -72,7 +78,13 @@ export const AttachmentView = (props) => {
       )}
       {imageFileTypes.has(props.fileType) && (
         <TouchableWithoutFeedback onPress={() => openModal(true)}>
-          <Card.Cover style={styles.cardCover} source={{ uri: props.value }} />
+          <Card.Cover
+            style={styles.cardCover}
+            source={{
+              uri:
+                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+            }}
+          />
         </TouchableWithoutFeedback>
       )}
       <Card.Actions style={styles.cardActions}>
@@ -81,7 +93,10 @@ export const AttachmentView = (props) => {
         )}
         <Button onPress={() => download(props.value)}>Download</Button>
         {props.notes && (
-          <AddNote previousNotes={props.previousNotes} fromAttachment={true} />
+          <AddNote
+            previousNotes={props.previousNotes || []}
+            fromAttachment={true}
+          />
         )}
       </Card.Actions>
     </Card>

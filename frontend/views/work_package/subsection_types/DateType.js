@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Platform, Text, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { Portal, Dialog, Button, IconButton } from "react-native-paper";
-import { customTheme } from "../../../styles/Main";
+import { customTheme, commonStyles } from "../../../styles/Main";
 
 /**
  * This class is used to render a single unit item of a subsection of date type
@@ -103,7 +103,11 @@ export default class DateType extends React.Component {
             size={20}
             style={this.styles.calendarIcon}
           />
-          <Text style={this.styles.nameTextStyle}>{this.props.name} </Text>
+          <Text
+            style={[this.styles.nameTextStyle, commonStyles.capitalizeText]}
+          >
+            {this.props.name}{" "}
+          </Text>
           {this.props.required && (
             <Text style={this.styles.asteriskStyle}>*</Text>
           )}

@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, IconButton } from "react-native-paper";
 import { customTheme } from "../styles/Main";
 import { Dimensions } from "react-native";
-import { util } from "../assets/Utility";
+
+const activeTouchOpacity = 0.6;
 
 export default class ChatBubble extends React.Component {
   constructor(props) {
@@ -72,7 +73,7 @@ export default class ChatBubble extends React.Component {
               onLongPress={() =>
                 this.props.setReplyingTo(this.props.messageIndex)
               }
-              underlayColor="white"
+              activeOpacity={activeTouchOpacity}
             >
               <View style={[styles.balloon, styles.balloonThread]}>
                 <Text style={styles.itemIn}>{this.props.message.text}</Text>
@@ -103,7 +104,7 @@ export default class ChatBubble extends React.Component {
               onLongPress={() =>
                 this.props.setReplyingTo(this.props.messageIndex)
               }
-              underlayColor="white"
+              activeOpacity={activeTouchOpacity}
             >
               <View style={[styles.balloon, styles.balloonThread]}>
                 <Text style={styles.itemIn}>{this.props.message.text}</Text>
