@@ -112,7 +112,7 @@ export class SubsectionMapper extends React.Component {
           title={this.props.section}
           titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
         >
-          {this.state.subSectionsData.length ||
+          {this.state.subSectionsData.length &&
           this.state.subSectionsData.every((subsection) => {
             return subsection.dataitems.length > 0;
           }) == 0 ? (
@@ -168,7 +168,7 @@ export class SubsectionMapper extends React.Component {
                             fieldName={listItem.name}
                             key={listItem.name}
                             type={listItem.type}
-                            value={JSON.parse(listItem.value)}
+                            value={listItem.value}
                             editable={listItem.editable}
                             required={listItem.required}
                             setChangesMade={this.setChangesMade}

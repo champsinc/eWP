@@ -11,53 +11,60 @@ import { util } from "../../assets/Utility";
 
 let data = [
   {
+    key: 1,
     type: "section",
-    Details: [
+    name: "Details",
+    value: [
       {
         type: "sub_section",
-        "Work Order Info Details": [
+        name: "Work Order Info Details",
+        dataitems: [
           {
             type: "number",
-            "Work Order Id": 12,
+            name: "Work Order Id",
+            value: 12,
             editable: true,
             required: false,
           },
           {
             type: "text",
-            Title: "Fix water system",
+            name: "Title",
+            value: "Fix water system",
             editable: true,
             required: true,
           },
           {
             type: "text",
-            Description:
+            name: "Description",
+            value:
               "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
             editable: false,
             required: false,
             notes: true,
             previousNotes: [],
           },
-
           {
             type: "date",
-            "Order Date":
-              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+            name: "Order Date",
+            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: true,
           },
         ],
       },
       {
         type: "sub_section",
-        "Work Order Time Line Details": [
+        name: "Work Order Time Line Details",
+        dataitems: [
           {
             type: "date",
-            "Order Date":
-              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+            name: "Order Date",
+            value: "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: false,
           },
           {
             type: "date",
-            "Expected Date of Delivery": "",
+            name: "Expected Date of Delivery",
+            value: "",
             editable: true,
             required: true,
           },
@@ -66,24 +73,31 @@ let data = [
     ],
   },
   {
+    key: 2,
     type: "section",
-    Instructions: [
+    name: "Instructions",
+    value: [
       {
         type: "sub_section",
-        "Abstract list": [
+        name: "Abstract list",
+        dataitems: [
           {
             type: "selectbox",
-            Fruits: [
+            name: "Fruits",
+            value: [
               {
-                Orange: "selected",
+                name: "Orange",
+                value: "selected",
                 type: "selectitem",
               },
               {
-                Apple: "not-selected",
+                name: "Apple",
+                value: "not-selected",
                 type: "selectitem",
               },
               {
-                Bananas: "not-selected",
+                name: "Bananas",
+                value: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -92,17 +106,21 @@ let data = [
           },
           {
             type: "selectbox",
-            Animals: [
+            name: "Animals",
+            value: [
               {
-                Cat: "selected",
+                name: "Cat",
+                value: "selected",
                 type: "selectitem",
               },
               {
-                Lion: "not-selected",
+                name: "Lion",
+                value: "not-selected",
                 type: "selectitem",
               },
               {
-                Tiger: "not-selected",
+                name: "Tiger",
+                value: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -111,17 +129,21 @@ let data = [
           },
           {
             type: "selectbox",
-            Birds: [
+            name: "Birds",
+            value: [
               {
-                Peacock: "selected",
+                name: "Peacock",
+                value: "selected",
                 type: "selectitem",
               },
               {
-                Crow: "not-selected",
+                name: "Crow",
+                value: "not-selected",
                 type: "selectitem",
               },
               {
-                Pigeon: "not-selected",
+                name: "Pigeon",
+                value: "not-selected",
                 type: "selectitem",
               },
             ],
@@ -131,41 +153,48 @@ let data = [
         ],
       },
       {
-        "Checklist of things required": [
+        name: "Checklist of things required",
+        type: "sub_section",
+        dataitems: [
           {
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.":
-              "checked",
+            name:
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            value: "checked",
             type: "checkitem",
             required: false,
             editable: false,
           },
           {
-            "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with":
-              "checked",
+            name:
+              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
+            value: "checked",
             type: "checkitem",
             required: true,
             editable: true,
           },
           {
-            "Lorem Ipsum is ": "checked",
+            name: "Lorem Ipsum is ",
+            value: "checked",
             type: "checkitem",
             required: true,
             editable: true,
           },
         ],
-        type: "sub_section",
       },
     ],
   },
   {
+    key: 3,
     type: "section",
-    Attachments: [
+    name: "Attachments",
+    value: [
       {
         type: "sub_section",
-        "General Info Documents": [
+        name: "General Info Documents",
+        dataitems: [
           {
-            "Purchase Items - Part List A":
-              "http://www.africau.edu/images/default/sample.pdf",
+            name: "Purchase Items - Part List A",
+            value: "http://www.africau.edu/images/default/sample.pdf",
             type: "file",
             editable: true,
             required: true,
@@ -177,7 +206,8 @@ let data = [
             previousNotes: [],
           },
           {
-            "Random Picture Q": "https://picsum.photos/700",
+            name: "Random Picture Q",
+            value: "https://picsum.photos/700",
             type: "file",
             editable: true,
             required: true,
@@ -190,10 +220,11 @@ let data = [
       },
       {
         type: "sub_section",
-        "Equipment Related Documents": [
+        name: "Equipment Related Documents",
+        dataitems: [
           {
-            "Sampling and Sub-Sampling Results":
-              "http://www.africau.edu/images/default/sample.pdf",
+            name: "Sampling and Sub-Sampling Results",
+            value: "http://www.africau.edu/images/default/sample.pdf",
             type: "file",
             editable: true,
             status: 1,
@@ -204,7 +235,8 @@ let data = [
             previousNotes: [],
           },
           {
-            "Random Equipment X": "https://picsum.photos/800",
+            name: "Random Equipment X",
+            value: "https://picsum.photos/800",
             type: "file",
             editable: false,
             fileSize: "3MB",
@@ -216,28 +248,45 @@ let data = [
     ],
   },
   {
+    key: 4,
     type: "section",
-    "Parts List": [],
+    name: "Parts List",
+    value: [],
   },
   {
+    key: 5,
     type: "section",
-    "Tool List": [],
+    name: "Tool List",
+    value: [],
   },
   {
+    key: 6,
     type: "section",
-    Route: [],
+    name: "Route",
+    value: [],
   },
   {
+    key: 7,
     type: "section",
-    "Time Entry": [],
+    name: "Time Entry",
+    value: [],
   },
   {
+    key: 8,
     type: "section",
-    Completion: [],
+    name: "Completion",
+    value: [],
   },
   {
+    key: 9,
     type: "section",
-    "Add New": [],
+    name: "Add New",
+    value: [],
+  },
+
+  {
+    key: 10,
+    name: "Users",
   },
 ];
 
@@ -260,7 +309,7 @@ export class WorkPackageView extends React.Component {
     };
 
     axios
-      .get(util.api_url + "/wp/5f0f3b8d0546703461cb37e4", {
+      .get(util.api_url + "/wp/5f0f50b9393970398908c334", {
         headers: {
           api_key: util.api_key,
         },
