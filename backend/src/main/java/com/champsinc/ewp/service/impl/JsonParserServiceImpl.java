@@ -1,7 +1,6 @@
 package com.champsinc.ewp.service.impl;
 
 import com.champsinc.ewp.model.*;
-import com.champsinc.ewp.model.data.*;
 import com.champsinc.ewp.repository.*;
 import com.champsinc.ewp.service.JsonParserService;
 import com.champsinc.ewp.util.JsonParserUtils;

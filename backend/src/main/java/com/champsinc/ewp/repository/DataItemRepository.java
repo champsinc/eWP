@@ -1,6 +1,6 @@
 package com.champsinc.ewp.repository;
 
-import com.champsinc.ewp.model.data.DataItem;
+import com.champsinc.ewp.model.DataItem;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

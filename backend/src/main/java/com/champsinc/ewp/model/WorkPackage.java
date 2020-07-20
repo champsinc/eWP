@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -24,4 +25,6 @@ public class WorkPackage {
     private ArrayList<ObjectId> sections;
     private ArrayList<ObjectId> users;
     private int status;
+    @DBRef
+    private ArrayList<Object> discussion;
 }

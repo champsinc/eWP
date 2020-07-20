@@ -1,4 +1,4 @@
-package com.champsinc.ewp.model.data;
+package com.champsinc.ewp.model;
 
 
 import lombok.Data;

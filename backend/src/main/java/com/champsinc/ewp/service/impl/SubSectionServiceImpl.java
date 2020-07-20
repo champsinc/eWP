@@ -50,6 +50,7 @@ public class SubSectionServiceImpl implements SubSectionService {
      */
     @Override
     public SubSection findById(String subSectionId){
-        return mongoTemplate.findById(subSectionId, SubSection.class, "sub_sections");
+        Query query = new Query(Criteria.where("_id").is(subSectionId));
+        return mongoTemplate.findOne(query, SubSection.class, "sub_sections");
     }
 }

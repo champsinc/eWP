@@ -1,4 +1,4 @@
-package com.champsinc.ewp.model.discussion;
+package com.champsinc.ewp.model;
 
 import lombok.Data;
 import org.bson.types.BSONTimestamp;
@@ -19,6 +19,7 @@ public class DiscussionItem {
     @Id
     private String id;
     private String type;
-    private ObjectId wpId;
+    private String wpId;
     private ZonedDateTime timestamp;
+    private String byUser;
 }

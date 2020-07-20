@@ -1,6 +1,5 @@
-package com.champsinc.ewp.model.data;
+package com.champsinc.ewp.model;
 
-import com.champsinc.ewp.model.data.DataItem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;

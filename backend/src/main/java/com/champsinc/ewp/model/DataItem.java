@@ -1,4 +1,4 @@
-package com.champsinc.ewp.model.data;
+package com.champsinc.ewp.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Dhiren Chandnani
  */
 @Data
-@Document(collation = "data_items")
+@Document(collection = "data_items")
 public class DataItem {
     @Id
     private String id;

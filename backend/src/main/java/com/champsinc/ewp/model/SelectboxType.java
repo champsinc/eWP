@@ -1,9 +1,10 @@
-package com.champsinc.ewp.model.data;
+package com.champsinc.ewp.model;
 
-import com.champsinc.ewp.model.data.DataItem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 
 /**
  * Model class for subsections
@@ -12,6 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Document(collection = "data_items")
-public class CheckboxType extends DataItem {
-    private String value;
+public class SelectboxType extends DataItem {
+    private ArrayList<SelectItem> value;
 }

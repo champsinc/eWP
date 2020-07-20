@@ -1,6 +1,6 @@
 package com.champsinc.ewp.util;
 
-import com.champsinc.ewp.model.data.*;
+import com.champsinc.ewp.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;

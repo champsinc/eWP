@@ -1,7 +1,7 @@
 package com.champsinc.ewp.api;
 
 import com.champsinc.ewp.service.DiscussionService;
-import com.champsinc.ewp.service.SectionService;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,14 +33,30 @@ public class DiscussionApi {
             value = "Get all discussion items for a work package"
     )
     @GetMapping(
-            value = "/discuss/{wpId}",
+            value = "/discuss/wp/{wpId}",
             produces = "application/json"
     )
     public ResponseEntity<String> getWorkPackageDiscussion(@ApiParam(value = "Work Package Id to be searched", required = true) @PathVariable("wpId") String wpId) {
         String responseObject =  discussionService.findByWpId(wpId);
-        if(responseObject.contains("error")){
-            return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
-        }
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(
+            notes = "API endpoint to insert a discussion item",
+            value = "Insert a new discussion item"
+    )
+    @RequestMapping(
+            value = "/discuss/insert",
+            method = RequestMethod.POST,
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<String> insertDiscussion(
+            @ApiParam("JSON containing arraylist of subsections for a section")
+            @RequestBody String payload
+    ) {
+        JsonObject responseObject =  discussionService.insertDiscussion(payload);
+        return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
     }
 }
