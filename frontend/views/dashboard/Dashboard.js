@@ -73,6 +73,7 @@ export default class Dashboard extends React.Component {
   }
 
   goToURL = () => {
+    console.log(this.props.navigateTo);
     this.props.navigateTo
       ? this.setState({
           navigateTo: <NavigateTo navigateTo={this.props.navigateTo} />,

@@ -1,8 +1,8 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, Platform } from "react-native";
 import { IconButton, ToggleButton } from "react-native-paper";
-import { customTheme } from "./../styles/Main";
-import FilePondModal from "./FilePondModal";
+import { customTheme } from "../../styles/Main";
+import FilePondModal from "../../components/FilePondModal";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 
@@ -60,9 +60,7 @@ export default class DiscussionButtonPanel extends React.Component {
   };
 
   attachButtonPressed = async (document) => {
-    this.setState({
-      
-    })
+    this.setState({});
   };
 
   getTime = () => {

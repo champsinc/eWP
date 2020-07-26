@@ -117,7 +117,7 @@ export default function App() {
         // We will also need to handle errors if sign up failed
         // After getting token, we need to persist the token using `AsyncStorage`
         // In the example, we'll use a dummy token
-        data.navigation.navigate("reset_password");
+        // data.navigation.navigate("reset_password");
         dispatch({
           type: "SIGN_UP",
           token: data.token,
@@ -130,7 +130,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {/* {(console.disableYellowBox = true)} */}
+      {(console.disableYellowBox = true)}
       <StatusBar
         backgroundColor={customTheme.primaryColor}
         barStyle="light-content"

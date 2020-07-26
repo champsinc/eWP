@@ -81,8 +81,7 @@ export const AttachmentView = (props) => {
           <Card.Cover
             style={styles.cardCover}
             source={{
-              uri:
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+              uri: props.value,
             }}
           />
         </TouchableWithoutFeedback>

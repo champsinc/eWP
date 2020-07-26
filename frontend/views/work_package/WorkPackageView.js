@@ -3,10 +3,7 @@ import { View, FlatList, Platform, StyleSheet } from "react-native";
 import AppBar from "../../components/AppBar";
 import { GridCard } from "../../components/GridCard";
 import axios from "axios";
-import DiscussionPanel from "../../components/DiscussionPanel";
-import DiscussionView from "../../components/DiscussionView";
-import { SubsectionMapper } from "./SubsectionMapper";
-import { WarningDialog } from "../action_dialog/ActionDialogs";
+import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import { util } from "../../assets/Utility";
 
 let data = [
@@ -290,8 +287,6 @@ let data = [
   },
 ];
 
-let dataCopy = data;
-
 /**
  * This class is used to render the any work package in the app
  * @author Raghul Krishnan
@@ -327,16 +322,24 @@ export class WorkPackageView extends React.Component {
   };
 
   toggleDiscussionView = () => {
-    this.setState({
-      showDiscussionView: !this.state.showDiscussionView,
-    });
+    this.setState(
+      {
+        showDiscussionView: !this.state.showDiscussionView,
+      },
+      () => {
+        this.state.showDiscussionView
+          ? this.props.navigation.navigate("discussion_section", {
+              ewpNumber: 1234,
+            })
+          : this.props.navigation.goBack();
+      }
+    );
   };
 
   sectionClicked = (section) => {
-    this.setState({
-      sectionClicked: true,
+    this.props.navigation.navigate("section", {
       section,
-      showDiscussionView: false,
+      sectionId: this.getSectionId(section),
     });
   };
 
@@ -355,9 +358,9 @@ export class WorkPackageView extends React.Component {
         });
   };
 
-  getSectionId = () => {
+  getSectionId = (section) => {
     return this.state.dataSource.filter((data) => {
-      return this.state.section == data.name;
+      return section == data.name;
     })[0].id;
   };
 
@@ -423,39 +426,11 @@ export class WorkPackageView extends React.Component {
             />
           </View>
         )}
-        {this.state.sectionClicked && !this.state.showDiscussionView && (
-          <View style={styles.view}>
-            <AppBar
-              toggleNavBar={this.toggleNavBar}
-              subTitle={this.state.section}
-              searchPlaceHolder="Search in this work package"
-              backButton={true}
-              backButtonAction={this.goBackFromSubsectionToSection}
-            />
-            <SubsectionMapper
-              ref={(ref) => (this.sectionView = ref)}
-              section={this.state.section}
-              sectionId={this.getSectionId()}
-              // subSectionsData={this.state.subSectionData}
-            />
-            <WarningDialog
-              showDialog={this.state.showDialog}
-              dialogTitle={"Warning!"}
-              dialogContent={
-                "There are unsaved changes, are you sure you want to go back?"
-              }
-              dialogClickAwayAction={this.onModalClose}
-              yesAction={this.warningYesClicked}
-              noAction={this.onModalClose}
-            />
-          </View>
-        )}
         <DiscussionPanel
           discussionViewOpen={this.state.showDiscussionView}
           toggleDiscussionView={this.toggleDiscussionView}
           ewpNumber={"1234"}
         />
-        {this.state.showDiscussionView && <DiscussionView />}
       </View>
     );
   }

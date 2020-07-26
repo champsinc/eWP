@@ -1,16 +1,9 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedbackBase,
-} from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { List, Avatar, Divider } from "react-native-paper";
 import AppBar from "../../components/AppBar";
-import DiscussionPanel from "../../components/DiscussionPanel";
-import DiscussionView from "../../components/DiscussionView";
+import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import { util } from "../../assets/Utility";
-import MentionsTextInput from "react-native-mentions";
 import { AutoCompleteTextBox } from "../../components/AutoCompleteTextBox";
 
 export class WorkPackageUsers extends React.Component {
@@ -50,13 +43,22 @@ export class WorkPackageUsers extends React.Component {
   };
 
   goBackFromUsersToWorkPackage = () => {
-    this.props.navigation.navigate("work_package_view");
+    this.props.navigation.navigate("home");
   };
 
   toggleDiscussionView = () => {
-    this.setState({
-      showDiscussionView: !this.state.showDiscussionView,
-    });
+    this.setState(
+      {
+        showDiscussionView: !this.state.showDiscussionView,
+      },
+      () => {
+        this.state.showDiscussionView
+          ? this.props.navigation.navigate("discussion_section", {
+              ewpNumber: 1234,
+            })
+          : this.props.navigation.goBack();
+      }
+    );
   };
 
   render() {
@@ -164,7 +166,6 @@ export class WorkPackageUsers extends React.Component {
           toggleDiscussionView={this.toggleDiscussionView}
           ewpNumber={"1234"}
         />
-        {this.state.showDiscussionView && <DiscussionView />}
       </View>
     );
   }

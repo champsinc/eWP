@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
-import { customTheme } from "../styles/Main";
+import { customTheme } from "../../styles/Main";
 import MentionsTextInput from "react-native-mentions";
 
 export default class DiscussionInputBox extends React.Component {

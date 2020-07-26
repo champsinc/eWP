@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import { customTheme } from "../styles/Main";
-import { Button, Chip, Avatar } from "react-native-paper";
+import { Chip, Avatar } from "react-native-paper";
 import { util } from "../assets/Utility";
 
 export class AutoCompleteTextBox extends React.Component {

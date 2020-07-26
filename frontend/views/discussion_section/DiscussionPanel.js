@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, IconButton } from "react-native-paper";
-import { customTheme } from "./../styles/Main";
+import { customTheme } from "../../styles/Main";
 import { StyleSheet } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
 

@@ -79,26 +79,38 @@ export class Login extends React.Component {
           )
           .then((res) => {
             console.log(res, "Success");
-            this.setState({
-              // signIn: (
-              //   <SignIn
-              //     navigation={this.props.navigation}
-              //     token="dummy-token"
-              //   />
-              // ),
-            });
+            let user;
+            res.data.error
+              ? [
+                  (user = res.user || { name: "raghul", id: "fhefejfgef54fe" }),
+                  this.setState({
+                    showError: true,
+                    signIn: (
+                      <SignIn
+                        navigation={this.props.navigation}
+                        token="dummy-token"
+                        user={user}
+                      />
+                    ),
+                  }),
+                ]
+              : [
+                  (user = res.user || { name: "raghul", id: "fhefejfgef54fe" }),
+                  this.setState({
+                    signIn: (
+                      <SignIn
+                        navigation={this.props.navigation}
+                        token="dummy-token"
+                        user={user}
+                      />
+                    ),
+                  }),
+                ];
           })
           .catch((err) => {
             let user = err.user || { name: "raghul", id: "fhefejfgef54fe" };
             this.setState({
               showError: true,
-              signIn: (
-                <SignIn
-                  navigation={this.props.navigation}
-                  token="dummy-token"
-                  user={user}
-                />
-              ),
             });
           })
       : "";

@@ -18,12 +18,26 @@ export default class TextType extends React.Component {
   }
 
   onChangeText = (textInputText) => {
+    // Code to eliminate the outline for a textinput
+    // TODO: Find a right place to put this code
+    this.textInput.setNativeProps({
+      style: {
+        outline: "none",
+      },
+    });
+    console.log(this.props.oldValue);
     textInputText =
       this.props.type == "number"
         ? textInputText.replace(/[^0-9]/g, "") // restrict non-numeric characters if the field type is number
         : textInputText;
     this.props.value.toLowerCase() != textInputText.trim().toLowerCase() // if the current value is/[is not] equal to the value it was when it was last saved then
-      ? this.props.setChangesMade(this.props.name, true) // set changesMade object associated with this component key to true
+      ? this.props.setChangesMade(
+          this.props.name,
+          true,
+          this.props.subSectionId,
+          this.props.dataItemId,
+          textInputText
+        ) // set changesMade object associated with this component key to true
       : this.props.setChangesMade(this.props.name, false); // set changesMade object associated with this component key to false
     this.props.required && textInputText.length == 0
       ? this.props.setError(this.props.name, true)
@@ -33,6 +47,8 @@ export default class TextType extends React.Component {
       error: this.props.required && textInputText.length == 0 ? true : false,
     });
   };
+
+  flag = true;
 
   render() {
     return (
@@ -50,30 +66,23 @@ export default class TextType extends React.Component {
         {this.props.editable ? (
           <View>
             <View>
-              {Platform.OS == "web" ? (
-                <TextInput
-                  style={this.styles.textInputStyle}
-                  value={this.state.textInputText}
-                  onChangeText={this.onChangeText}
-                  mode={"outlined"}
-                  selectionColor={customTheme.textSelectionColor}
-                  placeholder={this.props.value}
-                  multiline={false}
-                />
-              ) : (
-                <TextInput
-                  style={this.styles.textInputStyle}
-                  value={this.state.textInputText}
-                  onChangeText={this.onChangeText}
-                  mode={"outlined"}
-                  keyboardType={
-                    this.props.type == "number" ? "numeric" : "default"
-                  }
-                  selectionColor={customTheme.textSelectionColor}
-                  placeholder={this.props.value}
-                  multiline={false}
-                />
-              )}
+              <TextInput
+                ref={(ref) => (this.textInput = ref)}
+                style={this.styles.textInputStyle}
+                value={this.state.textInputText}
+                onChangeText={this.onChangeText}
+                mode={"outlined"}
+                selectionColor={customTheme.textSelectionColor}
+                keyboardType={
+                  Platform.OS == "web"
+                    ? undefined
+                    : this.props.type == "number"
+                    ? "numeric"
+                    : "default"
+                }
+                placeholder={this.props.value}
+                multiline={false}
+              />
             </View>
             <View>
               {this.state.error && (

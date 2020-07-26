@@ -2,30 +2,50 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { IconButton } from "react-native-paper";
 import { customTheme } from "../styles/Main";
+import { TouchableWithoutFeedback } from "react-native";
+
+let onPressLog = (navigation, section, sectionId, subSectionId) => {
+  navigation.navigate("section", {
+    section,
+    sectionId,
+    subSectionId,
+  });
+};
 
 export const LogsView = (props) => {
   return (
-    <View style={styles.topView}>
-      <IconButton
-        icon={"reply"}
-        color={customTheme.discussionPanelIconColor}
-        size={25}
-        style={styles.replyButton}
-        onPress={() => props.setReplyingTo(props.messageIndex)}
-      />
-      <View style={styles.logsView}>
+    <TouchableWithoutFeedback
+      onPress={() =>
+        onPressLog(
+          props.navigation,
+          props.section,
+          props.sectionId,
+          props.subSectionId
+        )
+      }
+    >
+      <View style={styles.topView}>
         <IconButton
-          icon={"alpha-l-box-outline"}
+          icon={"reply"}
           color={customTheme.discussionPanelIconColor}
           size={25}
-          style={styles.logIcon}
+          style={styles.replyButton}
+          onPress={() => props.setReplyingTo(props.messageIndex)}
         />
-        <Text style={styles.text}>
-          {props.message.user} {props.message.verb} "{props.message.itemChanged}
-          " in "{props.message.documentChanged}" {props.message.documentType}
-        </Text>
+        <View style={styles.logsView}>
+          <IconButton
+            icon={"alpha-l-box-outline"}
+            color={customTheme.discussionPanelIconColor}
+            size={25}
+            style={styles.logIcon}
+          />
+          <Text style={styles.text}>
+            {props.message.userName} {props.message.verb} "
+            {props.message.itemChanged}" in "{props.message.subSection}"
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -47,6 +67,7 @@ const styles = StyleSheet.create({
   text: {
     margin: 10,
     marginLeft: 0,
+    flex: 1,
     fontWeight: "bold",
     fontSize: 14,
   },

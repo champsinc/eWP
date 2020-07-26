@@ -12,6 +12,82 @@ import { customTheme, commonStyles } from "../../styles/Main";
 import axios from "axios";
 import { util } from "../../assets/Utility";
 
+let datacopy1 = [
+  {
+    id: "5f0f50b9393970398908c336",
+    name: "Work Order Info Details",
+    dataitems: [
+      {
+        value: 12,
+        id: "5f0f50b9393970398908c337",
+        name: "Work Order Id",
+        type: "number",
+        editable: true,
+        notes: false,
+        required: false,
+        special_identifier: false,
+      },
+      {
+        value: "Fix water system",
+        id: "5f0f50b9393970398908c338",
+        name: "Title",
+        type: "text",
+        editable: true,
+        notes: false,
+        required: true,
+        special_identifier: false,
+      },
+      {
+        value:
+          "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
+        id: "5f0f50b9393970398908c339",
+        name: "Description",
+        type: "text",
+        editable: false,
+        notes: true,
+        required: false,
+        special_identifier: false,
+      },
+      {
+        value: "05/13/2020",
+        id: "5f0f50b9393970398908c33a",
+        name: "Order Date",
+        type: "date",
+        editable: true,
+        notes: false,
+        required: false,
+        special_identifier: false,
+      },
+    ],
+  },
+  {
+    id: "5f0f50b9393970398908c33b",
+    name: "Work Order Time Line Details",
+    dataitems: [
+      {
+        value: "05/12/2020",
+        id: "5f0f50b9393970398908c33c",
+        name: "Order Date",
+        type: "date",
+        editable: false,
+        notes: false,
+        required: false,
+        special_identifier: false,
+      },
+      {
+        value: "05/12/2020",
+        id: "5f0f50b9393970398908c33d",
+        name: "Expected Date of Delivery",
+        type: "date",
+        editable: true,
+        notes: false,
+        required: true,
+        special_identifier: false,
+      },
+    ],
+  },
+];
+
 /**
  * This class is used to render any section inside a work package
  * @author Raghul Krishnan
@@ -19,11 +95,13 @@ import { util } from "../../assets/Utility";
 export class SubsectionMapper extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props);
     this.state = {
       showDialog: false,
       showSave: false,
       subSectionsData: [],
+      expandSelectedSubsection: true,
+      dataCopy: [],
     };
 
     axios
@@ -33,23 +111,50 @@ export class SubsectionMapper extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response);
-        this.setState({ subSectionsData: response.data }, () => {
-          this.state.subSectionsData.forEach((subSection) => {
-            subSection.dataitems.forEach((listItem) => {
-              this.changesMade[listItem.name] = false;
-              this.errorsInFields[listItem.name] = false;
-            });
+        this.setState({
+          subSectionsData: response.data,
+          dataCopy: response.data,
+        });
+        // this.state.dataCopy = response.data;
+        this.state.subSectionsData.forEach((subSection) => {
+          subSection.dataitems.forEach((listItem) => {
+            this.changesMade[listItem.name] = false;
+            this.errorsInFields[listItem.name] = false;
           });
         });
+        console.log(this.state.dataCopy);
       })
       .catch((err) => {
         console.log(err);
         this.setState({ subSectionsData: [] });
       });
+
+    // dataCopy = datacopy1;
   }
 
+  // flag = true;
+
+  // componentDidMount() {
+  //   dataCopy = this.props.subSectionsData;
+  //   console.log(dataCopy);
+  //   this.setState({ showDialog: false });
+  // }
+
+  // componentDidUpdate() {
+  //   console.log(this.props.subSectionsData);
+  //   console.log(dataCopy);
+  //   this.flag
+  //     ? [
+  //         this.setState({ showDialog: false }),
+  //         (this.flag = !this.flag),
+  //         console.log("In"),
+  //       ]
+  //     : "";
+  // }
+
   changesMade = {};
+
+  // dataCopy = [];
 
   errorsInFields = {};
 
@@ -58,9 +163,23 @@ export class SubsectionMapper extends React.Component {
   finalErrorInFields = false;
 
   // this method is used to set a particular field in the changesMade object to true or false
-  setChangesMade = (field, trueOrFalse) => {
+  setChangesMade = (field, trueOrFalse, subSectionId, dataItemId, newValue) => {
     let changesMade = false;
     this.changesMade[field] = trueOrFalse;
+
+    console.log(this.state.dataCopy);
+    this.state.subSectionsData.forEach((subsection) => {
+      // console.log(subsection.id);
+      // console.log(subSectionId);
+      subsection.id == subSectionId
+        ? (subsection.dataitems.filter((dataitem) => {
+            return dataitem.id == dataItemId;
+          })[0].value = newValue)
+        : "";
+    });
+
+    console.log(this.state.subSectionsData);
+
     Object.values(this.changesMade).forEach((value) => {
       changesMade = changesMade || value;
     });
@@ -97,6 +216,18 @@ export class SubsectionMapper extends React.Component {
   };
 
   confirmSaveDialogButton = () => {
+    axios.post(
+      util.api_url + "/section/update",
+      {
+        sectionId: this.props.sectionId,
+        sub_sections: this.state.subSectionsData,
+      },
+      {
+        headers: {
+          api_key: util.api_key,
+        },
+      }
+    );
     this.onModalClose();
     // TODO: add code to save the data to persist here
   };
@@ -127,7 +258,7 @@ export class SubsectionMapper extends React.Component {
             </View>
           ) : (
             <View>
-              {this.state.subSectionsData.map((subsection) => {
+              {this.state.subSectionsData.map((subsection, subsectionIndex) => {
                 return (
                   <View key={subsection.name}>
                     <List.Accordion
@@ -135,13 +266,26 @@ export class SubsectionMapper extends React.Component {
                       title={subsection.name}
                       style={commonStyles.capitalizeText}
                       left={(props) => <List.Icon {...props} icon="folder" />}
+                      expanded={
+                        this.props.expandedSubsectionId == subsection.id
+                          ? this.state.expandSelectedSubsection
+                          : undefined
+                      }
+                      onPress={() => {
+                        return this.props.expandedSubsectionId == subsection.id
+                          ? this.setState({
+                              expandSelectedSubsection: !this.state
+                                .expandSelectedSubsection,
+                            })
+                          : undefined;
+                      }}
                     >
-                      {subsection.dataitems.map((listItem) => {
+                      {subsection.dataitems.map((listItem, listItemIndex) => {
                         return listItem.type == "text" ||
                           listItem.type == "number" ? (
                           <TextType
                             name={listItem.name}
-                            key={listItem.name}
+                            key={listItem.id}
                             type={listItem.type}
                             value={listItem.value.toString()}
                             editable={listItem.editable}
@@ -149,7 +293,17 @@ export class SubsectionMapper extends React.Component {
                             notes={listItem.notes}
                             previousNotes={listItem.previousNotes || []}
                             setChangesMade={this.setChangesMade}
+                            subSectionId={subsection.id}
+                            dataItemId={listItem.id}
                             setError={this.setError}
+                            // oldValue={this.props.subSectionsData}
+                            oldValue={
+                              this.state.dataCopy.length != 0
+                                ? this.state.dataCopy[
+                                    subsectionIndex
+                                  ].dataitems[listItemIndex].value.toString()
+                                : ""
+                            }
                           />
                         ) : listItem.type == "date" ? (
                           <DateType

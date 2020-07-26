@@ -1,7 +1,9 @@
 import React from "react";
 import { WorkPackageUsers } from "./WorkPackageUsers";
 import { WorkPackageView } from "../../views/work_package/WorkPackageView";
+import { SectionView } from "./SectionView";
 import { createStackNavigator } from "@react-navigation/stack";
+import DiscussionView from "../discussion_section/DiscussionView";
 
 let Stack = createStackNavigator();
 
@@ -14,13 +16,13 @@ export class WorkPackageNavigator extends React.Component {
   render() {
     return (
       <Stack.Navigator
-        initialRouteName={"work_package_view"}
+        initialRouteName={"home"}
         screenOptions={{
           headerShown: false,
         }}
       >
         <Stack.Screen
-          name="work_package_view"
+          name="home"
           component={(props) => (
             <WorkPackageView
               {...props}
@@ -33,9 +35,27 @@ export class WorkPackageNavigator extends React.Component {
           }}
         />
         <Stack.Screen
+          name="section"
+          component={(props) => (
+            <SectionView {...props} user={this.props.user} />
+          )}
+          options={{
+            animationEnabled: false,
+          }}
+        />
+        <Stack.Screen
           name="work_package_users"
           component={(props) => (
             <WorkPackageUsers {...props} user={this.props.user} />
+          )}
+          options={{
+            animationEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="discussion_section"
+          component={(props) => (
+            <DiscussionView {...props} user={this.props.user} />
           )}
           options={{
             animationEnabled: false,
