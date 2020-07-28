@@ -76,7 +76,7 @@ export const AttachmentView = (props) => {
           />
         </Card.Content>
       )}
-      {imageFileTypes.has(props.fileType) && (
+      {"image/" + imageFileTypes.has(props.fileType) && (
         <TouchableWithoutFeedback onPress={() => openModal(true)}>
           <Card.Cover
             style={styles.cardCover}

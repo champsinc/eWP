@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedbackBase } from "react-native";
 import AppBar from "../../components/AppBar";
 import { SubsectionMapper } from "./SubsectionMapper";
 import { WarningDialog } from "../action_dialog/ActionDialogs";
@@ -26,7 +26,8 @@ export class SectionView extends React.Component {
         },
       })
       .then((response) => {
-        console.log(params);
+        console.log(response);
+
         this.setState({ subSectionsData: response.data });
       })
       .catch((err) => {
@@ -93,9 +94,11 @@ export class SectionView extends React.Component {
           />
           <SubsectionMapper
             ref={(ref) => (this.subsectionMapper = ref)}
+            user={this.props.user}
             section={params.section}
             expandedSubsectionId={params.subSectionId || null}
             // subSectionsData={this.state.subSectionsData}
+            dataCopy={this.state.subSectionsData}
             sectionId={params.sectionId}
           />
           <WarningDialog

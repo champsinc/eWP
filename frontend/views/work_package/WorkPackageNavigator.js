@@ -23,6 +23,7 @@ export class WorkPackageNavigator extends React.Component {
       >
         <Stack.Screen
           name="home"
+          initialParams={{ id: "5f0f50b9393970398908c334" }}
           component={(props) => (
             <WorkPackageView
               {...props}

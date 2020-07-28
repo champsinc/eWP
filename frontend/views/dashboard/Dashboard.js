@@ -55,20 +55,23 @@ export default class Dashboard extends React.Component {
 
     this.state = {
       navigateTo: null,
+      workPackages: null,
     };
     axios
-      .get(util.api_url + "/user/wp?userId=" + this.props.user.id, {
+      .get(util.api_url + "/user/wp/" + this.props.user.id, {
         headers: {
           api_key: util.api_key,
         },
       })
       .then((res) => {
         //TODO: get the data from the backend and display it in cards
-        console.log(res);
+        this.setState({
+          workPackages: res.data,
+        });
+        this.goToURL();
       })
       .catch((res) => {
         this.goToURL();
-        console.log(res);
       });
   }
 
@@ -87,7 +90,10 @@ export default class Dashboard extends React.Component {
 
   navigateToWorkPackage = (id) => {
     this.props.navigation.navigate("work_package", {
-      id,
+      screen: "home",
+      params: {
+        id,
+      },
     });
   };
 
@@ -97,18 +103,16 @@ export default class Dashboard extends React.Component {
         {this.state.navigateTo}
         <AppBar toggleNavBar={this.toggleNavBar} subTitle="Dashboard" />
         <FlatList
-          data={workPackages}
+          data={this.state.workPackages}
           renderItem={({ item }) => (
             <WorkPackageCard
               title={item.title}
-              ewpNumber={item.ewpNumber}
-              dateCreated={item.dateCreated}
-              percentageComplete={item.percentageComplete}
-              navigateToWorkPackage={() =>
-                this.navigateToWorkPackage(item.ewpNumber)
-              }
-              unopenedLogs={item.unopenedLogs}
-              unopenedNotifications={item.unopenedNotifications}
+              ewpNumber={item.ewpNumber || "1234"}
+              dateCreated={item.dateCreated || "23 June 2020"}
+              percentageComplete={item.percentageComplete || 68}
+              navigateToWorkPackage={() => this.navigateToWorkPackage(item.id)}
+              unopenedLogs={item.unopenedLogs || true}
+              unopenedNotifications={item.unopenedNotifications || false}
             />
           )}
           numColumns={1}

@@ -1,5 +1,11 @@
 import React from "react";
-import { View, FlatList, Platform, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  Platform,
+  StyleSheet,
+  PushNotificationIOS,
+} from "react-native";
 import AppBar from "../../components/AppBar";
 import { GridCard } from "../../components/GridCard";
 import axios from "axios";
@@ -304,7 +310,7 @@ export class WorkPackageView extends React.Component {
     };
 
     axios
-      .get(util.api_url + "/wp/5f0f50b9393970398908c334", {
+      .get(util.api_url + "/wp/" + this.props.route.params.id, {
         headers: {
           api_key: util.api_key,
         },

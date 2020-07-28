@@ -101,7 +101,7 @@ export class SubsectionMapper extends React.Component {
       showSave: false,
       subSectionsData: [],
       expandSelectedSubsection: true,
-      dataCopy: [],
+      dataCopy: this.props.dataCopy,
     };
 
     axios
@@ -113,7 +113,7 @@ export class SubsectionMapper extends React.Component {
       .then((response) => {
         this.setState({
           subSectionsData: response.data,
-          dataCopy: response.data,
+          // dataCopy: response.data,
         });
         // this.state.dataCopy = response.data;
         this.state.subSectionsData.forEach((subSection) => {
@@ -229,7 +229,6 @@ export class SubsectionMapper extends React.Component {
       }
     );
     this.onModalClose();
-    // TODO: add code to save the data to persist here
   };
 
   changeDataCopy = (name, value) => {
@@ -296,6 +295,7 @@ export class SubsectionMapper extends React.Component {
                             subSectionId={subsection.id}
                             dataItemId={listItem.id}
                             setError={this.setError}
+                            currentUser={this.props.user}
                             // oldValue={this.props.subSectionsData}
                             oldValue={
                               this.state.dataCopy.length != 0

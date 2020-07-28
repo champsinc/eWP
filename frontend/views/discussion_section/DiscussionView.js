@@ -20,7 +20,6 @@ export default class DiscussionView extends React.Component {
       peopleInvolved: [],
       replyingToMessageIndex: "",
     };
-    console.log(new Date());
     axios
       .get(
         "https://ganskop.com/proxy/https://rss.itunes.apple.com/api/v1/us/books/top-paid/all/10/explicit.json"

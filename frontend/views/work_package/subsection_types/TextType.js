@@ -17,14 +17,16 @@ export default class TextType extends React.Component {
     };
   }
 
-  onChangeText = (textInputText) => {
+  onTextInputFocus = () => {
     // Code to eliminate the outline for a textinput
-    // TODO: Find a right place to put this code
     this.textInput.setNativeProps({
       style: {
         outline: "none",
       },
     });
+  };
+
+  onChangeText = (textInputText) => {
     console.log(this.props.oldValue);
     textInputText =
       this.props.type == "number"
@@ -68,6 +70,7 @@ export default class TextType extends React.Component {
             <View>
               <TextInput
                 ref={(ref) => (this.textInput = ref)}
+                onFocus={this.onTextInputFocus}
                 style={this.styles.textInputStyle}
                 value={this.state.textInputText}
                 onChangeText={this.onChangeText}
@@ -99,7 +102,10 @@ export default class TextType extends React.Component {
         )}
         <View>
           {this.props.notes && (
-            <AddNote previousNotes={this.props.previousNotes} />
+            <AddNote
+              previousNotes={this.props.previousNotes}
+              currentUser={this.props.currentUser}
+            />
           )}
         </View>
       </View>
