@@ -7,6 +7,7 @@ import { FlatList } from "react-native-gesture-handler";
 import axios from "axios";
 import { util } from "../../assets/Utility";
 import { useLinkTo } from "@react-navigation/native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 let workPackages = [
   {
@@ -14,7 +15,6 @@ let workPackages = [
     ewpNumber: "100",
     dateCreated: "05 Jan 2020",
     percentageComplete: 46,
-    unopenedLogs: true,
     unopenedNotifications: false,
   },
   {
@@ -22,7 +22,6 @@ let workPackages = [
     ewpNumber: "101",
     dateCreated: "14 Mar 2020",
     percentageComplete: 67,
-    unopenedLogs: false,
     unopenedNotifications: true,
   },
   {
@@ -30,7 +29,6 @@ let workPackages = [
     ewpNumber: "102",
     dateCreated: "17 Feb 2020",
     percentageComplete: 94,
-    unopenedLogs: true,
     unopenedNotifications: true,
   },
   {
@@ -38,7 +36,6 @@ let workPackages = [
     ewpNumber: "103",
     dateCreated: "21 Jun 2020",
     percentageComplete: 78,
-    unopenedLogs: true,
     unopenedNotifications: true,
   },
 ];
@@ -76,7 +73,6 @@ export default class Dashboard extends React.Component {
   }
 
   goToURL = () => {
-    console.log(this.props.navigateTo);
     this.props.navigateTo
       ? this.setState({
           navigateTo: <NavigateTo navigateTo={this.props.navigateTo} />,
@@ -89,6 +85,7 @@ export default class Dashboard extends React.Component {
   };
 
   navigateToWorkPackage = (id) => {
+    AsyncStorage.setItem("workPackageId", id.toString());
     this.props.navigation.navigate("work_package", {
       screen: "home",
       params: {
@@ -107,9 +104,9 @@ export default class Dashboard extends React.Component {
           renderItem={({ item }) => (
             <WorkPackageCard
               title={item.title}
-              ewpNumber={item.ewpNumber || "1234"}
-              dateCreated={item.dateCreated || "23 June 2020"}
-              percentageComplete={item.percentageComplete || 68}
+              ewpNumber={item.ewpNumber}
+              dateCreated={item.dateCreated}
+              percentageComplete={item.percentageComplete}
               navigateToWorkPackage={() => this.navigateToWorkPackage(item.id)}
               unopenedLogs={item.unopenedLogs || true}
               unopenedNotifications={item.unopenedNotifications || false}

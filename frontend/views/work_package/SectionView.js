@@ -1,10 +1,11 @@
 import React from "react";
-import { View, StyleSheet, TouchableWithoutFeedbackBase } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import AppBar from "../../components/AppBar";
 import { SubsectionMapper } from "./SubsectionMapper";
 import { WarningDialog } from "../action_dialog/ActionDialogs";
 import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 import { util } from "../../assets/Utility";
 
 let params;
@@ -19,6 +20,18 @@ export class SectionView extends React.Component {
       showDiscussionView: false,
       subSectionsData: [],
     };
+
+    Platform.OS == "web"
+      ? this.getData()
+      : SecureStore.getItemAsync("sectionData-" + params.sectionId).then(
+          (res) => {
+            console.log("SectionView:28", JSON.parse(res)[0].id);
+            this.getData();
+          }
+        );
+  }
+
+  getData = () => {
     axios
       .get(util.api_url + "/section/" + params.sectionId, {
         headers: {
@@ -26,14 +39,20 @@ export class SectionView extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
+        Platform.OS != "web"
+          ? SecureStore.setItemAsync(
+              "sectionData-" + params.sectionId,
+              JSON.stringify(response.data)
+            ).then((res) => {})
+          : "";
 
         this.setState({ subSectionsData: response.data });
       })
       .catch((err) => {
         this.setState({ subSectionsData: [] });
       });
-  }
+  };
 
   toggleNavBar = () => {
     this.props.navigation.openDrawer();
@@ -74,7 +93,7 @@ export class SectionView extends React.Component {
       () => {
         this.state.showDiscussionView
           ? this.props.navigation.navigate("discussion_section", {
-              ewpNumber: 1234,
+              wpId: this.props.route.params.wpId,
             })
           : this.props.navigation.goBack();
       }

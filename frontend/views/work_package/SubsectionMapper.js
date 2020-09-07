@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Platform } from "react-native";
 import { List, Divider, Button, IconButton } from "react-native-paper";
 import TextType from "./subsection_types/TextType";
 import { ScrollView } from "react-native-gesture-handler";
@@ -10,6 +10,8 @@ import { CheckItem } from "./subsection_types/CheckItem";
 import FileType from "./subsection_types/FileType";
 import { customTheme, commonStyles } from "../../styles/Main";
 import axios from "axios";
+import NetInfo from "@react-native-community/netinfo";
+import * as SecureStore from "expo-secure-store";
 import { util } from "../../assets/Utility";
 
 let datacopy1 = [
@@ -95,7 +97,7 @@ let datacopy1 = [
 export class SubsectionMapper extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+    // console.log(this.props);
     this.state = {
       showDialog: false,
       showSave: false,
@@ -122,7 +124,7 @@ export class SubsectionMapper extends React.Component {
             this.errorsInFields[listItem.name] = false;
           });
         });
-        console.log(this.state.dataCopy);
+        // console.log(this.state.dataCopy);
       })
       .catch((err) => {
         console.log(err);
@@ -167,7 +169,7 @@ export class SubsectionMapper extends React.Component {
     let changesMade = false;
     this.changesMade[field] = trueOrFalse;
 
-    console.log(this.state.dataCopy);
+    // console.log(this.state.dataCopy);
     this.state.subSectionsData.forEach((subsection) => {
       // console.log(subsection.id);
       // console.log(subSectionId);
@@ -178,7 +180,7 @@ export class SubsectionMapper extends React.Component {
         : "";
     });
 
-    console.log(this.state.subSectionsData);
+    // console.log(this.state.subSectionsData);
 
     Object.values(this.changesMade).forEach((value) => {
       changesMade = changesMade || value;
@@ -216,19 +218,74 @@ export class SubsectionMapper extends React.Component {
   };
 
   confirmSaveDialogButton = () => {
-    axios.post(
-      util.api_url + "/section/update",
-      {
-        sectionId: this.props.sectionId,
-        sub_sections: this.state.subSectionsData,
-      },
-      {
-        headers: {
-          api_key: util.api_key,
-        },
-      }
-    );
+    Platform.OS != "web"
+      ? [
+          SecureStore.setItemAsync(
+            "sub_sections",
+            this.state.subSectionsData.toString()
+          ).then((val) => console.log(val)),
+          SecureStore.getItemAsync("sub_sections").then((val) =>
+            console.log(val)
+          ),
+        ]
+      : "";
+    Platform.OS == "web"
+      ? axios.post(
+          util.api_url + "/section/update",
+          {
+            sectionId: this.props.sectionId,
+            sub_sections: this.state.subSectionsData,
+          },
+          {
+            headers: {
+              api_key: util.api_key,
+            },
+          }
+        )
+      : NetInfo.addEventListener((state) => {
+          state.isConnected
+            ? [
+                SecureStore.getItemAsync("sub_sections").then((val) =>
+                  console.log(val)
+                ),
+                axios.post(
+                  util.api_url + "/section/update",
+                  {
+                    sectionId: this.props.sectionId,
+                    sub_sections: this.state.subSectionsData,
+                  },
+                  {
+                    headers: {
+                      api_key: util.api_key,
+                    },
+                  }
+                ),
+                // SecureStore.deleteItemAsync("sub_sections"),
+                console.log("IN"),
+              ]
+            : SecureStore.setItemAsync(
+                "sub_sections",
+                this.state.subSectionsData
+              ).then((val) => console.log(val));
+          // console.log("Connection type", state.type);
+          // console.log("Is connected?", state.isConnected);
+        });
     this.onModalClose();
+    // unsubscribe();
+    // navigator.onLine
+    //   ? axios.post(
+    //       util.api_url + "/section/update",
+    //       {
+    //         sectionId: this.props.sectionId,
+    //         sub_sections: this.state.subSectionsData,
+    //       },
+    //       {
+    //         headers: {
+    //           api_key: util.api_key,
+    //         },
+    //       }
+    //     )
+    //   : this.onModalClose();
   };
 
   changeDataCopy = (name, value) => {

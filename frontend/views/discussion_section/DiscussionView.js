@@ -8,7 +8,7 @@ import { LogsView } from "../../components/LogsView";
 import { RequestView } from "../../components/RequestView";
 import { ScrollView } from "react-native-gesture-handler";
 import { AttachmentView } from "../../components/AttachmentView";
-import { customTheme } from "../../styles/Main";
+import { customTheme, monthNames } from "../../styles/Main";
 import DiscussionPanel from "./DiscussionPanel";
 import { util } from "../../assets/Utility";
 
@@ -22,86 +22,21 @@ export default class DiscussionView extends React.Component {
     };
     axios
       .get(
-        "https://ganskop.com/proxy/https://rss.itunes.apple.com/api/v1/us/books/top-paid/all/10/explicit.json"
+        "http://ewpackage.gq:8080/api/discuss/wp/" +
+          this.props.route.params.wpId,
+        {
+          headers: {
+            api_key: util.api_key,
+          },
+        }
       )
       .then((res) =>
         this.setState({
-          messages: this.messages,
+          messages: res.data,
           peopleInvolved: this.peopleInvolved,
         })
       );
   }
-
-  messages = [
-    {
-      id: "1",
-      type: "text",
-      text: "Hi!",
-      user: "User 1",
-      left: true,
-      avatar: "Supervisor",
-      time: "02:11 PM",
-      thread: [
-        {
-          id: "1.1",
-          type: "text",
-          text: "Hedy!",
-          time: "02:47 PM",
-        },
-      ],
-    },
-    {
-      id: "2",
-      type: "text",
-      text: "Hey!",
-      user: "User 1",
-      left: false,
-      avatar: "Supervisor",
-      time: "02:13 PM",
-      thread: [
-        {
-          id: "2.1",
-          type: "text",
-          text: "Hoy!",
-          time: "02:47 PM",
-        },
-      ],
-    },
-    {
-      id: "3",
-      type: "log",
-      userId: "ffe8f7f4df7e",
-      userName: "User 1", //user who sent the message/request/attachment
-      verb: "changed",
-      itemChanged: "Expected Date of Delivery",
-      subSection: "Work Order Time Line Details",
-      section: "Details",
-      sectionId: "5f0f50b9393970398908c335",
-      subSectionId: "5f0f50b9393970398908c336",
-      time: "02:16 PM",
-    },
-    {
-      id: "4",
-      type: "image",
-      uri: "",
-      time: "02:30 PM",
-    },
-    {
-      id: "5",
-      type: "request",
-      text: "add a new Work Package for this work",
-      user: "User 1",
-      time: "02:45 PM",
-    },
-    {
-      id: "6",
-      type: "attachment",
-      fileName: "2020.pdf",
-      user: "User 1",
-      avatar: "Supervisor",
-      time: "2.50 PM",
-    },
-  ];
 
   peopleInvolved = [
     {
@@ -124,16 +59,14 @@ export default class DiscussionView extends React.Component {
   appendMessage = (message) => {
     this.state.messages.push(message);
     this.setState({
-      messages: this.state.messages,
       replyingToMessageIndex: "",
     });
   };
 
   appendThread = (message) => {
-    this.state.messages[this.state.replyingToMessageIndex].thread
-      ? ""
-      : (this.state.messages[this.state.replyingToMessageIndex].thread = []);
-    this.state.messages[this.state.replyingToMessageIndex].thread.push(message);
+    this.state.messages[this.state.replyingToMessageIndex].threads.push(
+      message
+    );
     this.resetReplyingTo();
   };
 
@@ -150,16 +83,36 @@ export default class DiscussionView extends React.Component {
     });
   };
 
+  isMessageDateSameAsToday = (timestamp) => {
+    return (
+      new Date().getDate() == new Date(timestamp).getDate() &&
+      new Date().getMonth() == new Date(timestamp).getMonth() &&
+      new Date().getFullYear() == new Date(timestamp).getFullYear()
+    );
+  };
+
+  getFormattedDate = (timestamp) => {
+    return (
+      monthNames[new Date(timestamp).getMonth()] +
+      " " +
+      new Date(timestamp).getDate() +
+      ", " +
+      new Date(timestamp).getFullYear()
+    );
+  };
+
+  lastDate = "";
+
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <DiscussionPanel
           discussionViewOpen={true}
           toggleDiscussionView={() => this.props.navigation.goBack()}
           ewpNumber={"1234"}
         />
         <ScrollView
-          keyboardShouldPersistTaps="handled" //added this, for the ability to press buttons while typing
+          keyboardShouldPersistTaps="handled" //added this for the ability to press buttons while typing
           ref={(ref) => {
             this.scrollView = ref;
           }}
@@ -170,22 +123,37 @@ export default class DiscussionView extends React.Component {
           {this.state.messages.map((message, index) => {
             return message.type == "text" ? (
               <View>
+                {!(
+                  this.lastDate == "Today" &&
+                  this.isMessageDateSameAsToday(message.timestamp)
+                ) &&
+                  this.lastDate != this.getFormattedDate(message.timestamp) && (
+                    <Text style={styles.dateBetweenMessages}>
+                      {
+                        (this.lastDate = this.isMessageDateSameAsToday(
+                          message.timestamp
+                        )
+                          ? "Today"
+                          : this.getFormattedDate(message.timestamp))
+                      }
+                    </Text>
+                  )}
                 <ChatBubble
                   key={message.id}
                   messageIndex={index}
                   message={message}
-                  avatar={util.avatarURL}
+                  user={this.props.user}
                   setReplyingTo={this.setReplyingTo}
                 />
-                {message.thread &&
-                  message.thread.map((messageInThread) => {
+                {message.threads &&
+                  message.threads.map((messageInThread) => {
                     return messageInThread.type == "text" ? (
                       <ChatBubble
                         key={messageInThread.id}
                         parentMessage={message}
                         message={messageInThread}
                         messageIndex={index}
-                        avatar={util.avatarURL}
+                        user={this.props.user}
                         setReplyingTo={this.setReplyingTo}
                       />
                     ) : messageInThread.type == "request" ? (
@@ -209,6 +177,23 @@ export default class DiscussionView extends React.Component {
               </View>
             ) : message.type == "log" ? (
               <View>
+                {this.lastDate !=
+                  monthNames[new Date(message.timestamp).getMonth()] +
+                    " " +
+                    new Date(message.timestamp).getDate() +
+                    ", " +
+                    new Date(message.timestamp).getFullYear() && (
+                  <Text style={styles.dateBetweenMessages}>
+                    {
+                      (this.lastDate =
+                        monthNames[new Date(message.timestamp).getMonth()] +
+                        " " +
+                        new Date(message.timestamp).getDate() +
+                        ", " +
+                        new Date(message.timestamp).getFullYear())
+                    }
+                  </Text>
+                )}
                 <LogsView
                   key={message.id}
                   messageIndex={index}
@@ -227,7 +212,7 @@ export default class DiscussionView extends React.Component {
                         parentMessage={message}
                         message={messageInThread}
                         messageIndex={index}
-                        avatar={util.avatarURL}
+                        user={this.props.user}
                         setReplyingTo={this.setReplyingTo}
                       />
                     ) : messageInThread.type == "request" ? (
@@ -255,6 +240,23 @@ export default class DiscussionView extends React.Component {
               </View>
             ) : message.type == "request" ? (
               <View>
+                {this.lastDate !=
+                  monthNames[new Date(message.timestamp).getMonth()] +
+                    " " +
+                    new Date(message.timestamp).getDate() +
+                    ", " +
+                    new Date(message.timestamp).getFullYear() && (
+                  <Text style={styles.dateBetweenMessages}>
+                    {
+                      (this.lastDate =
+                        monthNames[new Date(message.timestamp).getMonth()] +
+                        " " +
+                        new Date(message.timestamp).getDate() +
+                        ", " +
+                        new Date(message.timestamp).getFullYear())
+                    }
+                  </Text>
+                )}
                 <RequestView
                   key={message.id}
                   messageIndex={index}
@@ -269,7 +271,7 @@ export default class DiscussionView extends React.Component {
                         parentMessage={message}
                         message={messageInThread}
                         messageIndex={index}
-                        avatar={util.avatarURL}
+                        user={this.props.user}
                         setReplyingTo={this.setReplyingTo}
                       />
                     ) : messageInThread.type == "request" ? (
@@ -297,6 +299,23 @@ export default class DiscussionView extends React.Component {
               </View>
             ) : message.type == "attachment" ? (
               <View>
+                {this.lastDate !=
+                  monthNames[new Date(message.timestamp).getMonth()] +
+                    " " +
+                    new Date(message.timestamp).getDate() +
+                    ", " +
+                    new Date(message.timestamp).getFullYear() && (
+                  <Text style={styles.dateBetweenMessages}>
+                    {
+                      (this.lastDate =
+                        monthNames[new Date(message.timestamp).getMonth()] +
+                        " " +
+                        new Date(message.timestamp).getDate() +
+                        ", " +
+                        new Date(message.timestamp).getFullYear())
+                    }
+                  </Text>
+                )}
                 <AttachmentView
                   key={message.id}
                   messageIndex={index}
@@ -311,7 +330,7 @@ export default class DiscussionView extends React.Component {
                         parentMessage={message}
                         message={messageInThread}
                         messageIndex={index}
-                        avatar={util.avatarURL}
+                        user={this.props.user}
                         setReplyingTo={this.setReplyingTo}
                       />
                     ) : messageInThread.type == "request" ? (
@@ -341,55 +360,61 @@ export default class DiscussionView extends React.Component {
               <View />
             );
           })}
-          {this.state.replyingToMessageIndex !== "" && (
-            <View style={styles.replyingToView}>
-              <Text style={styles.replyingToText}>
-                <Text style={{ fontWeight: "bold" }}>Replying to</Text>
-                {this.messages[this.state.replyingToMessageIndex].type == "text"
-                  ? ": " + this.messages[this.state.replyingToMessageIndex].text
-                  : this.messages[this.state.replyingToMessageIndex].type ==
-                    "log"
-                  ? ' a LOG: "' +
-                    this.messages[this.state.replyingToMessageIndex]
-                      .itemChanged +
-                    '" by "' +
-                    this.messages[this.state.replyingToMessageIndex].user +
-                    '"'
-                  : this.messages[this.state.replyingToMessageIndex].type ==
-                    "request"
-                  ? ' a REQUEST: "' +
-                    this.messages[this.state.replyingToMessageIndex].text +
-                    '" by "' +
-                    this.messages[this.state.replyingToMessageIndex].user +
-                    '"'
-                  : this.messages[this.state.replyingToMessageIndex].type ==
-                    "attachment"
-                  ? ' an ATTACHMENT: "' +
-                    this.messages[this.state.replyingToMessageIndex].fileName +
-                    '" by "' +
-                    this.messages[this.state.replyingToMessageIndex].user +
-                    '"'
-                  : ""}
-              </Text>
-              <IconButton
-                style={styles.crossIcon}
-                icon="close"
-                color="gray"
-                size={20}
-                onPress={this.resetReplyingTo}
-              ></IconButton>
-            </View>
-          )}
-          <DiscussionInputBox
-            ref={(ref) => {
-              this.discussionInputBox = ref;
-            }}
-            appendMessage={this.appendMessage}
-            replyingToMessageIndex={this.state.replyingToMessageIndex}
-            appendThread={this.appendThread}
-            peopleInvolved={this.state.peopleInvolved}
-          />
         </ScrollView>
+        {this.state.replyingToMessageIndex !== "" && (
+          <View style={styles.replyingToView}>
+            <Text style={styles.replyingToText}>
+              <Text style={{ fontWeight: "bold" }}>Replying to</Text>
+              {this.state.messages[this.state.replyingToMessageIndex].type ==
+              "text"
+                ? ": " +
+                  this.state.messages[this.state.replyingToMessageIndex].value
+                : this.state.messages[this.state.replyingToMessageIndex].type ==
+                  "log"
+                ? ' a LOG: "' +
+                  this.state.messages[this.state.replyingToMessageIndex]
+                    .itemChanged +
+                  '" by "' +
+                  this.state.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : this.state.messages[this.state.replyingToMessageIndex].type ==
+                  "request"
+                ? ' a REQUEST: "' +
+                  this.state.messages[this.state.replyingToMessageIndex].text +
+                  '" by "' +
+                  this.state.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : this.state.messages[this.state.replyingToMessageIndex].type ==
+                  "attachment"
+                ? ' an ATTACHMENT: "' +
+                  this.state.messages[this.state.replyingToMessageIndex]
+                    .fileName +
+                  '" by "' +
+                  this.state.messages[this.state.replyingToMessageIndex].user +
+                  '"'
+                : ""}
+            </Text>
+            <IconButton
+              style={styles.crossIcon}
+              icon="close"
+              color="gray"
+              size={20}
+              onPress={this.resetReplyingTo}
+            ></IconButton>
+          </View>
+        )}
+        <DiscussionInputBox
+          ref={(ref) => {
+            this.discussionInputBox = ref;
+          }}
+          appendMessage={this.appendMessage}
+          messages={this.state.messages}
+          wpId={this.props.route.params.wpId}
+          user={this.props.user}
+          replyingToMessageIndex={this.state.replyingToMessageIndex}
+          appendThread={this.appendThread}
+          peopleInvolved={this.state.peopleInvolved}
+        />
       </View>
     );
   }
@@ -400,7 +425,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: 10,
-    marginTop: 10,
+    // marginTop: 10,
     marginBottom: 0,
     borderRadius: 8,
     borderColor: customTheme.borderColorInDiscussionSection,
@@ -420,5 +445,13 @@ const styles = StyleSheet.create({
     margin: 0,
     height: "auto",
     alignSelf: "center",
+  },
+  dateBetweenMessages: {
+    backgroundColor: "#4999E9",
+    alignSelf: "center",
+    borderRadius: 8,
+    padding: 8,
+    color: "white",
+    textTransform: "capitalize",
   },
 });

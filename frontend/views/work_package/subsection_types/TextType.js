@@ -27,7 +27,7 @@ export default class TextType extends React.Component {
   };
 
   onChangeText = (textInputText) => {
-    console.log(this.props.oldValue);
+    // console.log(this.props.oldValue);
     textInputText =
       this.props.type == "number"
         ? textInputText.replace(/[^0-9]/g, "") // restrict non-numeric characters if the field type is number

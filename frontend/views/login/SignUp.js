@@ -73,7 +73,7 @@ export class SignUp extends React.Component {
             util.api_url + "/user/register",
             {
               name: this.state.name,
-              // userName: this.state.userName,
+              username: this.state.userName,
               email: this.state.email,
               password: this.state.password,
               role: 0,

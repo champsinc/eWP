@@ -2,28 +2,13 @@ import React from "react";
 import { View, StyleSheet, Platform, Text, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { Portal, Dialog, Button, IconButton } from "react-native-paper";
-import { customTheme, commonStyles } from "../../../styles/Main";
+import { customTheme, commonStyles, monthNames } from "../../../styles/Main";
 
 /**
  * This class is used to render a single unit item of a subsection of date type
  * @author Raghul Krishnan
  */
 export default class DateType extends React.Component {
-  monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +24,7 @@ export default class DateType extends React.Component {
 
   getDateString = (date) => {
     return (
-      this.monthNames[date.getMonth()] +
+      monthNames[date.getMonth()] +
       " " +
       date.getDate() +
       ", " +

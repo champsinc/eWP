@@ -69,9 +69,6 @@ export const WorkPackageCard = (props) => {
             <Text style={styles.badgeIcon}> •</Text>
           )}
         </Button>
-        <Button icon={"playlist-edit"} onPress={() => {}}>
-          Logs{props.unopenedLogs && <Text style={styles.badgeIcon}> •</Text>}
-        </Button>
       </Card.Actions>
     </Card>
   );

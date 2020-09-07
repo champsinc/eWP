@@ -54,7 +54,7 @@ export class WorkPackageUsers extends React.Component {
       () => {
         this.state.showDiscussionView
           ? this.props.navigation.navigate("discussion_section", {
-              ewpNumber: 1234,
+              wpId: this.props.route.params.wpId,
             })
           : this.props.navigation.goBack();
       }

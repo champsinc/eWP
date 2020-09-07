@@ -10,9 +10,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import Dashboard from "../views/dashboard/Dashboard";
 import Profile from "../views/profile/Profile";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { customTheme } from "../styles/Main";
 import { WorkPackageNavigator } from "../views/work_package/WorkPackageNavigator";
 import { LoginNavigator } from "../views/login/LoginNavigator";
+import { UserManagement } from "../views/user_management/UserManagement";
 
 const linking = {
   prefixes: ["/"],
@@ -75,7 +77,7 @@ export default class NavigationDrawer extends React.Component {
               options={{
                 title: "Profile",
                 drawerIcon: ({ focused, size }) => (
-                  <MaterialIcons name="account-circle" size={size} />
+                  <FontAwesome5 name="user-circle" size={size} />
                 ),
               }}
             />
@@ -89,7 +91,21 @@ export default class NavigationDrawer extends React.Component {
               options={{
                 title: "Work Package",
                 drawerIcon: ({ focused, size }) => (
-                  <MaterialIcons name="work" size={size} />
+                  <FontAwesome5 name="briefcase" size={size} />
+                ),
+              }}
+            />
+          )}
+          {this.props.userToken && (
+            <Drawer.Screen
+              name="user_management"
+              component={(props) => (
+                <UserManagement {...props} user={this.props.user} />
+              )}
+              options={{
+                title: "User Management",
+                drawerIcon: ({ focused, size }) => (
+                  <FontAwesome5 name="users" size={size} />
                 ),
               }}
             />

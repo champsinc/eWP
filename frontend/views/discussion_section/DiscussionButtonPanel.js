@@ -5,6 +5,9 @@ import { customTheme } from "../../styles/Main";
 import FilePondModal from "../../components/FilePondModal";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
+import { AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY } from "expo-secure-store";
+import axios from "axios";
+import { util } from "../../assets/Utility";
 
 export default class DiscussionButtonPanel extends React.Component {
   constructor(props) {
@@ -86,33 +89,84 @@ export default class DiscussionButtonPanel extends React.Component {
     this.state.sendAsRequestSelected == "checked"
       ? this.toggleSendAsRequestButton()
       : "";
+    let value = this.props.text;
     this.props.clearInputBox();
     this.props.text.length > 0
       ? Number.isInteger(this.props.replyingToMessageIndex)
-        ? this.props.appendThread({
-            id: "6",
-            type:
-              this.state.sendAsRequestSelected == "checked"
-                ? "request"
-                : "text",
-            text: this.props.text,
-            user: "User 1",
-            avatar: "Supervisor",
-            left: false,
-            time: this.getTime(),
-          })
-        : this.props.appendMessage({
-            id: "6",
-            type:
-              this.state.sendAsRequestSelected == "checked"
-                ? "request"
-                : "text",
-            text: this.props.text,
-            user: "User 1",
-            avatar: "Supervisor",
-            left: false,
-            time: this.getTime(),
-          })
+        ? axios
+            .post(
+              util.api_url + "/discuss/insert",
+              {
+                type:
+                  this.state.sendAsRequestSelected == "checked"
+                    ? "request"
+                    : "text",
+                value,
+                senderName: this.props.user.name,
+                senderUserId: this.props.user.id,
+                avatarURL: this.props.user.avatar || "",
+                wpId: this.props.wpId,
+                parentDI: this.props.messages[this.props.replyingToMessageIndex]
+                  .id,
+              },
+              {
+                headers: {
+                  api_key: util.api_key,
+                },
+              }
+            )
+            .then((res) => {
+              this.props.appendThread({
+                type:
+                  this.state.sendAsRequestSelected == "checked"
+                    ? "request"
+                    : "text",
+                id: res.data.Success,
+                value,
+                threads: [],
+                senderName: this.props.user.name,
+                senderUserId: this.props.user.id,
+                avatarURL: this.props.user.avatar || "",
+                wpId: this.props.wpId,
+                timestamp: new Date(),
+              });
+            })
+        : axios
+            .post(
+              util.api_url + "/discuss/insert",
+              {
+                type:
+                  this.state.sendAsRequestSelected == "checked"
+                    ? "request"
+                    : "text",
+                value,
+                senderName: this.props.user.name,
+                senderUserId: this.props.user.id,
+                avatarURL: this.props.user.avatar || "",
+                wpId: this.props.wpId,
+              },
+              {
+                headers: {
+                  api_key: util.api_key,
+                },
+              }
+            )
+            .then((res) => {
+              this.props.appendMessage({
+                id: res.data.Success,
+                type:
+                  this.state.sendAsRequestSelected == "checked"
+                    ? "request"
+                    : "text",
+                value,
+                threads: [],
+                senderName: this.props.user.name,
+                senderUserId: this.props.user.id,
+                timestamp: new Date(),
+                avatarURL: this.props.user.avatar || "",
+                wpId: this.props.wpId,
+              });
+            })
       : "";
   };
 }

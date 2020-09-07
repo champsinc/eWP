@@ -150,6 +150,9 @@ export default class DiscussionInputBox extends React.Component {
             replyingToMessageIndex={this.props.replyingToMessageIndex}
             appendMessage={this.props.appendMessage}
             appendThread={this.props.appendThread}
+            messages={this.props.messages}
+            wpId={this.props.wpId}
+            user={this.props.user}
             clearInputBox={this.clearInputBox}
             peopleInvolved={this.props.peopleInvolved}
             addMentionSymbol={this.addMentionSymbol}
