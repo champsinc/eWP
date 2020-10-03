@@ -20,8 +20,35 @@ export class SingleSelect extends React.Component {
   }
 
   onValueChange = (itemValue) => {
+    let statusCodes = ["Incomplete", "In Progress", "Completed"];
     itemValue != this.intialSelected
-      ? this.props.setChangesMade(this.props.fieldName, true)
+      ? !this.props.fromAttachment
+        ? [
+            this.props.value.forEach((option) => {
+              option.value = "not-selected";
+            }),
+            (this.props.value.filter((option, index) => {
+              return option.name == itemValue;
+            })[0].value = "selected"),
+            this.props.setChangesMade(
+              this.props.fieldName,
+              true,
+              this.props.subSectionId,
+              this.props.dataItemId,
+              this.props.value
+            ),
+          ]
+        : [
+            console.log(statusCodes.indexOf(itemValue)),
+            this.props.setChangesMade(
+              this.props.fieldName,
+              true,
+              this.props.subSectionId,
+              this.props.dataItemId,
+              statusCodes.indexOf(itemValue),
+              true
+            ),
+          ]
       : this.props.setChangesMade(this.props.fieldName, false);
     this.props.required && itemValue == this.emptyOption
       ? this.props.setError(this.props.fieldName, true)

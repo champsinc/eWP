@@ -85,7 +85,7 @@ export default class Profile extends React.Component {
             />
             <View style={styles.textButtonWrapper}>
               <Text style={styles.labelStyle}>Username:</Text>
-              <TextInput
+              {/* <TextInput
                 ref={(ref) => (this.name = ref)}
                 style={styles.textInput}
                 onFocus={this.onTextInputFocus}
@@ -93,11 +93,12 @@ export default class Profile extends React.Component {
                 placeholder={"Username"}
                 mode={"outlined"}
                 onChangeText={this.onChangeTextName}
-              />
+              /> */}
+              <Text style={styles.textValues}>{this.state.name}</Text>
             </View>
             <View style={styles.textButtonWrapper}>
               <Text style={styles.labelStyle}>Email:</Text>
-              <TextInput
+              {/* <TextInput
                 ref={(ref) => (this.email = ref)}
                 style={styles.textInput}
                 onFocus={this.onTextInputFocus}
@@ -105,9 +106,15 @@ export default class Profile extends React.Component {
                 mode={"outlined"}
                 value={this.state.email}
                 onChangeText={this.onChangeTextEmail}
-              ></TextInput>
+              ></TextInput> */}
+              <Text style={styles.textValues}>{this.state.email}</Text>
             </View>
-            <View style={[styles.textButtonWrapper, { width: "75%" }]}>
+            <View
+              style={[
+                styles.textButtonWrapper,
+                { width: Platform.OS == "web" ? "75%" : "100%" },
+              ]}
+            >
               <Button
                 uppercase={false}
                 style={styles.saveButton}
@@ -133,7 +140,7 @@ export default class Profile extends React.Component {
   }
 }
 
-const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -143,7 +150,7 @@ const styles = StyleSheet.create({
   },
   card: {
     paddingVertical: 20,
-    width: "35%",
+    width: Platform.OS == "web" ? windowWidth / 4 : "95%",
     minWidth: 220,
     alignSelf: "center",
   },
@@ -156,13 +163,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  textValues: {
+    fontSize: 16,
+    alignSelf: "center",
+    fontWeight: "bold",
+  },
   labelStyle: {
     alignSelf: "center",
     fontSize: 16,
   },
   logoutButton: {
     alignSelf: "center",
-    marginTop: 10,
+    marginTop: 20,
   },
   saveButton: {
     alignSelf: "center",
@@ -177,8 +189,9 @@ const styles = StyleSheet.create({
   textButtonWrapper: {
     flexDirection: "row",
     alignSelf: "center",
-    width: "70%",
+    width: Platform.OS == "web" ? "70%" : "100%",
     justifyContent: "space-between",
-    padding: 10,
+    padding: 30,
+    // padding: 10,
   },
 });

@@ -84,12 +84,13 @@ export default class Dashboard extends React.Component {
     this.props.navigation.openDrawer();
   };
 
-  navigateToWorkPackage = (id) => {
+  navigateToWorkPackage = (id, status) => {
     AsyncStorage.setItem("workPackageId", id.toString());
     this.props.navigation.navigate("work_package", {
       screen: "home",
       params: {
         id,
+        status,
       },
     });
   };
@@ -106,8 +107,11 @@ export default class Dashboard extends React.Component {
               title={item.title}
               ewpNumber={item.ewpNumber}
               dateCreated={item.dateCreated}
+              status={item.status}
               percentageComplete={item.percentageComplete}
-              navigateToWorkPackage={() => this.navigateToWorkPackage(item.id)}
+              navigateToWorkPackage={() =>
+                this.navigateToWorkPackage(item.id, item.status)
+              }
               unopenedLogs={item.unopenedLogs || true}
               unopenedNotifications={item.unopenedNotifications || false}
             />

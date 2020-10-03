@@ -19,6 +19,7 @@
     "expo-document-picker": "^8.2.1",
     "expo-file-system": "~8.1.0",
     "expo-media-library": "~8.1.0",
+    "expo-secure-store": "~8.1.0",
     "expo-web-browser": "~8.2.1",
     "indicative": "^7.4.4",
     "moment": "^2.27.0",
@@ -32,6 +33,7 @@
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-mentions": "^1.1.4",
     "react-native-paper": "^3.10.1",
+    "react-native-paper-dropdown": "0.0.3",
     "react-native-progress": "^4.1.2",
     "react-native-reanimated": "^1.9.0",
     "react-native-safe-area-context": "^1.0.2",
@@ -42,8 +44,7 @@
     "react-native-web": "~0.11.7",
     "react-native-webview": "8.1.1",
     "react-navigation": "^4.4.0",
-    "react-with-important-style": "^0.2.2",
-    "expo-secure-store": "~8.1.0"
+    "react-with-important-style": "^0.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

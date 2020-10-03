@@ -38,10 +38,10 @@ export const WorkPackageCard = (props) => {
     <Card style={styles.card} elevation={Platform.OS == "web" ? 5 : 10}>
       <Card.Title
         title={props.title}
-        subtitle={"eWP #" + props.ewpNumber + " • " + props.dateCreated}
+        // subtitle={"eWP #" + props.ewpNumber + " • " + props.dateCreated}
         left={LeftContent}
       />
-      <Card.Content style={styles.cardContent}>
+      {/* <Card.Content style={styles.cardContent}>
         <View style={styles.percentageIndicator}>
           <Text>{props.percentageComplete} %</Text>
         </View>
@@ -50,7 +50,7 @@ export const WorkPackageCard = (props) => {
           color={customTheme.primaryColor}
           style={styles.progressBar}
         />
-      </Card.Content>
+      </Card.Content> */}
       <FacePile
         numFaces={3}
         faces={FACES}
@@ -62,7 +62,14 @@ export const WorkPackageCard = (props) => {
         }}
       />
       <Card.Actions style={styles.actionsButtonContainer}>
-        <Button onPress={props.navigateToWorkPackage}>View</Button>
+        {
+          <Button
+            onPress={props.navigateToWorkPackage}
+            disabled={props.status == 2}
+          >
+            View
+          </Button>
+        }
         <Button icon={"bell"} onPress={() => {}}>
           Notifications
           {props.unopenedNotifications && (

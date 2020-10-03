@@ -38,6 +38,7 @@ export const AttachmentView = (props) => {
     },
   ];
   props = props.data;
+  console.log(props.statusCode);
   props.statusCode >= 0 && props.statusCode <= 2
     ? (options[props.statusCode].value = "selected")
     : "";
@@ -73,6 +74,8 @@ export const AttachmentView = (props) => {
             setChangesMade={props.setChangesMade}
             setError={props.setError}
             fromAttachment={true}
+            subSectionId={props.subSectionId}
+            dataItemId={props.dataItemId}
           />
         </Card.Content>
       )}

@@ -69,7 +69,13 @@ export default class DateType extends React.Component {
     let timeStamp = new Date();
     this.props.setError(this.props.name, false);
     this.initialDateString != this.getDateString(this.currentSelectedDate) // if the current value is/[is not] equal to the value it was when it was last saved then
-      ? this.props.setChangesMade(this.props.name, true) // set changesMade object associated with this component key to true
+      ? this.props.setChangesMade(
+          this.props.name,
+          true,
+          this.props.subSectionId,
+          this.props.dataItemId,
+          this.getDateString(this.currentSelectedDate)
+        ) // set changesMade object associated with this component key to true
       : this.props.setChangesMade(this.props.name, false); // set changesMade object associated with this component key to false
     this.setState({
       initialDate: this.currentSelectedDate,

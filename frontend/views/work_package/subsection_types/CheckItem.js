@@ -25,7 +25,13 @@ export class CheckItem extends React.Component {
       },
       () => {
         this.state.checkBoxStatus != this.intialCheckBoxStatus
-          ? this.props.setChangesMade(this.props.name, true)
+          ? this.props.setChangesMade(
+              this.props.name,
+              true,
+              this.props.subSectionId,
+              this.props.dataItemId,
+              this.state.checkBoxStatus
+            )
           : this.props.setChangesMade(this.props.name, false);
       }
     );

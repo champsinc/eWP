@@ -165,18 +165,27 @@ export class SubsectionMapper extends React.Component {
   finalErrorInFields = false;
 
   // this method is used to set a particular field in the changesMade object to true or false
-  setChangesMade = (field, trueOrFalse, subSectionId, dataItemId, newValue) => {
+  setChangesMade = (
+    field,
+    trueOrFalse,
+    subSectionId,
+    dataItemId,
+    newValue,
+    isAttachmentType
+  ) => {
     let changesMade = false;
     this.changesMade[field] = trueOrFalse;
 
     // console.log(this.state.dataCopy);
     this.state.subSectionsData.forEach((subsection) => {
-      // console.log(subsection.id);
-      // console.log(subSectionId);
       subsection.id == subSectionId
-        ? (subsection.dataitems.filter((dataitem) => {
-            return dataitem.id == dataItemId;
-          })[0].value = newValue)
+        ? !isAttachmentType
+          ? (subsection.dataitems.filter((dataitem) => {
+              return dataitem.id == dataItemId;
+            })[0].value = newValue)
+          : (subsection.dataitems.filter((dataitem) => {
+              return dataitem.id == dataItemId;
+            })[0].status = newValue)
         : "";
     });
 
@@ -229,6 +238,12 @@ export class SubsectionMapper extends React.Component {
           ),
         ]
       : "";
+    console.log(
+      JSON.stringify({
+        sectionId: this.props.sectionId,
+        sub_sections: this.state.subSectionsData,
+      })
+    );
     Platform.OS == "web"
       ? axios.post(
           util.api_url + "/section/update",
@@ -261,7 +276,7 @@ export class SubsectionMapper extends React.Component {
                   }
                 ),
                 // SecureStore.deleteItemAsync("sub_sections"),
-                console.log("IN"),
+                // console.log("IN"),
               ]
             : SecureStore.setItemAsync(
                 "sub_sections",
@@ -372,6 +387,8 @@ export class SubsectionMapper extends React.Component {
                             required={listItem.required}
                             setChangesMade={this.setChangesMade}
                             setError={this.setError}
+                            subSectionId={subsection.id}
+                            dataItemId={listItem.id}
                           />
                         ) : listItem.type == "selectbox" ? (
                           <SingleSelect
@@ -384,8 +401,10 @@ export class SubsectionMapper extends React.Component {
                             required={listItem.required}
                             setChangesMade={this.setChangesMade}
                             setError={this.setError}
+                            subSectionId={subsection.id}
+                            dataItemId={listItem.id}
                           />
-                        ) : listItem.type == "checkitem" ? (
+                        ) : listItem.type == "checkbox" ? (
                           <CheckItem
                             name={listItem.name}
                             key={listItem.name}
@@ -394,6 +413,8 @@ export class SubsectionMapper extends React.Component {
                             editable={listItem.editable}
                             required={listItem.required}
                             setChangesMade={this.setChangesMade}
+                            subSectionId={subsection.id}
+                            dataItemId={listItem.id}
                           />
                         ) : listItem.type == "file" ? (
                           <FileType
@@ -404,7 +425,7 @@ export class SubsectionMapper extends React.Component {
                             }
                             fileType={listItem.fileType}
                             fileSize={listItem.fileSize}
-                            statusCode={listItem.fileStatus}
+                            statusCode={listItem.status}
                             dueDate={listItem.dueDate}
                             editable={listItem.editable}
                             required={listItem.required}
@@ -412,6 +433,8 @@ export class SubsectionMapper extends React.Component {
                             previousNotes={listItem.previousNotes}
                             setChangesMade={this.setChangesMade}
                             setError={this.setError}
+                            subSectionId={subsection.id}
+                            dataItemId={listItem.id}
                           />
                         ) : (
                           <View />
@@ -425,7 +448,8 @@ export class SubsectionMapper extends React.Component {
             </View>
           )}
         </List.Section>
-        {this.state.showSave && (
+        {/* TODO: Chnage this line of code later to show save button only when changes are made */}
+        {(this.state.showSave || true) && (
           <View style={styles.alignCenter}>
             <Button onPress={this.saveButtonPressed}>Save</Button>
           </View>
