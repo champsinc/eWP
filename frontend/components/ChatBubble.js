@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, IconButton } from "react-native-paper";
-import { customTheme } from "../styles/Main";
+import { customTheme, monthNames } from "../styles/Main";
 import { Dimensions } from "react-native";
 
 const activeTouchOpacity = 0.6;
@@ -9,23 +9,67 @@ const activeTouchOpacity = 0.6;
 export default class ChatBubble extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      avatar:
+        this.props.message.avatarURL.toString().length > 0 ? (
+          <Avatar.Image
+            size={22}
+            source={{ uri: this.props.message.avatarURL }}
+            style={styles.avatar}
+          />
+        ) : (
+          <Avatar.Text
+            size={28}
+            label={this.extractInitialsFromName(this.props.message.senderName)}
+            style={styles.avatar}
+          />
+        ),
+    };
   }
+
+  extractInitialsFromName = (userName) => {
+    return (
+      userName.split(" ")[0][0].toUpperCase() +
+      userName.split(" ").slice(-1)[0][0].toUpperCase()
+    );
+  };
+
+  getFormattedTime = () => {
+    const date = new Date(this.props.message.timestamp);
+    const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+    const minutes =
+      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    const timeOfTheDay = date.getHours() < 12 ? " AM" : " PM";
+    return hours + ":" + minutes + timeOfTheDay;
+  };
+
+  getTimeForThread = () => {
+    const parentMessageDate = new Date(this.props.parentMessage.timestamp);
+    const threadMessageDate = new Date(this.props.message.timestamp);
+    return parentMessageDate.getMonth() != threadMessageDate.getMonth() ||
+      parentMessageDate.getDate() != threadMessageDate.getDate()
+      ? monthNames[threadMessageDate.getMonth()] +
+          " " +
+          threadMessageDate.getDate() +
+          " at " +
+          this.getFormattedTime()
+      : this.getFormattedTime();
+  };
 
   render() {
     return !this.props.parentMessage ? ( // if the chat message is a parent message and not one of the thread messages
       <View style={styles.topLevelView}>
-        {this.props.message.left && ( // if the message needs to be on the left or the right in the screen
+        {this.props.message.senderUserId != this.props.user.id && ( // if the message needs to be on the left or the right in the screen
           <View
             style={[styles.avatarWithChat, { justifyContent: "flex-start" }]} //styles to display the chatbubble on the left
           >
-            <Avatar.Image
-              size={22}
-              source={{ uri: this.props.avatar }}
-              style={styles.avatar}
-            />
+            {this.state.avatar}
             <View style={[styles.balloon, { marginRight: 3 }]}>
-              <Text style={styles.itemIn}>{this.props.message.text}</Text>
-              <Text style={styles.time}>{this.props.message.time}</Text>
+              <Text style={styles.senderNameText}>
+                {this.props.message.senderName}
+              </Text>
+              <Text style={styles.itemIn}>{this.props.message.value}</Text>
+              <Text style={styles.time}>{this.getFormattedTime()}</Text>
             </View>
             <IconButton
               icon={"reply"}
@@ -36,7 +80,7 @@ export default class ChatBubble extends React.Component {
             />
           </View>
         )}
-        {!this.props.message.left && (
+        {this.props.message.senderUserId == this.props.user.id && (
           <View
             style={[styles.avatarWithChat, { justifyContent: "flex-end" }]} // styles to display the chatbubble on the right
           >
@@ -48,20 +92,19 @@ export default class ChatBubble extends React.Component {
               onPress={() => this.props.setReplyingTo(this.props.messageIndex)}
             />
             <View style={[styles.balloon, { marginLeft: 3 }]}>
-              <Text style={styles.itemIn}>{this.props.message.text}</Text>
-              <Text style={styles.time}>{this.props.message.time}</Text>
+              <Text style={styles.senderNameText}>
+                {this.props.message.senderName}
+              </Text>
+              <Text style={styles.itemIn}>{this.props.message.value}</Text>
+              <Text style={styles.time}>{this.getFormattedTime()}</Text>
             </View>
-            <Avatar.Image
-              size={22}
-              source={{ uri: this.props.avatar }}
-              style={styles.avatar}
-            />
+            {this.state.avatar}
           </View>
         )}
       </View>
     ) : (
       <View>
-        {this.props.parentMessage.left && (
+        {this.props.parentMessage.senderUserId != this.props.user.id && (
           <View
             style={[
               styles.avatarWithChat,
@@ -76,18 +119,17 @@ export default class ChatBubble extends React.Component {
               activeOpacity={activeTouchOpacity}
             >
               <View style={[styles.balloon, styles.balloonThread]}>
-                <Text style={styles.itemIn}>{this.props.message.text}</Text>
-                <Text style={styles.time}>{this.props.message.time}</Text>
+                <Text style={styles.senderNameText}>
+                  {this.props.message.senderName}
+                </Text>
+                <Text style={styles.itemIn}>{this.props.message.value}</Text>
+                <Text style={styles.time}>{this.getTimeForThread()}</Text>
               </View>
             </TouchableOpacity>
-            <Avatar.Image
-              size={22}
-              source={{ uri: this.props.avatar }}
-              style={styles.avatar}
-            />
+            {this.state.avatar}
           </View>
         )}
-        {!this.props.parentMessage.left && (
+        {this.props.parentMessage.senderUserId == this.props.user.id && (
           <View
             style={[
               styles.avatarWithChat,
@@ -95,11 +137,7 @@ export default class ChatBubble extends React.Component {
               { justifyContent: "flex-end" },
             ]} // styles to display the chatbubble thread on the right
           >
-            <Avatar.Image
-              size={22}
-              source={{ uri: this.props.avatar }}
-              style={styles.avatar}
-            />
+            {this.state.avatar}
             <TouchableOpacity
               onLongPress={() =>
                 this.props.setReplyingTo(this.props.messageIndex)
@@ -107,8 +145,11 @@ export default class ChatBubble extends React.Component {
               activeOpacity={activeTouchOpacity}
             >
               <View style={[styles.balloon, styles.balloonThread]}>
-                <Text style={styles.itemIn}>{this.props.message.text}</Text>
-                <Text style={styles.time}>{this.props.message.time}</Text>
+                <Text style={styles.senderNameText}>
+                  {this.props.message.senderName}
+                </Text>
+                <Text style={styles.itemIn}>{this.props.message.value}</Text>
+                <Text style={styles.time}>{this.getTimeForThread()}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -131,8 +172,13 @@ const constants = {
 
 const styles = StyleSheet.create({
   itemIn: {
-    paddingTop: 5,
+    paddingTop: 3,
     color: "white",
+  },
+  senderNameText: {
+    color: "white",
+    paddingTop: 5,
+    fontSize: 12,
   },
   balloon: {
     maxWidth: windowWidth / 2.2,

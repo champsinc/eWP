@@ -73,9 +73,10 @@ export class SignUp extends React.Component {
             util.api_url + "/user/register",
             {
               name: this.state.name,
-              userName: this.state.userName,
+              username: this.state.userName,
               email: this.state.email,
               password: this.state.password,
+              role: 0,
             },
             {
               headers: {
@@ -94,12 +95,12 @@ export class SignUp extends React.Component {
             this.setState({
               userNameOverlap: err.userNameOverlap || true,
               emailAddressOverlap: err.emailAddressOverlap || true,
-              signUp: (
-                <NewSignUp
-                  navigation={this.props.navigation}
-                  token="dummy-token"
-                />
-              ),
+              // signUp: (
+              //   <NewSignUp
+              //     navigation={this.props.navigation}
+              //     token="dummy-token"
+              //   />
+              // ),
             });
           })
       : "";
@@ -303,9 +304,6 @@ export class SignUp extends React.Component {
             >
               User name should be atleast 4 characters
             </HelperText>
-            <Link to="/profile" style={styles.link}>
-              Jamie's Profile
-            </Link>
             <Fumi
               label={"Your Email"}
               value={this.state.email}

@@ -2,28 +2,13 @@ import React from "react";
 import { View, StyleSheet, Platform, Text, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { Portal, Dialog, Button, IconButton } from "react-native-paper";
-import { customTheme, commonStyles } from "../../../styles/Main";
+import { customTheme, commonStyles, monthNames } from "../../../styles/Main";
 
 /**
  * This class is used to render a single unit item of a subsection of date type
  * @author Raghul Krishnan
  */
 export default class DateType extends React.Component {
-  monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +24,7 @@ export default class DateType extends React.Component {
 
   getDateString = (date) => {
     return (
-      this.monthNames[date.getMonth()] +
+      monthNames[date.getMonth()] +
       " " +
       date.getDate() +
       ", " +
@@ -84,7 +69,13 @@ export default class DateType extends React.Component {
     let timeStamp = new Date();
     this.props.setError(this.props.name, false);
     this.initialDateString != this.getDateString(this.currentSelectedDate) // if the current value is/[is not] equal to the value it was when it was last saved then
-      ? this.props.setChangesMade(this.props.name, true) // set changesMade object associated with this component key to true
+      ? this.props.setChangesMade(
+          this.props.name,
+          true,
+          this.props.subSectionId,
+          this.props.dataItemId,
+          this.getDateString(this.currentSelectedDate)
+        ) // set changesMade object associated with this component key to true
       : this.props.setChangesMade(this.props.name, false); // set changesMade object associated with this component key to false
     this.setState({
       initialDate: this.currentSelectedDate,

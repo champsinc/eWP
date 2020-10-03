@@ -7,6 +7,7 @@ import { FlatList } from "react-native-gesture-handler";
 import axios from "axios";
 import { util } from "../../assets/Utility";
 import { useLinkTo } from "@react-navigation/native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 let workPackages = [
   {
@@ -14,7 +15,6 @@ let workPackages = [
     ewpNumber: "100",
     dateCreated: "05 Jan 2020",
     percentageComplete: 46,
-    unopenedLogs: true,
     unopenedNotifications: false,
   },
   {
@@ -22,7 +22,6 @@ let workPackages = [
     ewpNumber: "101",
     dateCreated: "14 Mar 2020",
     percentageComplete: 67,
-    unopenedLogs: false,
     unopenedNotifications: true,
   },
   {
@@ -30,7 +29,6 @@ let workPackages = [
     ewpNumber: "102",
     dateCreated: "17 Feb 2020",
     percentageComplete: 94,
-    unopenedLogs: true,
     unopenedNotifications: true,
   },
   {
@@ -38,7 +36,6 @@ let workPackages = [
     ewpNumber: "103",
     dateCreated: "21 Jun 2020",
     percentageComplete: 78,
-    unopenedLogs: true,
     unopenedNotifications: true,
   },
 ];
@@ -55,20 +52,23 @@ export default class Dashboard extends React.Component {
 
     this.state = {
       navigateTo: null,
+      workPackages: null,
     };
     axios
-      .get(util.api_url + "/user/wp?userId=" + this.props.user.id, {
+      .get(util.api_url + "/user/wp/" + this.props.user.id, {
         headers: {
           api_key: util.api_key,
         },
       })
       .then((res) => {
         //TODO: get the data from the backend and display it in cards
-        console.log(res);
+        this.setState({
+          workPackages: res.data,
+        });
+        this.goToURL();
       })
       .catch((res) => {
         this.goToURL();
-        console.log(res);
       });
   }
 
@@ -84,9 +84,14 @@ export default class Dashboard extends React.Component {
     this.props.navigation.openDrawer();
   };
 
-  navigateToWorkPackage = (id) => {
+  navigateToWorkPackage = (id, status) => {
+    AsyncStorage.setItem("workPackageId", id.toString());
     this.props.navigation.navigate("work_package", {
-      id,
+      screen: "home",
+      params: {
+        id,
+        status,
+      },
     });
   };
 
@@ -96,18 +101,19 @@ export default class Dashboard extends React.Component {
         {this.state.navigateTo}
         <AppBar toggleNavBar={this.toggleNavBar} subTitle="Dashboard" />
         <FlatList
-          data={workPackages}
+          data={this.state.workPackages}
           renderItem={({ item }) => (
             <WorkPackageCard
               title={item.title}
               ewpNumber={item.ewpNumber}
               dateCreated={item.dateCreated}
+              status={item.status}
               percentageComplete={item.percentageComplete}
               navigateToWorkPackage={() =>
-                this.navigateToWorkPackage(item.ewpNumber)
+                this.navigateToWorkPackage(item.id, item.status)
               }
-              unopenedLogs={item.unopenedLogs}
-              unopenedNotifications={item.unopenedNotifications}
+              unopenedLogs={item.unopenedLogs || true}
+              unopenedNotifications={item.unopenedNotifications || false}
             />
           )}
           numColumns={1}

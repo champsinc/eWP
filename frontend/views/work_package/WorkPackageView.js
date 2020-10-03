@@ -1,247 +1,285 @@
 import React from "react";
-import { View, FlatList, Platform, StyleSheet } from "react-native";
+import { View, FlatList, Platform, StyleSheet, Text } from "react-native";
 import AppBar from "../../components/AppBar";
 import { GridCard } from "../../components/GridCard";
 import axios from "axios";
-import DiscussionPanel from "../../components/DiscussionPanel";
-import DiscussionView from "../../components/DiscussionView";
-import { SubsectionMapper } from "./SubsectionMapper";
-import { WarningDialog } from "../action_dialog/ActionDialogs";
+import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import { util } from "../../assets/Utility";
+import { Button } from "react-native-paper";
 
-let data = [
+let workPackageData = [
   {
-    type: "section",
-    Details: [
+    id: "5f0f50b9393970398908c335",
+    name: "Details-2",
+    section_data: [
       {
-        type: "sub_section",
-        "Work Order Info Details": [
+        id: "5f0f50b9393970398908c336",
+        name: "My Work Order Info Details 2",
+        dataitems: [
           {
+            value: 123,
+            id: "5f0f50b9393970398908c337",
+            name: "Work Order Id",
             type: "number",
-            "Work Order Id": 12,
             editable: true,
+            notes: false,
             required: false,
+            special_identifier: false,
           },
           {
+            value: "Fix waterws",
+            id: "5f0f50b9393970398908c338",
+            name: "Title",
             type: "text",
-            Title: "Fix water system",
             editable: true,
+            notes: false,
             required: true,
+            special_identifier: false,
           },
           {
+            value:
+              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
+            id: "5f0f50b9393970398908c339",
+            name: "Description",
             type: "text",
-            Description:
-              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
             editable: false,
-            required: false,
             notes: true,
-            previousNotes: [],
+            required: false,
+            special_identifier: false,
           },
-
           {
+            value: "05/13/2020",
+            id: "5f0f50b9393970398908c33a",
+            name: "Order Date",
             type: "date",
-            "Order Date":
-              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: true,
+            notes: false,
+            required: false,
+            special_identifier: false,
           },
         ],
       },
       {
-        type: "sub_section",
-        "Work Order Time Line Details": [
+        id: "5f0f50b9393970398908c33b",
+        name: "Work Order Time Line Details",
+        dataitems: [
           {
+            value: "05/12/2020",
+            id: "5f0f50b9393970398908c33c",
+            name: "Order Date",
             type: "date",
-            "Order Date":
-              "Mon May 10 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
             editable: false,
+            notes: false,
+            required: false,
+            special_identifier: false,
           },
           {
+            value: "05/12/2020",
+            id: "5f0f50b9393970398908c33d",
+            name: "Expected Date of Delivery",
             type: "date",
-            "Expected Date of Delivery": "",
             editable: true,
+            notes: false,
             required: true,
+            special_identifier: false,
           },
         ],
       },
     ],
   },
   {
-    type: "section",
-    Instructions: [
+    id: "5f0f50b9393970398908c33e",
+    name: "Instructions",
+    section_data: [
       {
-        type: "sub_section",
-        "Abstract list": [
+        id: "5f0f50b9393970398908c33f",
+        name: "Abstract list",
+        dataitems: [
           {
-            type: "selectbox",
-            Fruits: [
+            value: [
               {
-                Orange: "selected",
-                type: "selectitem",
+                name: "Orange",
+                value: "selected",
               },
               {
-                Apple: "not-selected",
-                type: "selectitem",
+                name: "Apple",
+                value: "not-selected",
               },
               {
-                Bananas: "not-selected",
-                type: "selectitem",
+                name: "Bananas",
+                value: "not-selected",
               },
             ],
+            id: "5f0f50b9393970398908c340",
+            name: "Fruits",
+            type: "selectbox",
+            editable: true,
+            notes: false,
             required: true,
-            editable: true,
+            special_identifier: false,
           },
           {
-            type: "selectbox",
-            Animals: [
+            value: [
               {
-                Cat: "selected",
-                type: "selectitem",
+                name: "Cat",
+                value: "selected",
               },
               {
-                Lion: "not-selected",
-                type: "selectitem",
+                name: "Lion",
+                value: "not-selected",
               },
               {
-                Tiger: "not-selected",
-                type: "selectitem",
+                name: "Tiger",
+                value: "not-selected",
               },
             ],
-            required: false,
+            id: "5f0f50b9393970398908c341",
+            name: "Animals",
+            type: "selectbox",
             editable: true,
+            notes: false,
+            required: false,
+            special_identifier: false,
           },
           {
-            type: "selectbox",
-            Birds: [
+            value: [
               {
-                Peacock: "selected",
-                type: "selectitem",
+                name: "Peacock",
+                value: "selected",
               },
               {
-                Crow: "not-selected",
-                type: "selectitem",
+                name: "Crow",
+                value: "not-selected",
               },
               {
-                Pigeon: "not-selected",
-                type: "selectitem",
+                name: "Pigeon",
+                value: "not-selected",
               },
             ],
-            required: false,
+            id: "5f0f50b9393970398908c342",
+            name: "Birds",
+            type: "selectbox",
             editable: false,
+            notes: false,
+            required: false,
+            special_identifier: false,
           },
         ],
       },
       {
-        "Checklist of things required": [
+        id: "5f0f50b9393970398908c343",
+        name: "Checklist of things required",
+        dataitems: [
           {
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.":
-              "checked",
+            value: "checked",
+            id: "5f0f50b9393970398908c344",
+            name:
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             type: "checkitem",
-            required: false,
             editable: false,
+            notes: false,
+            required: false,
+            special_identifier: false,
           },
           {
-            "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with":
-              "checked",
+            value: "checked",
+            id: "5f0f50b9393970398908c345",
+            name:
+              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
             type: "checkitem",
-            required: true,
             editable: true,
+            notes: false,
+            required: true,
+            special_identifier: false,
           },
           {
-            "Lorem Ipsum is ": "checked",
+            value: "checked",
+            id: "5f0f50b9393970398908c346",
+            name: "Lorem Ipsum is ",
             type: "checkitem",
-            required: true,
             editable: true,
+            notes: false,
+            required: true,
+            special_identifier: false,
           },
         ],
-        type: "sub_section",
       },
     ],
   },
   {
-    type: "section",
-    Attachments: [
+    id: "5f0f50b9393970398908c347",
+    name: "My Attachments",
+    section_data: [
       {
-        type: "sub_section",
-        "General Info Documents": [
+        id: "5f0f50b9393970398908c348",
+        name: "General Info Documents",
+        dataitems: [
           {
-            "Purchase Items - Part List A":
-              "http://www.africau.edu/images/default/sample.pdf",
-            type: "file",
-            editable: true,
-            required: true,
+            value: "http://www.africau.edu/images/default/sample.pdf",
+            fileSize: 2,
+            fileType: "application/pdf",
+            due_date: "05/12/2020",
             status: 2,
-            fileSize: "4KB",
-            notes: true,
-            fileType: "pdf",
-            dueDate: "13 June 2020",
-            previousNotes: [],
-          },
-          {
-            "Random Picture Q": "https://picsum.photos/700",
+            id: "5f0f50b9393970398908c349",
+            name: "Purchase Items - Part List A",
             type: "file",
             editable: true,
+            notes: true,
             required: true,
-            status: 1,
-            fileSize: "2MB",
+            special_identifier: false,
+          },
+          {
+            value: "https://picsum.photos/700",
+            fileSize: 30,
+            fileType: "image/jpeg",
+            due_date: "06/12/2020",
+            status: 2,
+            id: "5f0f50ba393970398908c34a",
+            name: "Random Picture Q",
+            type: "file",
+            editable: true,
             notes: false,
-            fileType: "jpg",
+            required: true,
+            special_identifier: false,
           },
         ],
       },
       {
-        type: "sub_section",
-        "Equipment Related Documents": [
+        id: "5f0f50ba393970398908c34b",
+        name: "Equipment Related Documents",
+        dataitems: [
           {
-            "Sampling and Sub-Sampling Results":
-              "http://www.africau.edu/images/default/sample.pdf",
+            value: "http://www.africau.edu/images/default/sample.pdf",
+            fileSize: 2,
+            fileType: "application/pdf",
+            due_date: "06/12/2020",
+            status: 0,
+            id: "5f0f50bb393970398908c34c",
+            name: "Sampling and Sub-Sampling Results",
             type: "file",
             editable: true,
-            status: 1,
-            required: false,
-            fileSize: "128KB",
             notes: true,
-            fileType: "pdf",
-            previousNotes: [],
+            required: false,
+            special_identifier: false,
           },
           {
-            "Random Equipment X": "https://picsum.photos/800",
+            value: "https://picsum.photos/800",
+            fileSize: 115,
+            fileType: "image/jpeg",
+            status: 0,
+            id: "5f0f50bc393970398908c34d",
+            name: "Random Equipment X",
             type: "file",
             editable: false,
-            fileSize: "3MB",
             notes: false,
-            fileType: "jpg",
+            required: false,
+            special_identifier: false,
           },
         ],
       },
     ],
-  },
-  {
-    type: "section",
-    "Parts List": [],
-  },
-  {
-    type: "section",
-    "Tool List": [],
-  },
-  {
-    type: "section",
-    Route: [],
-  },
-  {
-    type: "section",
-    "Time Entry": [],
-  },
-  {
-    type: "section",
-    Completion: [],
-  },
-  {
-    type: "section",
-    "Add New": [],
   },
 ];
-
-let dataCopy = data;
 
 /**
  * This class is used to render the any work package in the app
@@ -257,37 +295,98 @@ export class WorkPackageView extends React.Component {
       sectionClicked: false,
       showDialog: false,
       subSectionData: [],
+      showSave: false,
     };
 
-    axios
-      .get(util.api_url + "/wp/5f0f3b8d0546703461cb37e4", {
-        headers: {
-          api_key: util.api_key,
-        },
-      })
-      .then((response) => {
-        response.data.push({ id: "123456", name: "users" });
-        this.setState({
-          dataSource: response.data,
+    this.props.route.params && this.props.route.params.id
+      ? axios
+          .get(util.api_url + "/wp/" + this.props.route.params.id, {
+            headers: {
+              api_key: util.api_key,
+            },
+          })
+          .then((response) => {
+            response.data.push({
+              id: "123456",
+              name: "users",
+              section_data: [],
+            });
+            this.setState({
+              dataSource: response.data,
+            });
+            this.checkForSaveButton();
+          })
+      : "";
+  }
+
+  checkForSaveButton = () => {
+    let showSave = true;
+    if (this.props.route.params.status != 2) {
+      this.state.dataSource.forEach((section) => {
+        section.section_data.forEach((subsection) => {
+          subsection.dataitems.forEach((dataItem) => {
+            // Check for text and date type
+            if (
+              dataItem.required == true &&
+              (dataItem.type == "text" || dataItem.type == "date") &&
+              dataItem.value.trim().length == 0
+            ) {
+              showSave = false;
+            }
+            // Check for selectbox type
+            if (dataItem.required == true && dataItem.type == "selectbox") {
+              dataItem.value.some((item) => item.value == "selected")
+                ? ""
+                : (showSave = false);
+            }
+            // Check for checkItem type
+            if (
+              dataItem.required == true &&
+              dataItem.type == "checkbox" &&
+              dataItem.value != "checked"
+            ) {
+              showSave = false;
+            }
+            if (
+              dataItem.required == true &&
+              dataItem.type == "file" &&
+              dataItem.status != 2
+            ) {
+              showSave = false;
+            }
+          });
         });
       });
-  }
+      this.setState({ showSave });
+    } else {
+      this.setState({ showSave: false });
+    }
+  };
 
   toggleNavBar = () => {
     this.props.navigation.openDrawer();
   };
 
   toggleDiscussionView = () => {
-    this.setState({
-      showDiscussionView: !this.state.showDiscussionView,
-    });
+    this.setState(
+      {
+        showDiscussionView: !this.state.showDiscussionView,
+      },
+      () => {
+        this.state.showDiscussionView
+          ? this.props.navigation.navigate("discussion_section", {
+              wpId: this.props.route.params.id,
+            })
+          : this.props.navigation.goBack();
+      }
+    );
   };
 
   sectionClicked = (section) => {
-    this.setState({
-      sectionClicked: true,
+    this.props.navigation.navigate("section", {
       section,
-      showDiscussionView: false,
+      sectionId: this.getSectionId(section),
+      wpId: this.props.route.params.id,
     });
   };
 
@@ -306,14 +405,10 @@ export class WorkPackageView extends React.Component {
         });
   };
 
-  getSectionId = () => {
+  getSectionId = (section) => {
     return this.state.dataSource.filter((data) => {
-      return this.state.section == data.name;
+      return section == data.name;
     })[0].id;
-  };
-
-  setDataCopy = (newData) => {
-    dataCopy = newData;
   };
 
   onModalClose = () => {
@@ -323,7 +418,9 @@ export class WorkPackageView extends React.Component {
   };
 
   usersClicked = () => {
-    this.props.navigation.navigate("work_package_users");
+    this.props.navigation.navigate("work_package_users", {
+      wpId: this.props.route.params.id,
+    });
   };
 
   warningYesClicked = () => {
@@ -347,66 +444,66 @@ export class WorkPackageView extends React.Component {
               subTitle="Work Package"
               searchPlaceHolder="Search in this work package"
             />
-            <FlatList
-              data={this.state.dataSource}
-              renderItem={({ item, index }) => (
-                <View style={styles.gridCardTopView}>
-                  <GridCard
-                    key={item.name}
-                    label={item.name.trim().substring(0, 1).toUpperCase()}
-                    icon={
-                      "alpha-" +
-                      item.name.trim().substring(0, 1).toLowerCase() +
-                      "-box-outline"
-                    }
-                    name={item.name.trim()}
-                    onPress={
-                      index == this.state.dataSource.length - 1
-                        ? this.usersClicked
-                        : this.sectionClicked
-                    }
-                  />
-                </View>
-              )}
-              //Setting the number of column
-              numColumns={Platform.OS == "web" ? 4 : 2}
-              keyExtractor={(item, index) => index}
-            />
+            {this.props.route.params && this.props.route.params.id ? (
+              [
+                <FlatList
+                  data={this.state.dataSource}
+                  renderItem={({ item, index }) => (
+                    <View style={styles.gridCardTopView}>
+                      <GridCard
+                        key={item.name}
+                        label={item.name.trim().substring(0, 1).toUpperCase()}
+                        icon={
+                          "alpha-" +
+                          item.name.trim().substring(0, 1).toLowerCase() +
+                          "-box-outline"
+                        }
+                        name={item.name.trim()}
+                        onPress={
+                          index == this.state.dataSource.length - 1
+                            ? this.usersClicked
+                            : this.sectionClicked
+                        }
+                      />
+                    </View>
+                  )}
+                  //Setting the number of column
+                  numColumns={Platform.OS == "web" ? 4 : 2}
+                  keyExtractor={(item) => item.id}
+                />,
+                this.state.showSave && (
+                  <Button
+                    mode={"text"}
+                    onPress={() => {}}
+                    style={styles.saveButton}
+                  >
+                    Save
+                  </Button>
+                ),
+              ]
+            ) : (
+              <View style={styles.errorTextContainer}>
+                <Text style={styles.errorText}>
+                  Please select a work package from the dashboard before
+                  entering this page
+                </Text>
+                <Button
+                  onPress={() => this.props.navigation.navigate("dashboard")}
+                  style={styles.dashboardButton}
+                >
+                  Dashboard
+                </Button>
+              </View>
+            )}
           </View>
         )}
-        {this.state.sectionClicked && !this.state.showDiscussionView && (
-          <View style={styles.view}>
-            <AppBar
-              toggleNavBar={this.toggleNavBar}
-              subTitle={this.state.section}
-              searchPlaceHolder="Search in this work package"
-              backButton={true}
-              backButtonAction={this.goBackFromSubsectionToSection}
-            />
-            <SubsectionMapper
-              ref={(ref) => (this.sectionView = ref)}
-              section={this.state.section}
-              sectionId={this.getSectionId()}
-              // subSectionsData={this.state.subSectionData}
-            />
-            <WarningDialog
-              showDialog={this.state.showDialog}
-              dialogTitle={"Warning!"}
-              dialogContent={
-                "There are unsaved changes, are you sure you want to go back?"
-              }
-              dialogClickAwayAction={this.onModalClose}
-              yesAction={this.warningYesClicked}
-              noAction={this.onModalClose}
-            />
-          </View>
+        {this.props.route.params && this.props.route.params.id && (
+          <DiscussionPanel
+            discussionViewOpen={this.state.showDiscussionView}
+            toggleDiscussionView={this.toggleDiscussionView}
+            ewpNumber={"1234"}
+          />
         )}
-        <DiscussionPanel
-          discussionViewOpen={this.state.showDiscussionView}
-          toggleDiscussionView={this.toggleDiscussionView}
-          ewpNumber={"1234"}
-        />
-        {this.state.showDiscussionView && <DiscussionView />}
       </View>
     );
   }
@@ -421,5 +518,21 @@ const styles = StyleSheet.create({
     flexGrow: Platform.OS == "web" ? 0.25 : 0.5,
     flexDirection: "column",
     margin: 1,
+  },
+  errorTextContainer: {
+    alignSelf: "center",
+    marginTop: "10%",
+  },
+  errorText: {
+    alignSelf: "center",
+  },
+  dashboardButton: {
+    flexDirection: "row",
+    alignSelf: "center",
+  },
+  saveButton: {
+    paddingBottom: 20,
+    flexDirection: "row",
+    alignSelf: "center",
   },
 });

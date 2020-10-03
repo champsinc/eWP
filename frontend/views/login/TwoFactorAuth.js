@@ -17,6 +17,12 @@ import { Image } from "react-native";
 import { util } from "../../assets/Utility";
 import axios from "axios";
 
+const SignIn = (props) => {
+  const { signIn } = React.useContext(AuthContext);
+  signIn(props);
+  return <View />;
+};
+
 export class TwoFactorAuth extends React.Component {
   constructor(props) {
     super(props);
@@ -27,6 +33,7 @@ export class TwoFactorAuth extends React.Component {
     code: "",
     codeError: false,
     showError: false,
+    signIn: null,
   };
 
   toggleNavBar = () => {
@@ -34,14 +41,28 @@ export class TwoFactorAuth extends React.Component {
   };
 
   onLoginPress = () => {
-    // axios
-    //   .get("http://ewpackage.gq:8080/api/user/activate", {
-    //     headers: { api_key: "abc@123" },
-    //     data: {
-    //       id: "400",
-    //     },
-    //   })
-    //   .then((res) => {
+    this.checkCode();
+    !this.state.codeError && this.state.code.trim() != ""
+      ? axios
+          .get(
+            "http://ewpackage.gq:8080/api/user/activate?id=" + this.state.code,
+            {
+              headers: { api_key: util.api_key },
+            }
+          )
+          .then((res) => {
+            let user = res.user || { name: "raghul", id: "fhefejfgef54fe" };
+            this.setState({
+              signIn: (
+                <SignIn
+                  navigation={this.props.navigation}
+                  token="dummy-token"
+                  user={user}
+                />
+              ),
+            });
+          })
+      : "";
     this.state.code.length < 6 || this.state.code == ""
       ? this.setState({ codeError: true })
       : this.setState({ codeError: false }, () => {
@@ -73,6 +94,7 @@ export class TwoFactorAuth extends React.Component {
     let props = this.props.route.params;
     return (
       <View style={styles.view}>
+        {this.state.signIn}
         <StatusBar
           barStyle="dark-content"
           backgroundColor={customTheme.loginStatusBarColor}

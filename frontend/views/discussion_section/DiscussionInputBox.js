@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
-import { customTheme } from "../styles/Main";
+import { customTheme } from "../../styles/Main";
 import MentionsTextInput from "react-native-mentions";
 
 export default class DiscussionInputBox extends React.Component {
@@ -150,6 +150,9 @@ export default class DiscussionInputBox extends React.Component {
             replyingToMessageIndex={this.props.replyingToMessageIndex}
             appendMessage={this.props.appendMessage}
             appendThread={this.props.appendThread}
+            messages={this.props.messages}
+            wpId={this.props.wpId}
+            user={this.props.user}
             clearInputBox={this.clearInputBox}
             peopleInvolved={this.props.peopleInvolved}
             addMentionSymbol={this.addMentionSymbol}

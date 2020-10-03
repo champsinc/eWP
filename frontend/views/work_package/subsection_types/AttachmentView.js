@@ -38,6 +38,7 @@ export const AttachmentView = (props) => {
     },
   ];
   props = props.data;
+  console.log(props.statusCode);
   props.statusCode >= 0 && props.statusCode <= 2
     ? (options[props.statusCode].value = "selected")
     : "";
@@ -73,16 +74,17 @@ export const AttachmentView = (props) => {
             setChangesMade={props.setChangesMade}
             setError={props.setError}
             fromAttachment={true}
+            subSectionId={props.subSectionId}
+            dataItemId={props.dataItemId}
           />
         </Card.Content>
       )}
-      {imageFileTypes.has(props.fileType) && (
+      {"image/" + imageFileTypes.has(props.fileType) && (
         <TouchableWithoutFeedback onPress={() => openModal(true)}>
           <Card.Cover
             style={styles.cardCover}
             source={{
-              uri:
-                "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png",
+              uri: props.value,
             }}
           />
         </TouchableWithoutFeedback>

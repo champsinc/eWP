@@ -43,6 +43,15 @@ export default class AddNote extends React.Component {
     });
   };
 
+  onTextInputFocus = () => {
+    // Code to eliminate the outline for a textinput
+    this.textInput.setNativeProps({
+      style: {
+        outline: "none",
+      },
+    });
+  };
+
   onTextInputChange = (text) => {
     this.setState({
       textInput: text,
@@ -84,8 +93,8 @@ export default class AddNote extends React.Component {
                     return (
                       <View style={styles.logText}>
                         <User
-                          avatarURL={util.avatarURL}
-                          userName={"Sergio Marquina"}
+                          avatarURL={this.props.currentUser.avatar}
+                          userName={this.props.currentUser.name}
                           avatarSize={20}
                         />
                         <Text key={note}>{note}</Text>
@@ -98,6 +107,7 @@ export default class AddNote extends React.Component {
                 ref={(ref) => {
                   this.textInput = ref;
                 }}
+                onFocus={this.onTextInputFocus}
                 value={this.state.textInput}
                 multiline={true}
                 numberOfLines={2}

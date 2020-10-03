@@ -31,7 +31,12 @@ export default class FileType extends React.Component {
   render() {
     return (
       <View style={{ overflow: "hidden" }}>
-        <AttachmentView data={this.props} openModal={this.setIsVisible} />
+        <AttachmentView
+          data={this.props}
+          openModal={this.setIsVisible}
+          subSectionId={this.props.subSectionId}
+          dataItemId={this.props.dataItemId}
+        />
         {this.state.visible && (
           <Portal>
             <ImageViewer

@@ -4,7 +4,7 @@ import color from "react-native-paper";
 import { DefaultTheme } from "react-native-paper";
 import { StyleSheet } from "react-native";
 
-const primaryColor = "#6200EE";
+const primaryColor = "#1976D2";
 
 export const customTheme = {
   primaryColor: primaryColor,
@@ -37,3 +37,18 @@ export const paperTheme = {
     accent: "#03dac4",
   },
 };
+
+export const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
