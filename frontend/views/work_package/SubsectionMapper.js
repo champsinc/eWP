@@ -13,6 +13,7 @@ import axios from "axios";
 import NetInfo from "@react-native-community/netinfo";
 import * as SecureStore from "expo-secure-store";
 import { util } from "../../assets/Utility";
+import AsyncStorage from "@react-native-community/async-storage";
 
 let datacopy1 = [
   {
@@ -101,39 +102,48 @@ export class SubsectionMapper extends React.Component {
     this.state = {
       showDialog: false,
       showSave: false,
-      subSectionsData: [],
+      sectionData: this.props.sectionData,
+      // subSectionsData: [],
       expandSelectedSubsection: true,
-      dataCopy: this.props.dataCopy,
+      // dataCopy: this.props.dataCopy,
     };
 
-    axios
-      .get(util.api_url + "/section/" + this.props.sectionId, {
-        headers: {
-          api_key: util.api_key,
-        },
-      })
-      .then((response) => {
-        this.setState({
-          subSectionsData: response.data,
-          // dataCopy: response.data,
-        });
-        // this.state.dataCopy = response.data;
-        this.state.subSectionsData.forEach((subSection) => {
-          subSection.dataitems.forEach((listItem) => {
-            this.changesMade[listItem.name] = false;
-            this.errorsInFields[listItem.name] = false;
-          });
-        });
-        // console.log(this.state.dataCopy);
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ subSectionsData: [] });
+    // this.setState({ sectionData: this.props.sectionData });
+
+    // axios
+    //   .get(util.api_url + "/section/" + this.props.sectionId, {
+    //     headers: {
+    //       api_key: util.api_key,
+    //     },
+    //   })
+    //   .then((response) => {
+    // this.setState({
+    //   subSectionsData: response.data,
+    //   // dataCopy: response.data,
+    // });
+    // this.state.dataCopy = response.data;
+
+    this.props.sectionData.forEach((subSection) => {
+      subSection.dataitems.forEach((listItem) => {
+        this.subSectionId = listItem.id;
+        this.changesMade[listItem.name] = false;
+        this.errorsInFields[listItem.name] = false;
       });
+    });
+
+    // AsyncStorage.setItem("sectionData", JSON.stringify(this.props.sectionData))
+
+    // console.log(this.state.dataCopy);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   this.setState({ subSectionsData: [] });
+    // });
 
     // dataCopy = datacopy1;
   }
 
+  subSectionId;
   // flag = true;
 
   // componentDidMount() {
@@ -177,7 +187,7 @@ export class SubsectionMapper extends React.Component {
     this.changesMade[field] = trueOrFalse;
 
     // console.log(this.state.dataCopy);
-    this.state.subSectionsData.forEach((subsection) => {
+    this.props.sectionData.forEach((subsection) => {
       subsection.id == subSectionId
         ? !isAttachmentType
           ? (subsection.dataitems.filter((dataitem) => {
@@ -189,7 +199,7 @@ export class SubsectionMapper extends React.Component {
         : "";
     });
 
-    // console.log(this.state.subSectionsData);
+    // console.log(this.props.sectionData);
 
     Object.values(this.changesMade).forEach((value) => {
       changesMade = changesMade || value;
@@ -223,33 +233,20 @@ export class SubsectionMapper extends React.Component {
   onModalClose = () => {
     this.setState({
       showDialog: false,
+      showSave: false,
     });
+    this.finalChangesMade = false;
   };
 
   confirmSaveDialogButton = () => {
-    Platform.OS != "web"
-      ? [
-          SecureStore.setItemAsync(
-            "sub_sections",
-            this.state.subSectionsData.toString()
-          ).then((val) => console.log(val)),
-          SecureStore.getItemAsync("sub_sections").then((val) =>
-            console.log(val)
-          ),
-        ]
-      : "";
-    console.log(
-      JSON.stringify({
-        sectionId: this.props.sectionId,
-        sub_sections: this.state.subSectionsData,
-      })
-    );
+    this.setWpData();
+
     Platform.OS == "web"
       ? axios.post(
           util.api_url + "/section/update",
           {
             sectionId: this.props.sectionId,
-            sub_sections: this.state.subSectionsData,
+            sub_sections: this.props.sectionData,
           },
           {
             headers: {
@@ -260,14 +257,11 @@ export class SubsectionMapper extends React.Component {
       : NetInfo.addEventListener((state) => {
           state.isConnected
             ? [
-                SecureStore.getItemAsync("sub_sections").then((val) =>
-                  console.log(val)
-                ),
                 axios.post(
                   util.api_url + "/section/update",
                   {
                     sectionId: this.props.sectionId,
-                    sub_sections: this.state.subSectionsData,
+                    sub_sections: this.props.sectionData,
                   },
                   {
                     headers: {
@@ -275,16 +269,69 @@ export class SubsectionMapper extends React.Component {
                     },
                   }
                 ),
-                // SecureStore.deleteItemAsync("sub_sections"),
-                // console.log("IN"),
+                console.log("netinfo: psoting this: " + this.props.sectionData),
               ]
-            : SecureStore.setItemAsync(
-                "sub_sections",
-                this.state.subSectionsData
-              ).then((val) => console.log(val));
-          // console.log("Connection type", state.type);
-          // console.log("Is connected?", state.isConnected);
+            : "";
         });
+
+    // Platform.OS != "web"
+    //   ? [
+    //       SecureStore.setItemAsync(
+    //         "sub_sections",
+    //         this.props.sectionData.toString()
+    //       ).then((val) => console.log(val)),
+    //       SecureStore.getItemAsync("sub_sections").then((val) =>
+    //         console.log(val)
+    //       ),
+    //     ]
+    //   : "";
+    // console.log(
+    //   JSON.stringify({
+    //     sectionId: this.props.sectionId,
+    //     sub_sections: this.props.sectionData,
+    //   })
+    // );
+    // Platform.OS == "web"
+    //   ? axios.post(
+    //       util.api_url + "/section/update",
+    //       {
+    //         sectionId: this.props.sectionId,
+    //         sub_sections: this.props.sectionData,
+    //       },
+    //       {
+    //         headers: {
+    //           api_key: util.api_key,
+    //         },
+    //       }
+    //     )
+    //   : NetInfo.addEventListener((state) => {
+    //       state.isConnected
+    //         ? [
+    //             SecureStore.getItemAsync("sub_sections").then((val) =>
+    //               console.log(val)
+    //             ),
+    //             axios.post(
+    //               util.api_url + "/section/update",
+    //               {
+    //                 sectionId: this.props.sectionId,
+    //                 sub_sections: this.props.sectionData,
+    //               },
+    //               {
+    //                 headers: {
+    //                   api_key: util.api_key,
+    //                 },
+    //               }
+    //             ),
+    //             // SecureStore.deleteItemAsync("sub_sections"),
+    //             // console.log("IN"),
+    //           ]
+    //         : SecureStore.setItemAsync(
+    //             "sub_sections",
+    //             this.props.sectionData
+    //           ).then((val) => console.log(val));
+    // console.log("Connection type", state.type);
+    // console.log("Is connected?", state.isConnected);
+    // });
     this.onModalClose();
     // unsubscribe();
     // navigator.onLine
@@ -292,7 +339,7 @@ export class SubsectionMapper extends React.Component {
     //       util.api_url + "/section/update",
     //       {
     //         sectionId: this.props.sectionId,
-    //         sub_sections: this.state.subSectionsData,
+    //         sub_sections: this.props.sectionData,
     //       },
     //       {
     //         headers: {
@@ -303,8 +350,16 @@ export class SubsectionMapper extends React.Component {
     //   : this.onModalClose();
   };
 
-  changeDataCopy = (name, value) => {
-    // TODO: add code to save the current state of the section to the data copy array
+  setWpData = () => {
+    AsyncStorage.getItem("wpId-" + this.props.wpId).then((wpData) => {
+      wpData = JSON.parse(wpData);
+      wpData.forEach((section) => {
+        section.id == this.props.sectionId
+          ? (section.section_data = this.props.sectionData)
+          : "";
+      });
+      AsyncStorage.setItem("wpId-" + this.props.wpId, JSON.stringify(wpData));
+    });
   };
 
   render() {
@@ -314,8 +369,8 @@ export class SubsectionMapper extends React.Component {
           title={this.props.section}
           titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
         >
-          {this.state.subSectionsData.length &&
-          this.state.subSectionsData.every((subsection) => {
+          {this.props.sectionData.length &&
+          this.props.sectionData.every((subsection) => {
             return subsection.dataitems.length > 0;
           }) == 0 ? (
             <View>
@@ -329,13 +384,13 @@ export class SubsectionMapper extends React.Component {
             </View>
           ) : (
             <View>
-              {this.state.subSectionsData.map((subsection, subsectionIndex) => {
+              {this.props.sectionData.map((subsection, subsectionIndex) => {
                 return (
                   <View key={subsection.name}>
                     <List.Accordion
                       key={subsection.name}
                       title={subsection.name}
-                      style={commonStyles.capitalizeText}
+                      titleStyle={commonStyles.capitalizeText}
                       left={(props) => <List.Icon {...props} icon="folder" />}
                       expanded={
                         this.props.expandedSubsectionId == subsection.id
@@ -356,6 +411,7 @@ export class SubsectionMapper extends React.Component {
                           listItem.type == "number" ? (
                           <TextType
                             name={listItem.name}
+                            ref={(ref) => (this.textType = ref)}
                             key={listItem.id}
                             type={listItem.type}
                             value={listItem.value.toString()}
@@ -365,17 +421,11 @@ export class SubsectionMapper extends React.Component {
                             previousNotes={listItem.previousNotes || []}
                             setChangesMade={this.setChangesMade}
                             subSectionId={subsection.id}
+                            sectionId={this.props.sectionId}
                             dataItemId={listItem.id}
                             setError={this.setError}
                             currentUser={this.props.user}
-                            // oldValue={this.props.subSectionsData}
-                            oldValue={
-                              this.state.dataCopy.length != 0
-                                ? this.state.dataCopy[
-                                    subsectionIndex
-                                  ].dataitems[listItemIndex].value.toString()
-                                : ""
-                            }
+                            wpId={this.props.wpId}
                           />
                         ) : listItem.type == "date" ? (
                           <DateType
@@ -449,7 +499,7 @@ export class SubsectionMapper extends React.Component {
           )}
         </List.Section>
         {/* TODO: Chnage this line of code later to show save button only when changes are made */}
-        {(this.state.showSave || true) && (
+        {this.state.showSave && (
           <View style={styles.alignCenter}>
             <Button onPress={this.saveButtonPressed}>Save</Button>
           </View>

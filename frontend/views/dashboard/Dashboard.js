@@ -1,5 +1,5 @@
 // author: nirbhay pherwani | pherwani37@gmail.com  | https://nirbhay.me
-import React from "react";
+import React, { Component } from "react";
 import { View, StyleSheet, Platform } from "react-native";
 import AppBar from "./../../components/AppBar";
 import { WorkPackageCard } from "../../components/WorkPackageCard";
@@ -54,6 +54,10 @@ export default class Dashboard extends React.Component {
       navigateTo: null,
       workPackages: null,
     };
+    this.getData();
+  }
+
+  getData = () => {
     axios
       .get(util.api_url + "/user/wp/" + this.props.user.id, {
         headers: {
@@ -61,7 +65,6 @@ export default class Dashboard extends React.Component {
         },
       })
       .then((res) => {
-        //TODO: get the data from the backend and display it in cards
         this.setState({
           workPackages: res.data,
         });
@@ -70,7 +73,7 @@ export default class Dashboard extends React.Component {
       .catch((res) => {
         this.goToURL();
       });
-  }
+  };
 
   goToURL = () => {
     this.props.navigateTo
@@ -105,7 +108,7 @@ export default class Dashboard extends React.Component {
           renderItem={({ item }) => (
             <WorkPackageCard
               title={item.title}
-              ewpNumber={item.ewpNumber}
+              ewpNumber={item.id}
               dateCreated={item.dateCreated}
               status={item.status}
               percentageComplete={item.percentageComplete}
@@ -117,7 +120,7 @@ export default class Dashboard extends React.Component {
             />
           )}
           numColumns={1}
-          keyExtractor={(item) => item.ewpNumber}
+          keyExtractor={(item) => item.id}
         />
       </View>
     );

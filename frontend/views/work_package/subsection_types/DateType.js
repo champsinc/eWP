@@ -104,7 +104,11 @@ export default class DateType extends React.Component {
           )}
         </View>
         {this.props.editable ? (
-          <Button onPress={this.showDialog} style={this.styles.button}>
+          <Button
+            onPress={this.showDialog}
+            labelstyle={this.styles.buttonText}
+            style={this.styles.dateButton}
+          >
             {this.state.dateButton}
           </Button>
         ) : (
@@ -190,12 +194,14 @@ export default class DateType extends React.Component {
     actionButton: {
       marginLeft: 15,
     },
-    button: {
+    buttonText: {
+      fontSize: 16,
+    },
+    dateButton: {
       marginLeft: 41,
       padding: 0,
       flexDirection: "row",
       alignSelf: "flex-start",
-      fontSize: 16,
     },
     calendarIcon: {
       alignSelf: "center",
