@@ -38,7 +38,14 @@ export const AttachmentView = (props) => {
     },
   ];
   props = props.data;
-  console.log(props.statusCode);
+  console.log(props.fileType.substring(props.fileType.indexOf("/") + 1));
+  console.log(
+    imageFileTypes.has(
+      props.fileType.substring(props.fileType.indexOf("/") + 1)
+    )
+  );
+  console.log(props.value);
+  console.log(props);
   props.statusCode >= 0 && props.statusCode <= 2
     ? (options[props.statusCode].value = "selected")
     : "";
@@ -79,7 +86,9 @@ export const AttachmentView = (props) => {
           />
         </Card.Content>
       )}
-      {"image/" + imageFileTypes.has(props.fileType) && (
+      {imageFileTypes.has(
+        props.fileType.substring(props.fileType.indexOf("/") + 1)
+      ) && (
         <TouchableWithoutFeedback onPress={() => openModal(true)}>
           <Card.Cover
             style={styles.cardCover}
@@ -90,9 +99,9 @@ export const AttachmentView = (props) => {
         </TouchableWithoutFeedback>
       )}
       <Card.Actions style={styles.cardActions}>
-        {imageFileTypes.has(props.fileType) && (
-          <Button onPress={() => openModal(true)}>View</Button>
-        )}
+        {imageFileTypes.has(
+          props.fileType.substring(props.fileType.indexOf("/") + 1)
+        ) && <Button onPress={() => openModal(true)}>View</Button>}
         <Button onPress={() => download(props.value)}>Download</Button>
         {props.notes && (
           <AddNote

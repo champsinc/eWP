@@ -470,9 +470,7 @@ export class SubsectionMapper extends React.Component {
                           <FileType
                             name={listItem.name}
                             key={listItem.name}
-                            value={
-                              "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png"
-                            }
+                            value={listItem.value}
                             fileType={listItem.fileType}
                             fileSize={listItem.fileSize}
                             statusCode={listItem.status}
