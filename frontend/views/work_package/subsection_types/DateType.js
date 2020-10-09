@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { Portal, Dialog, Button, IconButton } from "react-native-paper";
 import { customTheme, commonStyles, monthNames } from "../../../styles/Main";
+import AddNote from "../../../components/AddNote";
 
 /**
  * This class is used to render a single unit item of a subsection of date type

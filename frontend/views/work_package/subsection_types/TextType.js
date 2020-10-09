@@ -14,7 +14,6 @@ export default class TextType extends React.Component {
 
   constructor(props) {
     super(props);
-    // value = this.props.value;
     this.state = {
       textInputText: this.props.value,
       error: false,
@@ -31,7 +30,6 @@ export default class TextType extends React.Component {
             if (subsection.id == this.props.subSectionId) {
               subsection.dataitems.forEach((dataItem) => {
                 if (dataItem.id == this.props.dataItemId) {
-                  // console.log(dataItem.value);
                   this.intitalValue = dataItem.value;
                 }
               });
@@ -39,9 +37,6 @@ export default class TextType extends React.Component {
           });
         }
       });
-      // console.log(wpData);
-      // console.log(this.intitalValue);
-      // AsyncStorage.setItem("sectionData", JSON.stringify(wpData));
     });
   };
 
@@ -62,7 +57,6 @@ export default class TextType extends React.Component {
       },
       async () => {
         await this.getIntitalValue();
-        // console.log(this.intitalValue);
         textInputText =
           this.props.type == "number"
             ? textInputText.replace(/[^0-9]/g, "") // restrict non-numeric characters if the field type is number
