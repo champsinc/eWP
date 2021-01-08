@@ -62,7 +62,7 @@ public class AuthTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                         filter.getClass()
                 )
                 .authorizeRequests()
-                .antMatchers("/api/user/activate")
+                .antMatchers("/api/user/activate", "/api/champsconnect/connect")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

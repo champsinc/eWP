@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import org.bson.types.ObjectId;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 
 public class DiscussionItemDeserializer {
     Gson gson;
@@ -29,6 +30,9 @@ public class DiscussionItemDeserializer {
                     LogDiscussion logDiscussion = gson.fromJson(discussionItemObject, LogDiscussion.class);
                     logDiscussion.setId(discussionId.toString());
                     logDiscussion.setTimestamp(timestamp);
+                    if(!discussionItemObject.has("threads") && !(discussionItemObject.has("parentDI"))){
+                        logDiscussion.setThreads(new ArrayList<>());
+                    }
                     return logDiscussion;
                 }
                 case "request":
@@ -36,6 +40,9 @@ public class DiscussionItemDeserializer {
                     RequestDiscussion requestDiscussion = gson.fromJson(discussionItemObject, RequestDiscussion.class);
                     requestDiscussion.setId(discussionId.toString());
                     requestDiscussion.setTimestamp(timestamp);
+                    if(!discussionItemObject.has("threads") && !(discussionItemObject.has("parentDI"))){
+                        requestDiscussion.setThreads(new ArrayList<>());
+                    }
                     return requestDiscussion;
                 }
                 case "text":
@@ -43,6 +50,9 @@ public class DiscussionItemDeserializer {
                     TextDiscussion textDiscussion = gson.fromJson(discussionItemObject, TextDiscussion.class);
                     textDiscussion.setId(discussionId.toString());
                     textDiscussion.setTimestamp(timestamp);
+                    if(!discussionItemObject.has("threads") && !(discussionItemObject.has("parentDI"))){
+                        textDiscussion.setThreads(new ArrayList<>());
+                    }
                     return textDiscussion;
                 }
                 case "file":
@@ -50,6 +60,9 @@ public class DiscussionItemDeserializer {
                     FileDiscussion fileDiscussion = gson.fromJson(discussionItemObject, FileDiscussion.class);
                     fileDiscussion.setId(discussionId.toString());
                     fileDiscussion.setTimestamp(timestamp);
+                    if(!discussionItemObject.has("threads") && !(discussionItemObject.has("parentDI"))){
+                        fileDiscussion.setThreads(new ArrayList<>());
+                    }
                     return fileDiscussion;
                 }
             }

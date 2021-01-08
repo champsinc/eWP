@@ -12,4 +12,5 @@ public interface UserService {
     boolean userVerify(String activationCode);
     String userForgotPassword(String emailId);
     String userForgotPasswordProcess(String forgotPasswordToken, String password);
+    String allUsers();
 }

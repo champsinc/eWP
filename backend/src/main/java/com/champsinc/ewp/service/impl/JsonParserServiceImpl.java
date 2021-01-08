@@ -115,15 +115,24 @@ public class JsonParserServiceImpl implements JsonParserService {
                 return sendResponse(JsonParserUtils.NO_WORK_PKG_KEY, null, null);
             }
             if(rootObject.has("user") && rootObject.has("status") && rootObject.has("title")){
-                User user = userRepository.findByEmail(rootObject.get("user").getAsString());
-                if(user != null){
-                    workPackageModel.getUsers().add(new ObjectId(user.getId()));
+                JsonArray userArray = rootObject.get("user").getAsJsonArray();
+                int userFlag = 0;
+                for (JsonElement userElement: userArray) {
+                    User user = userRepository.findByEmail(userElement.getAsString());
+                    if(user == null){
+                        responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No such user present");
+                        userFlag = 1;
+                        break;
+                    }
+                    else{
+                        workPackageModel.getUsers().add(new ObjectId(user.getId()));
+                    }
+                }
+                if(userFlag == 0){
                     workPackageModel.setTitle(rootObject.get("title").getAsString());
+                    workPackageModel.setDiscussion(new ArrayList<>());
                     insertIntoDB(allDataItems, allSubSections, allSections, workPackageModel);
                     responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
-                }
-                else{
-                    responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No such user present");
                 }
             }
             else{
@@ -132,7 +141,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             return responseJSON;
         } catch (Exception e){
             e.printStackTrace();
-            responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "Exception has occurred");
+            responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "Exception has occurred\n"+e.toString());
             return responseJSON;
         }
     }
@@ -512,5 +521,4 @@ public class JsonParserServiceImpl implements JsonParserService {
             return false;
         }
     }
-
 }

@@ -21,4 +21,7 @@ public class DataItem {
     private boolean required;
     private boolean special_identifier;
 
+    // private NoteItem allNotes[];
+    // NoteItem - name, avatarURL, message
+
 }

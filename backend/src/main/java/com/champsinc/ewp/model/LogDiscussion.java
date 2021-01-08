@@ -12,4 +12,5 @@ public class LogDiscussion extends DiscussionItem {
     private String value;
     private ObjectId sectionId;
     private ObjectId subSectionId;
+    private String sectionName;
 }

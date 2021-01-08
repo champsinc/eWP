@@ -27,4 +27,8 @@ public class WorkPackage {
     private int status;
     @DBRef
     private ArrayList<Object> discussion;
+
+    // private long ewpNo
+    private int percentageCompleted;
+
 }

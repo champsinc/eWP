@@ -63,7 +63,7 @@ public class UserApi {
     )
     public ResponseEntity<String> updateUser(
             @ApiParam(value = "User JSON with fields to be changed", required = true)
-                    String userDetails) {
+                    @RequestBody String userDetails) {
         JsonObject responseObject =  userService.updateUser(userDetails);
         if(responseObject.has("error")){
             return new ResponseEntity<>(responseObject.toString(), HttpStatus.BAD_REQUEST);
@@ -196,18 +196,13 @@ public class UserApi {
         }
     }
 
-
-    // SAMPLE
-
-    @ApiOperation(value = "Sample api")
+    @ApiOperation(value = "All users of an organization")
     @RequestMapping(
-            value = "/user/add_user",
+            value = "/user/all_users",
             method = RequestMethod.GET
     )
-    public ResponseEntity<String> userAdd(
-            @RequestParam String email
-    ) {
-
-        return new ResponseEntity<>("SAMPLE", HttpStatus.OK);
+    public ResponseEntity<String> allUsers() {
+        String response = userService.allUsers();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

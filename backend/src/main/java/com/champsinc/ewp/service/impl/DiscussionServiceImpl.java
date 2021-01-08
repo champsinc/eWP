@@ -1,6 +1,6 @@
 package com.champsinc.ewp.service.impl;
 
-import com.champsinc.ewp.model.DiscussionThread;
+import com.champsinc.ewp.model.DiscussionItem;
 import com.champsinc.ewp.model.WorkPackage;
 import com.champsinc.ewp.service.DiscussionService;
 import com.champsinc.ewp.util.DiscussionItemDeserializer;
@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 
 /**
  * Implementation of each function in the discussion service class
@@ -58,56 +57,24 @@ public class DiscussionServiceImpl implements DiscussionService {
                     // Create discussion item object from payload json object
                     Object discussionItemObject = discussionItemDeserializer.deserialize(discussionObject, discussionId, timestamp);
                     if(discussionItemObject != null){
-                        // Add discussion item to new thread
-                        if(discussionObject.get("firstThread").getAsBoolean()){
-                            // If its new thread value of thread attribute will be the parent discussion item
-                            Object discussionItem = mongoTemplate.findById(discussionObject.get("thread").getAsString(), Object.class, "discussion_items");
-                            if(discussionItem != null){
-                                DiscussionThread discussionThread = new DiscussionThread();
-                                ArrayList<Object> discussionThreadList = new ArrayList<>();
-                                // Add parent DI
-                                discussionThreadList.add(discussionItem);
-                                // Add new DI
-                                discussionThreadList.add(discussionItemObject);
-                                discussionThread.setDiscussions(discussionThreadList);
-                                discussionThread.setLastUpdated(timestamp);
-                                // Remove parent DI from work package
-                                workPackage.getDiscussion().remove(discussionItem);
-                                // Add thread to work package at the end
-                                workPackage.getDiscussion().add(discussionThread);
-                                mongoTemplate.save(discussionThread, "threads");
-                            }
-                            else{
-                                response.addProperty("error", "No such discussion item exists");
-                                return response;
-                            }
-                        }
-                        // Add discussion item to already existing thread
-                        else{
-                            // If thread already exist, value of thread attribute will be the thread id
-                            DiscussionThread discussionThread = mongoTemplate.findById(discussionObject.get("thread").getAsString(), DiscussionThread.class, "threads");
-                            if(discussionThread != null){
-                                // Remove thread object from the work package
-                                workPackage.getDiscussion().remove(discussionThread);
-                                // Append it at the end
-                                workPackage.getDiscussion().add(discussionThread);
-                                // Add new DI to existing thread object
-                                discussionThread.getDiscussions().add(discussionItemObject);
-                                discussionThread.setLastUpdated(timestamp);
-                                mongoTemplate.save(discussionThread, "threads");
-                            }
-                            else{
-                                response.addProperty("error", "No such discussion thread exists");
-                                return response;
-                            }
-                        }
-                        // If its the first data item in a work package no thread or firstthread attribute should be present
-                        if(!discussionObject.has("thread") && !discussionObject.has("firstThread")){
+                        // Check if its new Discussion item of a work package
+                        if(!discussionObject.has("parentDI")){
+                            // Add new discussion item to work package at the end
                             workPackage.getDiscussion().add(discussionItemObject);
                         }
-                        else{
-                            response.addProperty("error", "Discussion thread has either thread or first thread missing");
-                            return response;
+                        // Check if a discussion item needs to added to a new thread
+                        else {
+                            DiscussionItem parentDiscussionItem = mongoTemplate.findById(discussionObject.get("parentDI").getAsString(), DiscussionItem.class, "discussion_items");
+                            if(parentDiscussionItem != null){
+                                workPackage.getDiscussion().remove(parentDiscussionItem);
+                                parentDiscussionItem.getThreads().add(discussionItemObject);
+                                workPackage.getDiscussion().add(parentDiscussionItem);
+                                mongoTemplate.save(parentDiscussionItem, "discussion_items");
+                            }
+                            else{
+                                response.addProperty("error", "No such parent discussion item exists");
+                                return response;
+                            }
                         }
                         // Common
                         mongoTemplate.save(discussionItemObject, "discussion_items");
