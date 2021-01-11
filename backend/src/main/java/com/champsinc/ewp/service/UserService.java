@@ -10,4 +10,7 @@ public interface UserService {
     String userLogin(String userCredentials);
     String userRegister(String userCredentials);
     boolean userVerify(String activationCode);
+    String userForgotPassword(String emailId);
+    String userForgotPasswordProcess(String forgotPasswordToken, String password);
+    String allUsers();
 }

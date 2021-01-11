@@ -16,6 +16,4 @@ import java.util.Optional;
 public interface SubSectionRepository extends MongoRepository<SubSection, String> {
     @Query(value = "{'_id':{$in: ?0}}", fields = "{'name':1, 'dataitems':1}")
     List<SubSection> findByListOfSubSectionIds(ArrayList<ObjectId> objectIds);
-
-    Optional<SubSection> findById(String subSectionId);
 }

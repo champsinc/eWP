@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface WorkPackageRepository extends MongoRepository<WorkPackage, String> {
 
-    @Query(value = "{'users':?0}", fields = "{'title':1, 'status':1}")
+    @Query(value = "{'users':?0}", fields = "{'title':1, 'status':1, 'percentageCompleted':1, 'users':1}")
     List<WorkPackage> findByUserId(ObjectId userId);
 }

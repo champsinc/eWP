@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * Model class for sections
@@ -21,6 +22,7 @@ import javax.validation.constraints.Size;
 public class User {
 
     @Id
+    @Expose
     private String id;
 
     @Expose
@@ -38,8 +40,15 @@ public class User {
     @Email
     private String email;
 
-    @Expose
+    @Expose(serialize = false)
     private boolean verified;
-
     private String activationCode;
+
+    private String forgotPasswordToken;
+    private Date forgotPasswordExpiryDate;
+
+    @Expose
+    private String username; // Should be unique
+    
+    private String avatarURL; // first time null, will be set on update
 }

@@ -18,7 +18,7 @@ public class JsonParserUtils {
         date,
         text,
         file,
-        checkitem,
+        checkbox,
         selectbox
     }
 
@@ -26,6 +26,7 @@ public class JsonParserUtils {
         {
             add(KEYWORD_EDITABLE);
             add(KEYWORD_REQUIRED);
+            add(KEYWORD_NOTES);
         }
     };
 

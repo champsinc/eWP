@@ -6,11 +6,13 @@ import com.champsinc.ewp.repository.SubSectionRepository;
 import com.champsinc.ewp.service.SubSectionService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementation of each function in the service class
@@ -20,10 +22,12 @@ import java.util.Optional;
 public class SubSectionServiceImpl implements SubSectionService {
     @Autowired
     SubSectionRepository subSectionRepository;
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     /**
-     * Function to get all work packages
-     * @return specific work package by id
+     * Function to get all subsections
+     * @return list of all subsections
      */
     @Override
     public List<SubSection> findAll(){
@@ -31,21 +35,22 @@ public class SubSectionServiceImpl implements SubSectionService {
     }
 
     /**
-     * Function to get work package by id
-     * @return specific work package by id
+     * Function to get subsections by list of its ids
+     * @return list of subsections by ids
      */
     @Override
     public List<SubSection> findByListOfSubSectionIds(ArrayList<ObjectId> objectIds){
-
-        return subSectionRepository.findByListOfSubSectionIds(objectIds);
+        Query query = new Query(Criteria.where("_id").in(objectIds));
+        return mongoTemplate.find(query, SubSection.class, "sub_sections");
     }
 
     /**
-     * Function to get work package by id
-     * @return specific work package by id
+     * Function to get a subsection by id
+     * @return specific subsection by id
      */
     @Override
-    public Optional<SubSection> findById(String subSectionId){
-        return subSectionRepository.findById(subSectionId);
+    public SubSection findById(String subSectionId){
+        Query query = new Query(Criteria.where("_id").is(subSectionId));
+        return mongoTemplate.findOne(query, SubSection.class, "sub_sections");
     }
 }

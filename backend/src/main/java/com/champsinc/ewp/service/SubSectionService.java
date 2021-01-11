@@ -14,5 +14,5 @@ import java.util.Optional;
 public interface SubSectionService {
     List<SubSection> findAll();
     List<SubSection> findByListOfSubSectionIds(ArrayList<ObjectId> objectIds);
-    Optional<SubSection> findById(String subSectionId);
+    SubSection findById(String subSectionId);
 }

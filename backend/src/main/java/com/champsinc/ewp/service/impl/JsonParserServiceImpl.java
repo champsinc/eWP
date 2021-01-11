@@ -9,6 +9,7 @@ import com.champsinc.ewp.util.JsonParserUtils.*;
 import com.google.gson.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,11 +32,14 @@ public class JsonParserServiceImpl implements JsonParserService {
     @Autowired
     private SubSectionRepository subSectionRepository;
     @Autowired
-    private DataItemRepository dataItemRepository;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private WorkPackageRepository workPackageRepository;
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    private long fileSize;
+    private String fileType;
     /**
      * Function to check json string for validity
      * @return valid or invalid
@@ -51,7 +55,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             // Keep track of all section objects
             ArrayList<SubSection> allSubSections = new ArrayList<>();
             // Keep track of all dataItem objects
-            ArrayList<DataItem> allDataItems = new ArrayList<>();
+            ArrayList<Object> allDataItems = new ArrayList<>();
             JsonObject rootObject = JsonParser.parseString(payload).getAsJsonObject();
             // Check if first key is work package array and no other key exists
             if (rootObject.get(JsonParserUtils.KEYWORD_WORK_PKG).isJsonArray() && rootObject.size() <= 4) {
@@ -76,17 +80,22 @@ public class JsonParserServiceImpl implements JsonParserService {
                             SubSection subSectionModel = createSubSectionModel(getDataKeyName(subSectionObject));
                             if(checkSubSection.size() == 2){
                                 JsonArray subSectionInnerArray = subSectionObject.getAsJsonArray(checkSubSection.get(1));
+                                int itemNumber = 1;
                                 // Parse through each subsection inner array
                                 for (JsonElement dataItemElement : subSectionInnerArray) {
                                     JsonObject dataItemObject = dataItemElement.getAsJsonObject();
                                     JsonObject checkDataItem = checkDataItem(dataItemObject, sectionKeyName, checkSubSection.get(1));
                                     if(checkDataItem.has(JsonParserUtils.KEYWORD_ERROR)){
+                                        checkDataItem.addProperty("Item number", itemNumber);
                                         return checkDataItem;
                                     }
-                                    // Create sub section model
-                                    DataItem dataItemModel = createDataItemModel(dataItemElement);
+
+                                    // Create data item model
+                                    Object dataItemModel = createDataItemModel(dataItemElement);
                                     allDataItems.add(dataItemModel);
+
                                     subSectionModel.getDataitems().add(dataItemModel);
+                                    itemNumber++;
                                 }
                             }
                             else{
@@ -106,15 +115,24 @@ public class JsonParserServiceImpl implements JsonParserService {
                 return sendResponse(JsonParserUtils.NO_WORK_PKG_KEY, null, null);
             }
             if(rootObject.has("user") && rootObject.has("status") && rootObject.has("title")){
-                User user = userRepository.findByEmail(rootObject.get("user").getAsString());
-                if(user != null){
-                    workPackageModel.getUsers().add(new ObjectId(user.getId()));
+                JsonArray userArray = rootObject.get("user").getAsJsonArray();
+                int userFlag = 0;
+                for (JsonElement userElement: userArray) {
+                    User user = userRepository.findByEmail(userElement.getAsString());
+                    if(user == null){
+                        responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No such user present");
+                        userFlag = 1;
+                        break;
+                    }
+                    else{
+                        workPackageModel.getUsers().add(new ObjectId(user.getId()));
+                    }
+                }
+                if(userFlag == 0){
                     workPackageModel.setTitle(rootObject.get("title").getAsString());
+                    workPackageModel.setDiscussion(new ArrayList<>());
                     insertIntoDB(allDataItems, allSubSections, allSections, workPackageModel);
                     responseJSON.addProperty("Success", JsonParserUtils.VALID_JSON);
-                }
-                else{
-                    responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "No such user present");
                 }
             }
             else{
@@ -123,9 +141,7 @@ public class JsonParserServiceImpl implements JsonParserService {
             return responseJSON;
         } catch (Exception e){
             e.printStackTrace();
-            StackTraceElement[] elements = e.getStackTrace();
-            responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, JsonParserUtils.EXCEPTION_MESSAGE);
-            responseJSON.addProperty("message", gson.toJson(elements));
+            responseJSON.addProperty(JsonParserUtils.KEYWORD_ERROR, "Exception has occurred\n"+e.toString());
             return responseJSON;
         }
     }
@@ -140,21 +156,76 @@ public class JsonParserServiceImpl implements JsonParserService {
         return workPackageModel;
     }
 
-    private DataItem createDataItemModel(JsonElement subSectionInnerElement){
+    private Object createDataItemModel(JsonElement subSectionInnerElement){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonObject subSectionInnerObject = subSectionInnerElement.getAsJsonObject();
-        String subSectionDataKeyName = getDataKeyName(subSectionInnerObject);
+        JsonObject dataItemJsonObject = subSectionInnerElement.getAsJsonObject();
+        String dataItemKeyName = getDataKeyName(dataItemJsonObject);
         ObjectId dataItemId = new ObjectId();
-        DataItem dataItemModel = gson.fromJson(subSectionInnerElement, DataItem.class);
-        dataItemModel.setId(dataItemId.toString());
-        dataItemModel.setName(subSectionDataKeyName);
-        if(dataItemModel.getType().equals(JsonParserUtils.KEYWORD_SELECTBOX)){
-            dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).toString());
+        String type = dataItemJsonObject.get("type").getAsString();
+        switch (type){
+            case "text":
+            {
+                TextType textType = gson.fromJson(dataItemJsonObject, TextType.class);
+                textType.setId(dataItemId.toString());
+                textType.setName(dataItemKeyName);
+                textType.setValue(dataItemJsonObject.get(dataItemKeyName).getAsString());
+                return textType;
+            }
+            case "number":
+            {
+                NumberType numberType = gson.fromJson(dataItemJsonObject, NumberType.class);
+                numberType.setId(dataItemId.toString());
+                numberType.setName(dataItemKeyName);
+                numberType.setValue(dataItemJsonObject.get(dataItemKeyName).getAsLong());
+                return numberType;
+            }
+            case "date":
+            {
+                DateType dateType = gson.fromJson(dataItemJsonObject, DateType.class);
+                dateType.setId(dataItemId.toString());
+                dateType.setName(dataItemKeyName);
+                dateType.setValue(dataItemJsonObject.get(dataItemKeyName).getAsString());
+                return dateType;
+            }
+            case "checkbox":
+            {
+                CheckboxType checkboxType = gson.fromJson(dataItemJsonObject, CheckboxType.class);
+                checkboxType.setId(dataItemId.toString());
+                checkboxType.setName(dataItemKeyName);
+                checkboxType.setValue(dataItemJsonObject.get(dataItemKeyName).getAsString());
+                return checkboxType;
+            }
+            case "selectbox":
+            {
+                SelectboxType selectboxType = gson.fromJson(dataItemJsonObject, SelectboxType.class);
+                selectboxType.setId(dataItemId.toString());
+                selectboxType.setName(dataItemKeyName);
+                JsonArray selectItemsArray = dataItemJsonObject.getAsJsonArray(dataItemKeyName);
+                ArrayList<SelectItem> allSelectItems = new ArrayList<>();
+                for(JsonElement selectItem : selectItemsArray){
+                    JsonObject selectItemJsonObject = selectItem.getAsJsonObject();
+                    SelectItem selectItemModel = new SelectItem();
+                    String selectItemName = getDataKeyName(selectItemJsonObject);
+                    selectItemModel.setName(selectItemName);
+                    selectItemModel.setValue(selectItemJsonObject.get(selectItemName).getAsString());
+                    allSelectItems.add(selectItemModel);
+                }
+                selectboxType.setValue(allSelectItems);
+                return selectboxType;
+            }
+            case "file":
+            {
+                FileType fileType = gson.fromJson(dataItemJsonObject, FileType.class);
+                fileType.setId(dataItemId.toString());
+                fileType.setName(dataItemKeyName);
+                fileType.setValue(dataItemJsonObject.get(dataItemKeyName).getAsString());
+                fileType.setFileSize(this.fileSize);
+                fileType.setFileType(this.fileType);
+                fileType.setStatus(0);
+                return fileType;
+            }
         }
-        else{
-            dataItemModel.setValue(subSectionInnerObject.get(subSectionDataKeyName).getAsString());
-        }
-        return dataItemModel;
+        return null;
     }
 
     private SubSection createSubSectionModel(String subSectionName){
@@ -172,16 +243,20 @@ public class JsonParserServiceImpl implements JsonParserService {
         return sectionModel;
     }
 
-    private void insertIntoDB(ArrayList<DataItem> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections, WorkPackage workPackage){
-        for (DataItem dataItem : allDataItems) {
-            dataItemRepository.save(dataItem);
+    private void insertIntoDB(ArrayList<Object> allDataItems, ArrayList<SubSection> allSubSections, ArrayList<Section> allSections, WorkPackage workPackage){
+        for (Object dataItem : allDataItems) {
+            //System.out.println(dataItem);
+            mongoTemplate.save(dataItem, "data_items");
         }
         for(SubSection subSection: allSubSections){
+            //System.out.println(subSection);
             subSectionRepository.save(subSection);
         }
         for (Section section: allSections) {
+            //System.out.println(section);
             sectionRepository.save(section);
         }
+        //System.out.println(workPackage);
         workPackageRepository.save(workPackage);
     }
 
@@ -300,6 +375,7 @@ public class JsonParserServiceImpl implements JsonParserService {
         // Get keys of json object and keywords enum
         ArrayList<String> jsonObjectKeys = new ArrayList<>(jsonObject.keySet());
         List<String> keywordEnumKeys = Stream.of(Keywords.values()).map(Keywords::name).collect(Collectors.toList());
+        // Only key-value pair should remain
         jsonObjectKeys.removeAll(keywordEnumKeys);
         return jsonObjectKeys.size() == 1;
     }
@@ -307,7 +383,9 @@ public class JsonParserServiceImpl implements JsonParserService {
     private boolean checkOtherKeys(JsonObject jsonObject){
         ArrayList<String> jsonObjectKeys = new ArrayList<>(jsonObject.keySet());
         List<String> keywordEnumKeys = Stream.of(Keywords.values()).map(Keywords::name).collect(Collectors.toList());
+        // Remove data key-value pair from jsonObject
         keywordEnumKeys.retainAll(jsonObjectKeys);
+        // Remove type key from jsonObject
         keywordEnumKeys.remove(JsonParserUtils.KEYWORD_TYPE);
         if(keywordEnumKeys.size()>0){
             for (String key: keywordEnumKeys) {
@@ -356,20 +434,20 @@ public class JsonParserServiceImpl implements JsonParserService {
                 case "number": {
                     // Check if data key is a number
                     jsonObject.get(dataKeyName).getAsInt();
-                    // Check if allowed keys are only editable and required
-                    return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
+                    // Check if allowed keys are editable, required and notes
+                    return jsonObject.size() <= 5 && checkBasicAllowedKeys(jsonObjectKeys);
                 }
                 case "text": {
                     // Check if data key is a string
                     jsonObject.get(dataKeyName).getAsString();
-                    // Check if allowed keys are only editable and required
-                    return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
+                    // Check if allowed keys are editable, required and notes
+                    return jsonObject.size() <= 5 && checkBasicAllowedKeys(jsonObjectKeys);
                 }
                 case "date": {
                     // Check if data key is a valid date
                     if(checkDate(jsonObject.get(dataKeyName).getAsString())){
-                        // Check if allowed keys are only editable and required
-                        return jsonObject.size() <= 4 && checkBasicAllowedKeys(jsonObjectKeys);
+                        // Check if allowed keys are editable, required and notes
+                        return jsonObject.size() <= 5 && checkBasicAllowedKeys(jsonObjectKeys);
                     }
                     return false;
                 }
@@ -387,7 +465,7 @@ public class JsonParserServiceImpl implements JsonParserService {
                     }
                     return false;
                 }
-                case "checkitem": {
+                case "checkbox": {
                     String checkItemValue = jsonObject.get(dataKeyName).getAsString();
                     if(checkItemValue.equals(JsonParserUtils.KEYWORD_CHECKED) || checkItemValue.equals(JsonParserUtils.KEYWORD_UNCHECKED))
                         return true;
@@ -434,6 +512,13 @@ public class JsonParserServiceImpl implements JsonParserService {
             return false;
         }
         String mimeType = urlConnection.getContentType();
-        return mimeType.equals(JsonParserUtils.MIME_APPLICATION_PDF) || mimeType.equals(JsonParserUtils.MIME_IMAGE_JPEG) || mimeType.equals(JsonParserUtils.MIME_IMAGE_PNG);
+        if(mimeType.equals(JsonParserUtils.MIME_APPLICATION_PDF) || mimeType.equals(JsonParserUtils.MIME_IMAGE_JPEG) || mimeType.equals(JsonParserUtils.MIME_IMAGE_PNG)){
+            this.fileType = mimeType;
+            this.fileSize = (long)urlConnection.getContentLength()/1024;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

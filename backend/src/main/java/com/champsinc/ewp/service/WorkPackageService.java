@@ -11,5 +11,6 @@ import java.util.List;
  */
 public interface WorkPackageService {
     String findById(String id);
-    List<WorkPackage> findAll();
+    String changeWorkPackageStatus(String ewpId);
+    String changeWorkPackagePercentage(String percentageDetails);
 }
