@@ -13,6 +13,22 @@ export class WorkPackageNavigator extends React.Component {
   }
 
   render() {
+    const WPV = props => (
+      <WorkPackageView
+              {...props}
+              user={this.props.user}
+              wpId={this.props.route.params ? this.props.route.params.id : null}
+      />
+    );
+    const SV = props => (
+      <SectionView {...props} user={this.props.user} />
+    );
+    const WPU = props => (
+      <WorkPackageUsers {...props} user={this.props.user} />
+    );
+    const DV = props => (
+      <DiscussionView {...props} user={this.props.user} />
+    );
     return (
       <Stack.Navigator
         initialRouteName={"home"}
@@ -20,42 +36,48 @@ export class WorkPackageNavigator extends React.Component {
           headerShown: false,
         }}
       >
+        {/*
+        component={(props) => (
+          <WorkPackageView
+            {...props}
+            user={this.props.user}
+            wpId={this.props.route.params ? this.props.route.params.id : null}
+          />
+        )}
+        component={(props) => (
+          <SectionView {...props} user={this.props.user} />
+        )}
+        component={(props) => (
+          <WorkPackageUsers {...props} user={this.props.user} />
+        )}
+        component={(props) => (
+          <DiscussionView {...props} user={this.props.user} />
+        )}
+        */}
         <Stack.Screen
           name="home"
-          component={(props) => (
-            <WorkPackageView
-              {...props}
-              user={this.props.user}
-              wpId={this.props.route.params ? this.props.route.params.id : null}
-            />
-          )}
+          component = {WPV}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
           name="section"
-          component={(props) => (
-            <SectionView {...props} user={this.props.user} />
-          )}
+          component = {SV}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
           name="work_package_users"
-          component={(props) => (
-            <WorkPackageUsers {...props} user={this.props.user} />
-          )}
+          component = {WPU}
           options={{
             animationEnabled: false,
           }}
         />
         <Stack.Screen
           name="discussion_section"
-          component={(props) => (
-            <DiscussionView {...props} user={this.props.user} />
-          )}
+          component = {DV}
           options={{
             animationEnabled: false,
           }}

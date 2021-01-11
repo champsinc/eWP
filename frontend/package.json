@@ -44,7 +44,8 @@
     "react-native-web": "~0.11.7",
     "react-native-webview": "8.1.1",
     "react-navigation": "^4.4.0",
-    "react-with-important-style": "^0.2.2"
+    "react-with-important-style": "^0.2.2",
+    "expo-updates": "~0.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

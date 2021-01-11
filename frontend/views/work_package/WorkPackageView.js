@@ -5,281 +5,9 @@ import { GridCard } from "../../components/GridCard";
 import axios from "axios";
 import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import { util } from "../../assets/Utility";
-import { Button } from "react-native-paper";
-
-let workPackageData = [
-  {
-    id: "5f0f50b9393970398908c335",
-    name: "Details-2",
-    section_data: [
-      {
-        id: "5f0f50b9393970398908c336",
-        name: "My Work Order Info Details 2",
-        dataitems: [
-          {
-            value: 123,
-            id: "5f0f50b9393970398908c337",
-            name: "Work Order Id",
-            type: "number",
-            editable: true,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: "Fix waterws",
-            id: "5f0f50b9393970398908c338",
-            name: "Title",
-            type: "text",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-          {
-            value:
-              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
-            id: "5f0f50b9393970398908c339",
-            name: "Description",
-            type: "text",
-            editable: false,
-            notes: true,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: "05/13/2020",
-            id: "5f0f50b9393970398908c33a",
-            name: "Order Date",
-            type: "date",
-            editable: true,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-        ],
-      },
-      {
-        id: "5f0f50b9393970398908c33b",
-        name: "Work Order Time Line Details",
-        dataitems: [
-          {
-            value: "05/12/2020",
-            id: "5f0f50b9393970398908c33c",
-            name: "Order Date",
-            type: "date",
-            editable: false,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: "05/12/2020",
-            id: "5f0f50b9393970398908c33d",
-            name: "Expected Date of Delivery",
-            type: "date",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "5f0f50b9393970398908c33e",
-    name: "Instructions",
-    section_data: [
-      {
-        id: "5f0f50b9393970398908c33f",
-        name: "Abstract list",
-        dataitems: [
-          {
-            value: [
-              {
-                name: "Orange",
-                value: "selected",
-              },
-              {
-                name: "Apple",
-                value: "not-selected",
-              },
-              {
-                name: "Bananas",
-                value: "not-selected",
-              },
-            ],
-            id: "5f0f50b9393970398908c340",
-            name: "Fruits",
-            type: "selectbox",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-          {
-            value: [
-              {
-                name: "Cat",
-                value: "selected",
-              },
-              {
-                name: "Lion",
-                value: "not-selected",
-              },
-              {
-                name: "Tiger",
-                value: "not-selected",
-              },
-            ],
-            id: "5f0f50b9393970398908c341",
-            name: "Animals",
-            type: "selectbox",
-            editable: true,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: [
-              {
-                name: "Peacock",
-                value: "selected",
-              },
-              {
-                name: "Crow",
-                value: "not-selected",
-              },
-              {
-                name: "Pigeon",
-                value: "not-selected",
-              },
-            ],
-            id: "5f0f50b9393970398908c342",
-            name: "Birds",
-            type: "selectbox",
-            editable: false,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-        ],
-      },
-      {
-        id: "5f0f50b9393970398908c343",
-        name: "Checklist of things required",
-        dataitems: [
-          {
-            value: "checked",
-            id: "5f0f50b9393970398908c344",
-            name:
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            type: "checkitem",
-            editable: false,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: "checked",
-            id: "5f0f50b9393970398908c345",
-            name:
-              "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\u0027s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
-            type: "checkitem",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-          {
-            value: "checked",
-            id: "5f0f50b9393970398908c346",
-            name: "Lorem Ipsum is ",
-            type: "checkitem",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "5f0f50b9393970398908c347",
-    name: "My Attachments",
-    section_data: [
-      {
-        id: "5f0f50b9393970398908c348",
-        name: "General Info Documents",
-        dataitems: [
-          {
-            value: "http://www.africau.edu/images/default/sample.pdf",
-            fileSize: 2,
-            fileType: "application/pdf",
-            due_date: "05/12/2020",
-            status: 2,
-            id: "5f0f50b9393970398908c349",
-            name: "Purchase Items - Part List A",
-            type: "file",
-            editable: true,
-            notes: true,
-            required: true,
-            special_identifier: false,
-          },
-          {
-            value: "https://picsum.photos/700",
-            fileSize: 30,
-            fileType: "image/jpeg",
-            due_date: "06/12/2020",
-            status: 2,
-            id: "5f0f50ba393970398908c34a",
-            name: "Random Picture Q",
-            type: "file",
-            editable: true,
-            notes: false,
-            required: true,
-            special_identifier: false,
-          },
-        ],
-      },
-      {
-        id: "5f0f50ba393970398908c34b",
-        name: "Equipment Related Documents",
-        dataitems: [
-          {
-            value: "http://www.africau.edu/images/default/sample.pdf",
-            fileSize: 2,
-            fileType: "application/pdf",
-            due_date: "06/12/2020",
-            status: 0,
-            id: "5f0f50bb393970398908c34c",
-            name: "Sampling and Sub-Sampling Results",
-            type: "file",
-            editable: true,
-            notes: true,
-            required: false,
-            special_identifier: false,
-          },
-          {
-            value: "https://picsum.photos/800",
-            fileSize: 115,
-            fileType: "image/jpeg",
-            status: 0,
-            id: "5f0f50bc393970398908c34d",
-            name: "Random Equipment X",
-            type: "file",
-            editable: false,
-            notes: false,
-            required: false,
-            special_identifier: false,
-          },
-        ],
-      },
-    ],
-  },
-];
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-community/async-storage";
+import { Paragraph, Dialog, Button, Portal } from "react-native-paper";
 
 /**
  * This class is used to render the any work package in the app
@@ -294,30 +22,100 @@ export class WorkPackageView extends React.Component {
       section: "",
       sectionClicked: false,
       showDialog: false,
-      subSectionData: [],
       showSave: false,
+      userData: [],
+      showSaveDialog: false,
+      saveDialogMessage: "",
+      afterSave: false,
     };
 
+    this.getData();
+  }
+
+  // componentDidMount () {
+  //   const {navigation} = this.props;
+  //   navigation.addListener ('focus', () =>
+  //     // run function that updates the data on entering the screen
+  //     {
+  //       console.log("Focussed");
+  //       if(this.state.afterSave){
+  //         this.setState({afterSave: false})
+  //       }
+  //       else{
+  //         this.setState({afterSave: true})
+  //       }
+  //     }
+  //   );
+  // }
+
+  getData = () => {
     this.props.route.params && this.props.route.params.id
-      ? axios
-          .get(util.api_url + "/wp/" + this.props.route.params.id, {
-            headers: {
-              api_key: util.api_key,
-            },
-          })
-          .then((response) => {
-            response.data.push({
-              id: "123456",
-              name: "users",
-              section_data: [],
-            });
-            this.setState({
-              dataSource: response.data,
-            });
-            this.checkForSaveButton();
+      ? // TODO: Add code to check for internet and if not get from AsyncStorage
+        Platform.OS == "web"
+        ? axios
+            .get(util.api_url + "/wp/" + this.props.route.params.id, {
+              headers: {
+                api_key: util.api_key,
+              },
+            })
+            .then((response) => {
+              response.data.all_data.push({
+                id: "123456",
+                name: "users",
+                section_data: [],
+              });
+              this.setState({
+                dataSource: response.data.all_data,
+                userData: response.data.user_data,
+              });
+              // TODO: change to normal json without stringify (just for debugging)
+              // CHnage the name of the key to workpackageid so that this works for all WPs
+              AsyncStorage.setItem(
+                "wpId-" + this.props.route.params.id,
+                JSON.stringify(this.state.dataSource)
+              );
+
+              console.log("USER DATA: ", this.props.user)
+              this.checkForSaveButton();
+              // console.log(this.state);
+            })
+        : NetInfo.addEventListener((state) => {
+            state.isConnected
+              ? [
+                  axios
+                    .get(util.api_url + "/wp/" + this.props.route.params.id, {
+                      headers: {
+                        api_key: util.api_key,
+                      },
+                    })
+                    .then((response) => {
+                      response.data.all_data.push({
+                        id: "123456",
+                        name: "users",
+                        section_data: [],
+                      });
+                      this.setState({
+                        dataSource: response.data.all_data,
+                        userData: response.data.user_data,
+                      });
+                      // TODO: change to normal json without stringify (just for debugging)
+                      // CHnage the name of the key to workpackageid so that this works for all WPs
+                      AsyncStorage.setItem(
+                        "wpId-" + this.props.route.params.id,
+                        JSON.stringify(this.state.dataSource)
+                      );
+                      this.checkForSaveButton();
+                      // console.log(this.state);
+                    }),
+                ]
+              : AsyncStorage.getItem("wpId-" + this.props.route.params.id).then(
+                  (wpData) => {
+                    this.setState({ dataSource: JSON.parse(wpData) });
+                  }
+                );
           })
       : "";
-  }
+  };
 
   checkForSaveButton = () => {
     let showSave = true;
@@ -411,6 +209,12 @@ export class WorkPackageView extends React.Component {
     })[0].id;
   };
 
+  getSectionData = (section) => {
+    return this.state.dataSource.filter((data) => {
+      return data.name == section;
+    })[0].section_data;
+  };
+
   onModalClose = () => {
     this.setState({
       showDialog: false,
@@ -419,6 +223,7 @@ export class WorkPackageView extends React.Component {
 
   usersClicked = () => {
     this.props.navigation.navigate("work_package_users", {
+      userData: this.state.userData,
       wpId: this.props.route.params.id,
     });
   };
@@ -434,6 +239,57 @@ export class WorkPackageView extends React.Component {
     // TODO: add code to revert the data back to how it was
   };
 
+  saveWorkPackage = () => {
+    axios
+      .post(
+        util.api_url + "/wp/changestatus",
+        {
+          ewpId: this.props.route.params.id,
+          email: this.props.user.email
+        },
+        {
+          headers: {
+            api_key: util.api_key,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data == "Success") {
+          this.setState({
+            showSaveDialog: true,
+            saveDialogMessage: "Work Package has been saved and closed.",
+          });
+        } else {
+          this.setState({
+            showSaveDialog: true,
+            saveDialogMessage: "Work Package not saved.",
+          });
+        }
+      });
+  };
+
+  hideDialog = () => {
+    if (this.state.saveDialogMessage == "Work Package not saved.") {
+      this.setState({ showSaveDialog: false });
+    } else {
+      AsyncStorage.removeItem("workPackageId");
+      AsyncStorage.removeItem("wpId-" + this.props.route.params.id);
+      this.setState({
+        showSaveDialog: false,
+        afterSave: true,
+      });
+      this.props.navigation.navigate("dashboard");
+    }
+  };
+
+  checkWPId = () => {
+    if (this.state.afterSave) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   render() {
     return (
       <View style={styles.view}>
@@ -444,7 +300,9 @@ export class WorkPackageView extends React.Component {
               subTitle="Work Package"
               searchPlaceHolder="Search in this work package"
             />
-            {this.props.route.params && this.props.route.params.id ? (
+            {this.props.route.params &&
+            this.props.route.params.id &&
+            !this.state.afterSave ? (
               [
                 <FlatList
                   data={this.state.dataSource}
@@ -472,13 +330,29 @@ export class WorkPackageView extends React.Component {
                   keyExtractor={(item) => item.id}
                 />,
                 this.state.showSave && (
-                  <Button
-                    mode={"text"}
-                    onPress={() => {}}
-                    style={styles.saveButton}
-                  >
-                    Save
-                  </Button>
+                  <View>
+                    <Button
+                      mode={"contained"}
+                      onPress={this.saveWorkPackage}
+                      style={styles.saveButton}
+                    >
+                      Save
+                    </Button>
+                    <Portal>
+                      <Dialog
+                        visible={this.state.showSaveDialog}
+                        onDismiss={this.hideDialog}
+                      >
+                        <Dialog.Title>Alert</Dialog.Title>
+                        <Dialog.Content>
+                          <Paragraph>{this.state.saveDialogMessage}</Paragraph>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                          <Button onPress={this.hideDialog}>Done</Button>
+                        </Dialog.Actions>
+                      </Dialog>
+                    </Portal>
+                  </View>
                 ),
               ]
             ) : (
@@ -531,7 +405,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   saveButton: {
-    paddingBottom: 20,
+    marginBottom: 15,
     flexDirection: "row",
     alignSelf: "center",
   },

@@ -202,7 +202,7 @@ export class Login extends React.Component {
               inputPadding={18}
               inputStyle={{
                 color: "black",
-                outline: "none",
+                outlineWidth: 0
               }}
               height={50}
               style={[

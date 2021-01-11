@@ -28,6 +28,22 @@ export default class NavigationDrawer extends React.Component {
   }
 
   render() {
+    const DASH = props => (
+      <Dashboard
+        {...props}
+        user={this.props.user}
+        navigateTo={this.props.navigateTo || null}
+      />
+    );
+    const PROF = props => (
+      <Profile {...props} user={this.props.user} />
+    );
+    const WP = props => (
+      <WorkPackageNavigator {...props} user={this.props.user} />
+    );
+    const UM = props => (
+      <UserManagement {...props} user={this.props.user} />
+    );
     return (
       <NavigationContainer linking={linking}>
         <Drawer.Navigator
@@ -38,6 +54,24 @@ export default class NavigationDrawer extends React.Component {
           }}
           backBehavior={"history"}
         >
+          {/*
+            component={(props) => (
+              <Dashboard
+                {...props}
+                user={this.props.user}
+                navigateTo={this.props.navigateTo || null}
+              />
+            )}
+            component={(props) => (
+              <Profile {...props} user={this.props.user} />
+            )}
+            component={(props) => (
+              <WorkPackageNavigator {...props} user={this.props.user} />
+            )}
+            component={(props) => (
+              <UserManagement {...props} user={this.props.user} />
+            )}
+          */}
           {!this.props.userToken && (
             <Drawer.Screen
               name="auth"
@@ -53,13 +87,7 @@ export default class NavigationDrawer extends React.Component {
           {this.props.userToken && (
             <Drawer.Screen
               name="dashboard"
-              component={(props) => (
-                <Dashboard
-                  {...props}
-                  user={this.props.user}
-                  navigateTo={this.props.navigateTo || null}
-                />
-              )}
+              component={DASH}
               options={{
                 title: "Dashboard",
                 drawerIcon: ({ focused, size }) => (
@@ -71,9 +99,7 @@ export default class NavigationDrawer extends React.Component {
           {this.props.userToken && (
             <Drawer.Screen
               name="profile"
-              component={(props) => (
-                <Profile {...props} user={this.props.user} />
-              )}
+              component = {PROF}
               options={{
                 title: "Profile",
                 drawerIcon: ({ focused, size }) => (
@@ -85,9 +111,7 @@ export default class NavigationDrawer extends React.Component {
           {this.props.userToken && (
             <Drawer.Screen
               name="work_package"
-              component={(props) => (
-                <WorkPackageNavigator {...props} user={this.props.user} />
-              )}
+              component = {WP}
               options={{
                 title: "Work Package",
                 drawerIcon: ({ focused, size }) => (
@@ -99,9 +123,7 @@ export default class NavigationDrawer extends React.Component {
           {this.props.userToken && (
             <Drawer.Screen
               name="user_management"
-              component={(props) => (
-                <UserManagement {...props} user={this.props.user} />
-              )}
+              component = {UM}
               options={{
                 title: "User Management",
                 drawerIcon: ({ focused, size }) => (

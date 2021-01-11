@@ -20,6 +20,16 @@ export default class DiscussionView extends React.Component {
       peopleInvolved: [],
       replyingToMessageIndex: "",
     };
+  }
+
+  componentDidMount(){
+    this.getData();
+    this.interval = setInterval(() => {
+      this.getData();
+    }, 15000);
+  }
+
+  getData() {
     axios
       .get(
         "http://ewpackage.gq:8080/api/discuss/wp/" +
@@ -36,6 +46,10 @@ export default class DiscussionView extends React.Component {
           peopleInvolved: this.peopleInvolved,
         })
       );
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.interval);
   }
 
   peopleInvolved = [

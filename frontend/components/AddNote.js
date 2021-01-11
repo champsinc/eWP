@@ -4,7 +4,6 @@ import { Portal, Dialog, Button, TextInput, Divider } from "react-native-paper";
 import { customTheme } from "../styles/Main";
 import { ScrollView } from "react-native-gesture-handler";
 import { User } from "./User";
-import { util } from "../assets/Utility";
 
 export default class AddNote extends React.Component {
   textInput = "";

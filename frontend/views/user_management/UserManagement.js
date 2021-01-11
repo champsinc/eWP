@@ -1,10 +1,10 @@
 import React from "react";
-import { View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { View, FlatList } from "react-native";
 import axios from "axios";
 import { util } from "../../assets/Utility";
 import AppBar from "../../components/AppBar";
 import { UserTableRow } from "./UserTableRow";
+import { customTheme } from "../../styles/Main";
 
 const users = [
   {
@@ -26,18 +26,18 @@ export class UserManagement extends React.Component {
       users: [],
     };
     axios
-      .get(util.api_url + "/all_users", {
+      .get(util.api_url + "/user/all_users", {
         headers: {
           api_key: util.api_key,
         },
       })
       .then((res) => {
-        console.log(res);
+        this.setState({
+          users: res.data
+        });
       })
       .catch((err) => {
-        this.setState({
-          users,
-        });
+        console.log(err);
       });
   }
 
@@ -54,13 +54,13 @@ export class UserManagement extends React.Component {
           renderItem={({ item }) => (
             <UserTableRow
               name={item.name}
-              email={item.email}
               role={item.role}
               navigateToWorkPackage={() => this.navigateToWorkPackage(item.id)}
             />
           )}
+          style={{backgroundColor: customTheme.primaryDarkColor}}
           numColumns={1}
-          keyExtractor={(item) => item.email}
+          //keyExtractor={(item) => item.email}
         />
       </View>
     );

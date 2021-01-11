@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, TextInput } from "react-native";
 import { Chip } from "react-native-paper";
 import DiscussionButtonPanel from "./DiscussionButtonPanel";
 import { customTheme } from "../../styles/Main";
@@ -100,33 +100,33 @@ export default class DiscussionInputBox extends React.Component {
     return (
       <View>
         <View style={styles.container}>
-          <MentionsTextInput
-            key={this.state.key}
+          <TextInput
+            //key={this.state.key}
             autoFocus={this.state.autoFocus}
             placeholder={"Your Message Here ... "}
-            textInputStyle={{
+            style={{
               borderColor: "gray", // inline styles because styles variable doesnt work in web
               borderWidth: 1,
               padding: 10,
             }}
-            suggestionsPanelStyle={{
-              backgroundColor: "rgba(100,100,100,0.1)", // inline styles because styles variable doesnt work in web
-              marginBottom: 2,
-            }}
-            loadingComponent={() => <View />}
-            textInputMinHeight={50}
-            textInputMaxHeight={80}
-            trigger={"@"}
-            triggerLocation={"new-word-only"}
+            // suggestionsPanelStyle={{
+            //   backgroundColor: "rgba(100,100,100,0.1)", // inline styles because styles variable doesnt work in web
+            //   marginBottom: 2,
+            // }}
+            // loadingComponent={() => <View />}
+            // textInputMinHeight={50}
+            // textInputMaxHeight={80}
+            // trigger={"@"}
+            // triggerLocation={"new-word-only"}
             value={this.state.text}
             onChangeText={(text) => this.onChangeText(text)}
-            triggerCallback={this.callback.bind(this)}
-            renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
-            suggestionsData={this.state.data} // array of objects
-            keyExtractor={(item, index) => item.UserName}
-            suggestionRowHeight={this.state.data.length > 0 ? 45 : 0}
-            horizontal={false} // the orientation of the list
-            MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0}
+            // triggerCallback={this.callback.bind(this)}
+            // renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+            // suggestionsData={this.state.data} // array of objects
+            // keyExtractor={(item, index) => item.UserName}
+            // suggestionRowHeight={this.state.data.length > 0 ? 45 : 0}
+            // horizontal={false} // the orientation of the list
+            // MaxVisibleRowCount={this.state.data.length > 0 ? 3 : 0}
           />
         </View>
         <View style={styles.chipView}>

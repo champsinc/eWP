@@ -1,14 +1,9 @@
 {
   "expo": {
-    "name": "eWP",
-    "slug": "eWP",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "name": "CHAMPS eWP",
+    "slug": "CHAMPSeWP",
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/champs-logo.png",
@@ -18,9 +13,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "package": "com.champs.ewp",
       "versionCode": 1

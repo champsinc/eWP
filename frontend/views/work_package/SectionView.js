@@ -5,53 +5,89 @@ import { SubsectionMapper } from "./SubsectionMapper";
 import { WarningDialog } from "../action_dialog/ActionDialogs";
 import DiscussionPanel from "../discussion_section/DiscussionPanel";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
-import { util } from "../../assets/Utility";
-
-let params;
+import AsyncStorage from "@react-native-community/async-storage";
 
 export class SectionView extends React.Component {
   constructor(props) {
     super(props);
 
-    params = this.props.route.params;
+    // console.log(AsyncStorage.getItem("sectionData").then());
+
     this.state = {
       showDialog: false,
       showDiscussionView: false,
-      subSectionsData: [],
+      //sectionData: this.props.route.params.sectionData,
+      sectionData: [],
     };
-
-    Platform.OS == "web"
-      ? this.getData()
-      : SecureStore.getItemAsync("sectionData-" + params.sectionId).then(
-          (res) => {
-            console.log("SectionView:28", JSON.parse(res)[0].id);
-            this.getData();
-          }
-        );
+    this.setData();
+    //this.getData();
+    // Platform.OS == "web"
+    //   ? this.getData()
+    //   : SecureStore.getItemAsync("sectionData-" + params.sectionId).then(
+    //       (res) => {
+    //         console.log("SectionView:28", JSON.parse(res)[0].id);
+    //         this.getData();
+    //       }
+    //     );
   }
 
-  getData = () => {
-    axios
-      .get(util.api_url + "/section/" + params.sectionId, {
-        headers: {
-          api_key: util.api_key,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-        Platform.OS != "web"
-          ? SecureStore.setItemAsync(
-              "sectionData-" + params.sectionId,
-              JSON.stringify(response.data)
-            ).then((res) => {})
-          : "";
+  setData = () => {
+    AsyncStorage.getItem("wpId-" + this.props.route.params.wpId).then(
+      (wpData) => {
+        wpData = JSON.parse(wpData);
+        this.setState({
+          sectionData: this.getSectionData(
+            wpData,
+            this.props.route.params.section
+          ),
+        });
+      }
+    );
+  }
 
-        this.setState({ subSectionsData: response.data });
-      })
-      .catch((err) => {
-        this.setState({ subSectionsData: [] });
-      });
+  // componentDidMount() {
+  //   AsyncStorage.getItem("wpId-" + this.props.route.params.wpId).then(
+  //     (wpData) => {
+  //       wpData = JSON.parse(wpData);
+  //       this.setState({
+  //         sectionData: this.getSectionData(
+  //           wpData,
+  //           this.props.route.params.section
+  //         ),
+  //       });
+  //     }
+  //   );
+  // }
+
+  getData = () => {
+    // axios
+    //   .get(util.api_url + "/section/" + params.sectionId, {
+    //     headers: {
+    //       api_key: util.api_key,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     // console.log(response);
+    // Platform.OS != "web"
+    //   ? SecureStore.setItemAsync(
+    //       "sectionData-" + params.sectionId,
+    //       JSON.stringify(response.data)
+    //     ).then((res) => {})
+    //   : "";
+    // console.log(this.props.route.params.sectionData);
+    // this.setState({ sectionData: this.props.route.params.sectionData }, () => {
+    // console.log(this.state.sectiondata);
+    // });
+    // })
+    // .catch((err) => {
+    //   this.setState({ subSectionsData: [] });
+    // });
+  };
+
+  getSectionData = (wpData, section) => {
+    return wpData.filter((data) => {
+      return data.name == section;
+    })[0].section_data;
   };
 
   toggleNavBar = () => {
@@ -106,7 +142,7 @@ export class SectionView extends React.Component {
         <View style={styles.view}>
           <AppBar
             toggleNavBar={this.toggleNavBar}
-            subTitle={params.section}
+            subTitle={this.props.route.params.section}
             searchPlaceHolder="Search in this work package"
             backButton={true}
             backButtonAction={this.goBackFromSubsectionToSection}
@@ -114,11 +150,13 @@ export class SectionView extends React.Component {
           <SubsectionMapper
             ref={(ref) => (this.subsectionMapper = ref)}
             user={this.props.user}
-            section={params.section}
-            expandedSubsectionId={params.subSectionId || null}
-            // subSectionsData={this.state.subSectionsData}
-            dataCopy={this.state.subSectionsData}
-            sectionId={params.sectionId}
+            section={this.props.route.params.section}
+            expandedSubsectionId={this.props.route.params.subSectionId || null}
+            sectionData={this.state.sectionData}
+            // forceUpdate={this.props.route.params.forceUpdate}
+            // dataCopy={this.state.subSectionsData}
+            sectionId={this.props.route.params.sectionId}
+            wpId={this.props.route.params.wpId}
           />
           <WarningDialog
             showDialog={this.state.showDialog}

@@ -1,11 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Image, Text, Platform } from "react-native";
+import { View, StyleSheet, Image, Text, Platform, Keyboard } from "react-native";
 import { IconButton, ToggleButton } from "react-native-paper";
 import { customTheme } from "../../styles/Main";
 import FilePondModal from "../../components/FilePondModal";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
-import { AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY } from "expo-secure-store";
 import axios from "axios";
 import { util } from "../../assets/Utility";
 
@@ -22,13 +20,13 @@ export default class DiscussionButtonPanel extends React.Component {
   render() {
     return (
       <View style={styles.discussionButtonPanelView}>
-        <IconButton
+        {/*<IconButton
           icon={"attachment"}
           color={customTheme.discussionPanelIconColor}
           size={20}
           onPress={this.attachButtonPressed}
-        />
-        <IconButton
+        />*/}
+        {/* <IconButton
           icon={"at"}
           color={customTheme.discussionPanelIconColor}
           size={20}
@@ -40,7 +38,7 @@ export default class DiscussionButtonPanel extends React.Component {
           color={customTheme.discussionPanelIconColor}
           status={this.state.sendAsRequestSelected}
           onPress={this.toggleSendAsRequestButton}
-        />
+        /> */}
         <IconButton
           icon={"send"}
           color={customTheme.discussionPanelIconColor}
@@ -62,7 +60,9 @@ export default class DiscussionButtonPanel extends React.Component {
     });
   };
 
-  attachButtonPressed = async (document) => {
+  attachButtonPressed = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
     this.setState({});
   };
 
@@ -86,9 +86,6 @@ export default class DiscussionButtonPanel extends React.Component {
   };
 
   sendButtonPressed = () => {
-    this.state.sendAsRequestSelected == "checked"
-      ? this.toggleSendAsRequestButton()
-      : "";
     let value = this.props.text;
     this.props.clearInputBox();
     this.props.text.length > 0
@@ -166,7 +163,11 @@ export default class DiscussionButtonPanel extends React.Component {
                 avatarURL: this.props.user.avatar || "",
                 wpId: this.props.wpId,
               });
+              Keyboard.dismiss()
             })
+      : "";
+      this.state.sendAsRequestSelected == "checked"
+      ? this.toggleSendAsRequestButton()
       : "";
   };
 }

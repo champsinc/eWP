@@ -11,84 +11,8 @@ import FileType from "./subsection_types/FileType";
 import { customTheme, commonStyles } from "../../styles/Main";
 import axios from "axios";
 import NetInfo from "@react-native-community/netinfo";
-import * as SecureStore from "expo-secure-store";
 import { util } from "../../assets/Utility";
-
-let datacopy1 = [
-  {
-    id: "5f0f50b9393970398908c336",
-    name: "Work Order Info Details",
-    dataitems: [
-      {
-        value: 12,
-        id: "5f0f50b9393970398908c337",
-        name: "Work Order Id",
-        type: "number",
-        editable: true,
-        notes: false,
-        required: false,
-        special_identifier: false,
-      },
-      {
-        value: "Fix water system",
-        id: "5f0f50b9393970398908c338",
-        name: "Title",
-        type: "text",
-        editable: true,
-        notes: false,
-        required: true,
-        special_identifier: false,
-      },
-      {
-        value:
-          "Lorem is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with",
-        id: "5f0f50b9393970398908c339",
-        name: "Description",
-        type: "text",
-        editable: false,
-        notes: true,
-        required: false,
-        special_identifier: false,
-      },
-      {
-        value: "05/13/2020",
-        id: "5f0f50b9393970398908c33a",
-        name: "Order Date",
-        type: "date",
-        editable: true,
-        notes: false,
-        required: false,
-        special_identifier: false,
-      },
-    ],
-  },
-  {
-    id: "5f0f50b9393970398908c33b",
-    name: "Work Order Time Line Details",
-    dataitems: [
-      {
-        value: "05/12/2020",
-        id: "5f0f50b9393970398908c33c",
-        name: "Order Date",
-        type: "date",
-        editable: false,
-        notes: false,
-        required: false,
-        special_identifier: false,
-      },
-      {
-        value: "05/12/2020",
-        id: "5f0f50b9393970398908c33d",
-        name: "Expected Date of Delivery",
-        type: "date",
-        editable: true,
-        notes: false,
-        required: true,
-        special_identifier: false,
-      },
-    ],
-  },
-];
+import AsyncStorage from "@react-native-community/async-storage";
 
 /**
  * This class is used to render any section inside a work package
@@ -97,66 +21,25 @@ let datacopy1 = [
 export class SubsectionMapper extends React.Component {
   constructor(props) {
     super(props);
-    // console.log(this.props);
     this.state = {
       showDialog: false,
       showSave: false,
-      subSectionsData: [],
+      sectionData: this.props.sectionData,
       expandSelectedSubsection: true,
-      dataCopy: this.props.dataCopy,
+      percentageCompleted: 0
     };
 
-    axios
-      .get(util.api_url + "/section/" + this.props.sectionId, {
-        headers: {
-          api_key: util.api_key,
-        },
-      })
-      .then((response) => {
-        this.setState({
-          subSectionsData: response.data,
-          // dataCopy: response.data,
-        });
-        // this.state.dataCopy = response.data;
-        this.state.subSectionsData.forEach((subSection) => {
-          subSection.dataitems.forEach((listItem) => {
-            this.changesMade[listItem.name] = false;
-            this.errorsInFields[listItem.name] = false;
-          });
-        });
-        // console.log(this.state.dataCopy);
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ subSectionsData: [] });
+    this.props.sectionData.forEach((subSection) => {
+      subSection.dataitems.forEach((listItem) => {
+        this.subSectionId = listItem.id;
+        this.changesMade[listItem.name] = false;
+        this.errorsInFields[listItem.name] = false;
       });
-
-    // dataCopy = datacopy1;
+    });
   }
 
-  // flag = true;
-
-  // componentDidMount() {
-  //   dataCopy = this.props.subSectionsData;
-  //   console.log(dataCopy);
-  //   this.setState({ showDialog: false });
-  // }
-
-  // componentDidUpdate() {
-  //   console.log(this.props.subSectionsData);
-  //   console.log(dataCopy);
-  //   this.flag
-  //     ? [
-  //         this.setState({ showDialog: false }),
-  //         (this.flag = !this.flag),
-  //         console.log("In"),
-  //       ]
-  //     : "";
-  // }
-
+  subSectionId;
   changesMade = {};
-
-  // dataCopy = [];
 
   errorsInFields = {};
 
@@ -175,9 +58,7 @@ export class SubsectionMapper extends React.Component {
   ) => {
     let changesMade = false;
     this.changesMade[field] = trueOrFalse;
-
-    // console.log(this.state.dataCopy);
-    this.state.subSectionsData.forEach((subsection) => {
+    this.props.sectionData.forEach((subsection) => {
       subsection.id == subSectionId
         ? !isAttachmentType
           ? (subsection.dataitems.filter((dataitem) => {
@@ -188,8 +69,6 @@ export class SubsectionMapper extends React.Component {
             })[0].status = newValue)
         : "";
     });
-
-    // console.log(this.state.subSectionsData);
 
     Object.values(this.changesMade).forEach((value) => {
       changesMade = changesMade || value;
@@ -223,51 +102,95 @@ export class SubsectionMapper extends React.Component {
   onModalClose = () => {
     this.setState({
       showDialog: false,
+      showSave: false,
     });
+    this.finalChangesMade = false;
+  };
+
+  calculatePercentageComplete = () => {
+    let totalCounter = 0;
+    let requiredCounter = 0;
+      this.props.sectionData.forEach((subsection) => {
+        subsection.dataitems.forEach((dataItem) => {
+          if (dataItem.required == true) {
+            // Check for text and date type
+            if (
+              (dataItem.type == "text" || dataItem.type == "date") &&
+              dataItem.value.trim().length > 0
+            ) {
+              requiredCounter = requiredCounter + 1;
+            }
+
+            // Check for selectbox type
+            if (dataItem.type == "selectbox") {
+              if (dataItem.value.some((item) => item.value == "selected")) {
+                requiredCounter = requiredCounter + 1;
+              }
+            }
+
+            // Check for checkItem type
+            if (dataItem.type == "checkbox" && dataItem.value == "checked") {
+              requiredCounter = requiredCounter + 1;
+            }
+
+            // Check for file type
+            if (dataItem.type == "file" && dataItem.status != 2) {
+              requiredCounter = requiredCounter + 1;
+            }
+            totalCounter = totalCounter + 1;
+          }
+        });
+      });
+    let percentageCompleted = (
+      (requiredCounter / totalCounter) *
+      100
+    ).toFixed(0);
+    return percentageCompleted;
   };
 
   confirmSaveDialogButton = () => {
-    Platform.OS != "web"
-      ? [
-          SecureStore.setItemAsync(
-            "sub_sections",
-            this.state.subSectionsData.toString()
-          ).then((val) => console.log(val)),
-          SecureStore.getItemAsync("sub_sections").then((val) =>
-            console.log(val)
-          ),
-        ]
-      : "";
-    console.log(
-      JSON.stringify({
-        sectionId: this.props.sectionId,
-        sub_sections: this.state.subSectionsData,
-      })
-    );
+    this.setWpData();
+    let percentComplete = this.calculatePercentageComplete();
+
     Platform.OS == "web"
-      ? axios.post(
-          util.api_url + "/section/update",
-          {
-            sectionId: this.props.sectionId,
-            sub_sections: this.state.subSectionsData,
-          },
-          {
-            headers: {
-              api_key: util.api_key,
+      ? [
+          axios.post(
+            util.api_url + "/section/update",
+            {
+              sectionId: this.props.sectionId,
+              sub_sections: this.props.sectionData,
+              wpId: this.props.wpId
             },
-          }
-        )
+            {
+              headers: {
+                api_key: util.api_key,
+              },
+            }
+          ),
+          axios.post(
+            util.api_url + "/wp/changepercent",
+            {
+              id: this.props.wpId,
+              percent: percentComplete,
+            },
+            {
+              headers: {
+                api_key: util.api_key,
+              },
+            }
+          ).then((response) => {
+            console.log("PERCENT:", response)
+          }),
+        ]
       : NetInfo.addEventListener((state) => {
           state.isConnected
             ? [
-                SecureStore.getItemAsync("sub_sections").then((val) =>
-                  console.log(val)
-                ),
                 axios.post(
                   util.api_url + "/section/update",
                   {
                     sectionId: this.props.sectionId,
-                    sub_sections: this.state.subSectionsData,
+                    sub_sections: this.props.sectionData,
+                    wpId: this.props.wpId
                   },
                   {
                     headers: {
@@ -275,36 +198,36 @@ export class SubsectionMapper extends React.Component {
                     },
                   }
                 ),
-                // SecureStore.deleteItemAsync("sub_sections"),
-                // console.log("IN"),
+                axios.post(
+                  util.api_url + "/wp/changepercent",
+                  {
+                    id: this.props.wpId,
+                    percent: percentComplete,
+                  },
+                  {
+                    headers: {
+                      api_key: util.api_key,
+                    },
+                  }
+                ).then((response) => {
+                  console.log("PERCENT:", response)
+                }),
               ]
-            : SecureStore.setItemAsync(
-                "sub_sections",
-                this.state.subSectionsData
-              ).then((val) => console.log(val));
-          // console.log("Connection type", state.type);
-          // console.log("Is connected?", state.isConnected);
+            : "";
         });
     this.onModalClose();
-    // unsubscribe();
-    // navigator.onLine
-    //   ? axios.post(
-    //       util.api_url + "/section/update",
-    //       {
-    //         sectionId: this.props.sectionId,
-    //         sub_sections: this.state.subSectionsData,
-    //       },
-    //       {
-    //         headers: {
-    //           api_key: util.api_key,
-    //         },
-    //       }
-    //     )
-    //   : this.onModalClose();
   };
 
-  changeDataCopy = (name, value) => {
-    // TODO: add code to save the current state of the section to the data copy array
+  setWpData = () => {
+    AsyncStorage.getItem("wpId-" + this.props.wpId).then((wpData) => {
+      wpData = JSON.parse(wpData);
+      wpData.forEach((section) => {
+        section.id == this.props.sectionId
+          ? (section.section_data = this.props.sectionData)
+          : "";
+      });
+      AsyncStorage.setItem("wpId-" + this.props.wpId, JSON.stringify(wpData));
+    });
   };
 
   render() {
@@ -314,8 +237,8 @@ export class SubsectionMapper extends React.Component {
           title={this.props.section}
           titleStyle={[styles.titleStyle, commonStyles.capitalizeText]}
         >
-          {this.state.subSectionsData.length &&
-          this.state.subSectionsData.every((subsection) => {
+          {this.props.sectionData.length &&
+          this.props.sectionData.every((subsection) => {
             return subsection.dataitems.length > 0;
           }) == 0 ? (
             <View>
@@ -329,13 +252,13 @@ export class SubsectionMapper extends React.Component {
             </View>
           ) : (
             <View>
-              {this.state.subSectionsData.map((subsection, subsectionIndex) => {
+              {this.props.sectionData.map((subsection, subsectionIndex) => {
                 return (
                   <View key={subsection.name}>
                     <List.Accordion
                       key={subsection.name}
                       title={subsection.name}
-                      style={commonStyles.capitalizeText}
+                      titleStyle={commonStyles.capitalizeText}
                       left={(props) => <List.Icon {...props} icon="folder" />}
                       expanded={
                         this.props.expandedSubsectionId == subsection.id
@@ -351,7 +274,7 @@ export class SubsectionMapper extends React.Component {
                           : undefined;
                       }}
                     >
-                      {subsection.dataitems.map((listItem, listItemIndex) => {
+                      {subsection.dataitems.map((listItem) => {
                         return listItem.type == "text" ||
                           listItem.type == "number" ? (
                           <TextType
@@ -364,18 +287,12 @@ export class SubsectionMapper extends React.Component {
                             notes={listItem.notes}
                             previousNotes={listItem.previousNotes || []}
                             setChangesMade={this.setChangesMade}
-                            subSectionId={subsection.id}
-                            dataItemId={listItem.id}
                             setError={this.setError}
+                            subSectionId={subsection.id}
+                            sectionId={this.props.sectionId}
+                            dataItemId={listItem.id}
                             currentUser={this.props.user}
-                            // oldValue={this.props.subSectionsData}
-                            oldValue={
-                              this.state.dataCopy.length != 0
-                                ? this.state.dataCopy[
-                                    subsectionIndex
-                                  ].dataitems[listItemIndex].value.toString()
-                                : ""
-                            }
+                            wpId={this.props.wpId}
                           />
                         ) : listItem.type == "date" ? (
                           <DateType
@@ -389,6 +306,8 @@ export class SubsectionMapper extends React.Component {
                             setError={this.setError}
                             subSectionId={subsection.id}
                             dataItemId={listItem.id}
+                            sectionId={this.props.sectionId}
+                            wpId={this.props.wpId}
                           />
                         ) : listItem.type == "selectbox" ? (
                           <SingleSelect
@@ -403,6 +322,8 @@ export class SubsectionMapper extends React.Component {
                             setError={this.setError}
                             subSectionId={subsection.id}
                             dataItemId={listItem.id}
+                            sectionId={this.props.sectionId}
+                            wpId={this.props.wpId}
                           />
                         ) : listItem.type == "checkbox" ? (
                           <CheckItem
@@ -415,14 +336,14 @@ export class SubsectionMapper extends React.Component {
                             setChangesMade={this.setChangesMade}
                             subSectionId={subsection.id}
                             dataItemId={listItem.id}
+                            sectionId={this.props.sectionId}
+                            wpId={this.props.wpId}
                           />
                         ) : listItem.type == "file" ? (
                           <FileType
                             name={listItem.name}
                             key={listItem.name}
-                            value={
-                              "https://homepages.cae.wisc.edu/~ece533/images/arctichare.png"
-                            }
+                            value={listItem.value}
                             fileType={listItem.fileType}
                             fileSize={listItem.fileSize}
                             statusCode={listItem.status}
@@ -435,6 +356,8 @@ export class SubsectionMapper extends React.Component {
                             setError={this.setError}
                             subSectionId={subsection.id}
                             dataItemId={listItem.id}
+                            sectionId={this.props.sectionId}
+                            wpId={this.props.wpId}
                           />
                         ) : (
                           <View />
@@ -448,8 +371,7 @@ export class SubsectionMapper extends React.Component {
             </View>
           )}
         </List.Section>
-        {/* TODO: Chnage this line of code later to show save button only when changes are made */}
-        {(this.state.showSave || true) && (
+        {this.state.showSave && (
           <View style={styles.alignCenter}>
             <Button onPress={this.saveButtonPressed}>Save</Button>
           </View>

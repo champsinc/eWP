@@ -6,23 +6,24 @@ import DropDown from "react-native-paper-dropdown";
 import { customTheme, paperTheme } from "../../styles/Main";
 
 let extractInitialsFromName = (userName) => {
-  return (
-    userName.split(" ")[0][0].toUpperCase() +
-    userName.split(" ").slice(-1)[0][0].toUpperCase()
-  );
+  if(userName.indexOf(' ') >= 0){
+    return (
+      userName.split(" ")[0][0].toUpperCase() +
+      userName.split(" ").slice(-1)[0][0].toUpperCase()
+    );
+  }
+  else{
+    return (
+      userName.split(" ")[0][0].toUpperCase()
+    );
+  }
 };
 
-let roleName = ["Supervisor", "Planner", "Worker"];
+let roleName = ["Admin", "Planner", "Supervisor", "Worker"];
 
 export const UserTableRow = (props) => {
-  const [visible, setVisible] = React.useState(false);
 
-  const [role, setRole] = React.useState(roleName[props.role - 1]);
-
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
-
+  const [role, setRole] = React.useState(roleName[props.role]);
   // const [showDropDown, setShowDropDown] = React.useState(false);
   // const [gender, setGender] = React.useState(
   //   roleName[props.role - 1].toLowerCase()
@@ -46,6 +47,8 @@ export const UserTableRow = (props) => {
         style={{
           paddingTop: Platform.OS == "web" ? 2 : 5,
           // flexDirection: "row",
+          flex: 1,
+          paddingLeft: 3
         }}
       >
         <Avatar.Text
@@ -56,11 +59,12 @@ export const UserTableRow = (props) => {
       </View>
       <View
         style={{
-          paddingTop: 5,
+          //paddingTop: 5,
           // flexDirection: "row",
+          flex: 2
         }}
       >
-        <Text style={{ paddingLeft: 10, fontSize: 20 }}>{props.name}</Text>
+        <Text style={{ fontSize: 20}}>{props.name}</Text>
       </View>
       <View
         style={
@@ -68,10 +72,13 @@ export const UserTableRow = (props) => {
             // flexDirection: "row",
             // flex: 1,
             // justifyContent: "center",
+            flex: 3,
+            alignSelf: "center"
           }
         }
       >
-        <Menu
+        <Button style={{textAlign: "center"}}>{role}</Button>
+        {/* <Menu
           visible={visible}
           onDismiss={closeMenu}
           anchor={<Button onPress={openMenu}>{role}</Button>}
@@ -88,7 +95,7 @@ export const UserTableRow = (props) => {
               />
             );
           })}
-        </Menu>
+        </Menu>*/}
 
         {/* <SafeAreaView style={styles.containerStyle}>
               <DropDown
@@ -113,11 +120,13 @@ export const UserTableRow = (props) => {
 
 const styles = StyleSheet.create({
   view: {
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
     flexDirection: "row",
+    alignItems: "center",
     width: Platform.OS == "web" ? "50%" : "100%",
     justifyContent: "center",
-    alignSelf: "center",
+    alignSelf: "center"
   },
   containerStyle: {
     flex: 1,

@@ -61,6 +61,10 @@ export class WorkPackageUsers extends React.Component {
     );
   };
 
+  capitalizeName = (name) => {
+    return name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}); 
+  }
+
   render() {
     return (
       <View style={styles.view}>
@@ -79,14 +83,14 @@ export class WorkPackageUsers extends React.Component {
                 title={"Planner Details"}
                 left={(props) => <List.Icon {...props} icon="folder" />}
               >
-                {this.users.map((user, index) => {
+                {this.props.route.params.userData.map((user, index) => {
                   return (
-                    user.role == "Planner" && (
+                    user.role == 1 && (
                       <View
                         style={styles.accordionContent}
-                        key={user.DisplayName}
+                        key={user.name}
                       >
-                        {!this.state.editable && (
+                        {/* {!this.state.editable && (
                           <Avatar.Image
                             size={30}
                             source={{ uri: util.avatarURL }}
@@ -99,9 +103,16 @@ export class WorkPackageUsers extends React.Component {
                           />
                         ) : (
                           <Text style={styles.personName}>
-                            {user.DisplayName}
+                            {capitalizeName(user.name)}
                           </Text>
-                        )}
+                        )} */}
+                        <Avatar.Image
+                          size={30}
+                          source={{ uri: util.avatarURL }}
+                        />
+                        <Text style={styles.personName}>
+                          {this.capitalizeName(user.name)}
+                        </Text>
                       </View>
                     )
                   );
@@ -113,19 +124,19 @@ export class WorkPackageUsers extends React.Component {
                 title={"Supervisor Details"}
                 left={(props) => <List.Icon {...props} icon="folder" />}
               >
-                {this.users.map((user, index) => {
+                {this.props.route.params.userData.map((user, index) => {
                   return (
-                    user.role == "Supervisor" && (
+                    user.role == 2 && (
                       <View
                         style={styles.accordionContent}
-                        key={user.DisplayName}
+                        key={user.name}
                       >
                         <Avatar.Image
                           size={30}
                           source={{ uri: util.avatarURL }}
                         />
                         <Text style={styles.personName}>
-                          {user.DisplayName}
+                          {this.capitalizeName(user.name)}
                         </Text>
                       </View>
                     )
@@ -138,19 +149,19 @@ export class WorkPackageUsers extends React.Component {
                 title={"Worker Details"}
                 left={(props) => <List.Icon {...props} icon="folder" />}
               >
-                {this.users.map((user, index) => {
+                {this.props.route.params.userData.map((user, index) => {
                   return (
-                    user.role == "Worker" && (
+                    user.role == 3 && (
                       <View
                         style={styles.accordionContent}
-                        key={user.DisplayName}
+                        key={user.name}
                       >
                         <Avatar.Image
                           size={30}
                           source={{ uri: util.avatarURL }}
                         />
                         <Text style={styles.personName}>
-                          {user.DisplayName}
+                          {this.capitalizeName(user.name)}
                         </Text>
                       </View>
                     )

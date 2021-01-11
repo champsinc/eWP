@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { Portal, Dialog, Button, IconButton } from "react-native-paper";
 import { customTheme, commonStyles, monthNames } from "../../../styles/Main";
+import AddNote from "../../../components/AddNote";
 
 /**
  * This class is used to render a single unit item of a subsection of date type
@@ -104,7 +105,11 @@ export default class DateType extends React.Component {
           )}
         </View>
         {this.props.editable ? (
-          <Button onPress={this.showDialog} style={this.styles.button}>
+          <Button
+            onPress={this.showDialog}
+            labelstyle={this.styles.buttonText}
+            style={this.styles.dateButton}
+          >
             {this.state.dateButton}
           </Button>
         ) : (
@@ -190,12 +195,14 @@ export default class DateType extends React.Component {
     actionButton: {
       marginLeft: 15,
     },
-    button: {
+    buttonText: {
+      fontSize: 16,
+    },
+    dateButton: {
       marginLeft: 41,
       padding: 0,
       flexDirection: "row",
       alignSelf: "flex-start",
-      fontSize: 16,
     },
     calendarIcon: {
       alignSelf: "center",

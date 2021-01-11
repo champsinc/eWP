@@ -84,7 +84,7 @@ export default class Profile extends React.Component {
               size={50}
             />
             <View style={styles.textButtonWrapper}>
-              <Text style={styles.labelStyle}>Username:</Text>
+              <View style={{justifyContent: "flex-start", marginRight: 20, alignItems: "flex-start"}}><Text style={styles.labelStyle}>Username:</Text></View>
               {/* <TextInput
                 ref={(ref) => (this.name = ref)}
                 style={styles.textInput}
@@ -94,10 +94,12 @@ export default class Profile extends React.Component {
                 mode={"outlined"}
                 onChangeText={this.onChangeTextName}
               /> */}
-              <Text style={styles.textValues}>{this.state.name}</Text>
+              <View>
+                <Text style={styles.textValues}>{this.state.name}</Text>
+              </View>
             </View>
             <View style={styles.textButtonWrapper}>
-              <Text style={styles.labelStyle}>Email:</Text>
+              <View style={{justifyContent: "flex-start", marginRight: 20, alignItems: "flex-start"}}><Text style={styles.labelStyle}>Email:</Text></View>
               {/* <TextInput
                 ref={(ref) => (this.email = ref)}
                 style={styles.textInput}
@@ -107,7 +109,7 @@ export default class Profile extends React.Component {
                 value={this.state.email}
                 onChangeText={this.onChangeTextEmail}
               ></TextInput> */}
-              <Text style={styles.textValues}>{this.state.email}</Text>
+              <View><Text style={styles.textValues}>{this.state.email}</Text></View>
             </View>
             <View
               style={[
@@ -150,9 +152,10 @@ const styles = StyleSheet.create({
   },
   card: {
     paddingVertical: 20,
-    width: Platform.OS == "web" ? windowWidth / 4 : "95%",
+    width: Platform.OS == "web" ? windowWidth / 2 : "95%",
     minWidth: 220,
     alignSelf: "center",
+    flexDirection: "row",
   },
   avatar: {
     alignSelf: "center",
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "center",
     width: Platform.OS == "web" ? "70%" : "100%",
-    justifyContent: "space-between",
+    justifyContent: "center",
     padding: 30,
     // padding: 10,
   },

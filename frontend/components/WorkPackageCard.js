@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { customTheme } from "../styles/Main";
-import { Card, Button, Avatar, ProgressBar } from "react-native-paper";
+import { Card, Button, Avatar, Surface, Chip, ProgressBar } from "react-native-paper";
 import FacePile from "react-native-face-pile";
+import { AvatarSet } from "./AvatarSet";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="briefcase" />;
 
@@ -51,16 +52,27 @@ export const WorkPackageCard = (props) => {
           style={styles.progressBar}
         />
       </Card.Content> */}
-      <FacePile
+      <Card.Content style={styles.cardContent}>
+      <AvatarSet users={props.users}/>
+      </Card.Content>
+      <View style={styles.percentageIndicator}>
+          <Text>{props.percentageCompleted} %</Text>
+        </View>
+        <ProgressBar
+          progress={props.percentageCompleted / 100}
+          color={customTheme.primaryColor}
+          style={styles.progressBar}
+        />
+      {/*<FacePile
         numFaces={3}
         faces={FACES}
         containerStyle={{
-          marginTop: 15,
-          alignSelf: Platform.OS == "web" ? "flex-start" : "center",
+          marginTop: 10,
+          alignSelf: Platform.OS == "web" ? "center" : "center",
           marginLeft: 10,
           marginBottom: 5,
         }}
-      />
+      />*/}
       <Card.Actions style={styles.actionsButtonContainer}>
         {
           <Button
@@ -70,12 +82,12 @@ export const WorkPackageCard = (props) => {
             View
           </Button>
         }
-        <Button icon={"bell"} onPress={() => {}}>
+        {/*<Button icon={"bell"} onPress={() => {}}>
           Notifications
           {props.unopenedNotifications && (
             <Text style={styles.badgeIcon}> •</Text>
           )}
-        </Button>
+          </Button>*/}
       </Card.Actions>
     </Card>
   );
@@ -86,16 +98,21 @@ const styles = StyleSheet.create({
     margin: 10,
     alignSelf: "center",
     width: Platform.OS == "web" ? "60%" : "95%",
+    //width: Platform.OS == "web" ? "95%" : "95%",
   },
   cardContent: {
-    marginTop: 10,
+    //flexShrink: 1
+    alignItems: "center"
   },
   percentageIndicator: {
     alignSelf: "flex-end",
+    marginRight: 5,
   },
   progressBar: {
     marginTop: 5,
     // marginBottom: Platform.OS == "web" ? 1 : 10,
+    marginLeft: 5,
+    marginRight: 5,
     height: 8,
     borderRadius: 10,
   },
@@ -109,4 +126,10 @@ const styles = StyleSheet.create({
     position: "relative",
     bottom: 5,
   },
+  surface: {
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+  }
 });
